@@ -13,6 +13,8 @@ Guardrails for every phase: no new fields, statuses, lifecycle or permission cha
 | D3 | Canonical route family: confirm `/audits`, `/actions`, `/continuous-improvement` (G-04) | Drives redirects and the new audit report route |
 | D4 | Single home for Module Access: Super Admin or Settings? (ST-03) | |
 | D5 | Dashboard vs Actions count gap (G-06) and Red Tag "Open" vs "Raised" (RT-09): intended? | Verify before labelling |
+| D7 | Legacy Red Flag records (RF-…) still feed dashboard counts but have no viewable page: restore read-only view, retire, or treat as historical? (G-09) | No correct link target exists today |
+| D8 | New Red Tag stage/label wording to replace "Item Disposition" (G-02); 3 characterization tests assert the old label and must be updated | Wording is a product call |
 | D6 | Approve "Save & Submit for Review" and remembered defaults (RT-01, GM-02) | Slight behaviour change, same commands |
 
 ## Phase 1 — Quick Wins
@@ -22,7 +24,7 @@ Low-risk labels, copy, placement, link targets and navigation clarity.
 | Item | Findings | Effort |
 |---|---|---|
 | Fix stale Red Tag nav text/stage label ("Item Disposition") | G-02 | S |
-| Repair `redFlag` source routes and dead dashboard query params | G-09 | S |
+| Resolve legacy Red Flag records/links per decision D7 (not a link remap) | G-09 | S–M |
 | Make Red Tag Overview tiles links; add count to Awaiting Review tab; QR button renaming; add Record QR to tag detail | RT-03, RT-10 | S |
 | Parent breadcrumb crumbs link to module home; label unlabelled routes; mobile back-link | G-03 | S |
 | Hide empty Gemba/CI Settings tabs; remove dead Super Admin tabs; fix `?section=support`; collapse double redirects | GM-05, ST-03, ST-04 | S |
