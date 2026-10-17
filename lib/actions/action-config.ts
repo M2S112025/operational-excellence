@@ -61,7 +61,8 @@ export function inferActionSourceModule(action: Pick<MyAction, "source" | "sourc
 }
 
 export function getActionSourceDefinition(action: Pick<MyAction, "source" | "sourceModule">) {
-  return ALL_ACTION_SOURCE_CONFIG.find((item) => item.id === inferActionSourceModule(action))!;
+  const definition = ALL_ACTION_SOURCE_CONFIG.find((item) => item.id === inferActionSourceModule(action))!;
+  return definition.id === "manual" ? { ...definition, label: "Manual · Created in Actions" } : definition;
 }
 
 export function normalizeActionSource(action: MyAction): MyAction {
@@ -83,8 +84,10 @@ export function getActionSourceHref(action: MyAction) {
   if (moduleId === "continuousImprovement") return `/continuous-improvement/${encodeURIComponent(sourceId)}`;
   if (moduleId === "redFlag") return sourceId.startsWith("RF-") ? `/red-flag/${encodeURIComponent(sourceId)}` : `/5s/red/${encodeURIComponent(sourceId)}`;
   if (moduleId === "redTag") return `/5s/red/${encodeURIComponent(sourceId)}`;
-  if (moduleId === "visualManagement") return action.visualManagementSource?.boardId
-    ? `/visual-management/boards/${encodeURIComponent(action.visualManagementSource.boardId)}`
+  if (moduleId === "visualManagement") return action.visualManagementSource?.meetingId
+    ? `/visual-management/meetings/${encodeURIComponent(action.visualManagementSource.meetingId)}`
+    : action.visualManagementSource?.boardId
+      ? `/visual-management/boards/${encodeURIComponent(action.visualManagementSource.boardId)}`
     : `/visual-management/meetings/${encodeURIComponent(sourceId)}`;
   if (moduleId === "visualImprovement") return `/visual-improvement/${encodeURIComponent(sourceId)}`;
   if (moduleId === "gemba") {
@@ -93,7 +96,7 @@ export function getActionSourceHref(action: MyAction) {
   }
   if (moduleId === "audit") {
     const auditId = action.auditId ?? action.sourceId;
-    return auditId ? `/5s/audits/${encodeURIComponent(auditId)}/report` : "/audits";
+    return auditId ? `/audits?audit=${encodeURIComponent(auditId)}` : "/audits";
   }
   return undefined;
 }

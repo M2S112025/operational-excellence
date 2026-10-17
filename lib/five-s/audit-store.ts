@@ -1,6 +1,12 @@
 "use client";
 
+import { getAuditScoringPolicy } from "@/features/settings/audit-scoring/store";
+import { calculateAuditSectionTotals, auditSectionsHaveConsistentScoring, auditUsesCustomScoring, getAuditScoringValues, questionComplianceResponse, scoreForComplianceResponse } from "@/lib/five-s/scoring-policy";
+import { isAuditQuestionComplete } from "@/features/settings/custom-audit-questions/checklist";
 import { useSyncExternalStore } from "react";
+import { getAdminUser } from "@/features/five-s/administration/store";
+import { getCurrentDemoUser, type DemoUser } from "@/lib/current-user";
+import { getActions } from "@/lib/actions/action-store";
 
 import { FIVE_S_AUDITS } from "@/features/five-s/data/five-s-data";
 
@@ -439,73 +445,8 @@ export function getNextFiveSAuditTitle(plant: string, area: string): string {
    CALCULATE MAX SCORE
    ========================================================= */
 
-function calculateMaxScore(
-  sections: FiveSAudit["sections"]
-): number {
-  return sections.reduce(
-    (
-      sectionTotal,
-      section
-    ) => {
-      return (
-        sectionTotal +
-        section.questions.reduce(
-          (
-            questionTotal,
-            question
-          ) => {
-            return (
-              questionTotal +
-              question.maxScore
-            );
-          },
-          0
-        )
-      );
-    },
-    0
-  );
-}
-
-/* =========================================================
-   CALCULATE SCORE
-   ========================================================= */
-
-function calculateScore(
-  sections: FiveSAudit["sections"]
-): number {
-  return sections.reduce(
-    (
-      sectionTotal,
-      section
-    ) => {
-      return (
-        sectionTotal +
-        section.questions.reduce(
-          (
-            questionTotal,
-            question
-          ) => {
-            if (
-              question.status ===
-              "NA"
-            ) {
-              return questionTotal;
-            }
-
-            return (
-              questionTotal +
-              (question.score ??
-                0)
-            );
-          },
-          0
-        )
-      );
-    },
-    0
-  );
-}
+function calculateMaxScore(sections: FiveSAudit["sections"]): number { return calculateAuditSectionTotals(sections).maxScore; }
+function calculateScore(sections: FiveSAudit["sections"]): number { return calculateAuditSectionTotals(sections).score; }
 
 /* =========================================================
    CALCULATE COMPLETION
@@ -552,6 +493,7 @@ export function createFiveSAudit(
     | "maxScore"
     | "completionPercentage"
     | "status"
+    | "scoringPolicy"
   >,
   options: { startNow?: boolean } = {}
 ): FiveSAudit {
@@ -560,13 +502,23 @@ export function createFiveSAudit(
   const now =
     new Date();
 
+  const scoringPolicy = Object.freeze(getAuditScoringPolicy());
   const sections = (input.sections ?? []).map((section) => ({
     ...section,
     questions: section.questions.map((question) => ({
       ...question,
+      ...((question.responseType ?? "Compliance") === "Compliance" ? {
+        complianceResponse: questionComplianceResponse(question),
+        score: scoringPolicy.fullyCompliance === 2 && scoringPolicy.partialCompliance === 1 && scoringPolicy.nonCompliance === 0 ? question.score : scoreForComplianceResponse(questionComplianceResponse(question), scoringPolicy),
+        maxScore: scoringPolicy.fullyCompliance === 2 && scoringPolicy.partialCompliance === 1 && scoringPolicy.nonCompliance === 0 ? question.maxScore : scoringPolicy.fullyCompliance,
+      } : {}),
       evidence: (question.evidence ?? []).map((evidence) => ({ ...evidence })),
     })),
   }));
+
+  if (scoringPolicy.nonCompliance !== 0 || scoringPolicy.partialCompliance !== 1 || scoringPolicy.fullyCompliance !== 2) {
+    sections.forEach(section => Object.assign(section, calculateAuditSectionTotals([section])));
+  }
 
   /**
    * Reserve a permanent running number.
@@ -591,15 +543,19 @@ export function createFiveSAudit(
     );
 
   const startNow = options.startNow ?? true;
+  let auditIdentity = Date.now();
+  while (audits.some(item => item.id === `5S-AUD-${auditIdentity}`)) auditIdentity += 1;
+
   const audit: FiveSAudit = {
     ...input,
+    scoringPolicy,
     sections,
 
     /**
      * Keep an internal unique ID separate
      * from the human-readable audit title.
      */
-    id: `5S-AUD-${Date.now()}`,
+    id: `5S-AUD-${auditIdentity}`,
 
     /**
      * Automatically generated title.
@@ -646,9 +602,14 @@ export function createFiveSAudit(
 
 export function updateFiveSAudit(
   auditId: string,
-  updates: Partial<FiveSAudit>
+  updates: Partial<FiveSAudit>,
+  actor: Pick<DemoUser, "id"> = getCurrentDemoUser()
 ): FiveSAudit | undefined {
   initializeStore();
+  const existingPolicyAudit = getFiveSAuditById(auditId);
+  if (existingPolicyAudit?.status === "Completed") return undefined;
+  if (existingPolicyAudit && updates.sections && !auditSectionsHaveConsistentScoring(existingPolicyAudit, updates.sections)) return undefined;
+  if (updates.status === "Completed") return completeFiveSAudit(auditId, updates.sections ?? getFiveSAuditById(auditId)?.sections ?? [], actor);
 
   let updatedAudit:
     | FiveSAudit
@@ -667,7 +628,17 @@ export function updateFiveSAudit(
         const nextAudit = {
           ...audit,
           ...updates,
+          ...(updates.sections ? { sections: structuredClone(updates.sections) } : {}),
         };
+
+        if (auditUsesCustomScoring(audit)) {
+          nextAudit.sections = nextAudit.sections.map(section => ({ ...section, ...calculateAuditSectionTotals([section]) }));
+          Object.assign(nextAudit, calculateAuditSectionTotals(nextAudit.sections));
+        }
+
+        // Generic updates cannot replace a captured policy or fabricate one for a legacy Audit.
+        delete nextAudit.scoringPolicy;
+        if (audit.scoringPolicy) nextAudit.scoringPolicy = Object.freeze(structuredClone(audit.scoringPolicy));
 
         updatedAudit = audit.status === "Draft"
           ? nextAudit
@@ -770,14 +741,15 @@ export function saveFiveSAuditDraft(
     return undefined;
   }
 
+  if (existingAudit.status === "Completed") return existingAudit;
+
+  if (!auditSectionsHaveConsistentScoring(existingAudit, sections)) return undefined;
+
   const updatedAudit: FiveSAudit = {
     ...existingAudit,
 
     status:
-      existingAudit.status ===
-      "Completed"
-        ? "Completed"
-        : existingAudit.status === "In Progress"
+      existingAudit.status === "In Progress"
           ? "In Progress"
           : existingAudit.status === "Scheduled"
             ? "Scheduled"
@@ -798,7 +770,7 @@ export function saveFiveSAuditDraft(
         sections
       ),
 
-    sections,
+    sections: structuredClone(auditUsesCustomScoring(existingAudit) ? sections.map(section => ({ ...section, ...calculateAuditSectionTotals([section]) })) : sections),
   };
 
   audits =
@@ -821,9 +793,24 @@ export function saveFiveSAuditDraft(
    COMPLETE AUDIT
    ========================================================= */
 
+/** Completion authority is independent of linked Action execution/review authority. */
+export function canCompleteFiveSAudit(audit: FiveSAudit, actor: Pick<DemoUser, "id"> = getCurrentDemoUser()) {
+  const user = getAdminUser(actor.id);
+  return Boolean(user?.status === "Active" && user.permissions.includes("audits.complete")
+    && (user.plant === audit.plant || user.plant === "All organizations")
+    && (user.roles.includes("Admin") || (user.roles.includes("Auditor") && user.name === audit.auditor)));
+}
+
+export function getLinkedActionsForAudit(audit: FiveSAudit, actions = getActions()) {
+  const questionIds = new Set(audit.sections.flatMap(section => section.questions.flatMap(question => question.actionId ? [question.actionId] : [])));
+  return [...new Map(actions.filter(action => questionIds.has(action.id) || action.auditId === audit.id || action.auditId === audit.title
+    || ((action.sourceModule === "audit" || ["Audit", "5S Audit"].includes(action.source)) && [audit.id, audit.title].includes(action.sourceId ?? action.sourceTitle))).map(action => [action.id, action])).values()];
+}
+
 export function completeFiveSAudit(
   auditId: string,
-  sections: FiveSAudit["sections"]
+  sections: FiveSAudit["sections"],
+  actor: Pick<DemoUser, "id"> = getCurrentDemoUser()
 ): FiveSAudit | undefined {
   initializeStore();
 
@@ -841,6 +828,12 @@ export function completeFiveSAudit(
 
     return undefined;
   }
+
+  if (!canCompleteFiveSAudit(existingAudit, actor)) return undefined;
+  if (existingAudit.status === "Completed") return existingAudit;
+  if (!auditSectionsHaveConsistentScoring(existingAudit, sections)) return undefined;
+  const questions = sections.flatMap(section => section.questions);
+  if (!questions.length || !questions.every(question => isAuditQuestionComplete(question, { ...question, score: question.score ?? null }, getAuditScoringValues(existingAudit)))) return undefined;
 
   if (!existingAudit.auditorSignature) {
     console.warn(`Auditor signature is required before completing 5S audit: ${auditId}`);
@@ -870,12 +863,10 @@ export function completeFiveSAudit(
         sections
       ),
 
-    sections,
+    sections: structuredClone(auditUsesCustomScoring(existingAudit) ? sections.map(section => ({ ...section, ...calculateAuditSectionTotals([section]) })) : sections),
 
     completedAt:
-      now
-        .toISOString()
-        .slice(0, 10),
+      now.toISOString(),
   };
 
   audits =
@@ -916,32 +907,24 @@ export function setFiveSAudits(
    DELETE AUDIT
    ========================================================= */
 
-export function deleteFiveSAudit(
-  auditId: string
-): boolean {
+export function canDeleteFiveSAudit(audit: FiveSAudit, actor: Pick<DemoUser, "id"> = getCurrentDemoUser()) {
+  const user = getAdminUser(actor.id);
+  if (user?.status !== "Active" || !["Draft", "Scheduled"].includes(audit.status)) return false;
+  if (user.plant !== audit.plant && user.plant !== "All organizations") return false;
+  if (!user.roles.includes("Admin") && !(user.roles.includes("Auditor") && user.name === audit.auditor)) return false;
+  if (audit.sections.some(section => section.questions.some(question => question.actionId))) return false;
+  return !getActions().some(action => action.auditId === audit.id || action.auditId === audit.title || ((action.sourceModule === "audit" || ["Audit", "5S Audit"].includes(action.source)) && [audit.id, audit.title].includes(action.sourceId ?? action.sourceTitle)));
+}
+
+export function deleteFiveSAudit(auditId: string, actor: Pick<DemoUser, "id"> = getCurrentDemoUser(), confirmed = false): boolean {
   initializeStore();
-
-  const existingLength =
-    audits.length;
-
-  audits =
-    audits.filter(
-      (audit) =>
-        audit.id !==
-        auditId
-    );
-
-  const deleted =
-    audits.length !==
-    existingLength;
-
-  if (deleted) {
-    persistAudits();
-
-    emitChange();
-  }
-
-  return deleted;
+  const audit = audits.find(item => item.id === auditId);
+  if (!audit || !confirmed || !canDeleteFiveSAudit(audit, actor)) return false;
+  const next = audits.filter(item => item.id !== auditId);
+  if (typeof window === "undefined" || !safeSetStorage(STORAGE_KEY, next).success) return false;
+  audits = next;
+  emitChange();
+  return true;
 }
 
 /* =========================================================

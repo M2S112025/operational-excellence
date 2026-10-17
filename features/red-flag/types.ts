@@ -3,6 +3,9 @@ import type { MyActionStatus } from "@/features/five-s/types/my-actions";
 export type RedFlagSeverity = "Critical" | "High" | "Medium" | "Low";
 export type ActiveRedFlagSeverity = Exclude<RedFlagSeverity, "Critical">;
 export const ACTIVE_RED_FLAG_SEVERITIES: readonly ActiveRedFlagSeverity[] = ["High", "Medium", "Low"];
+/** Existing Red Flag response targets, shared by contextual guidance. */
+export const RED_FLAG_RESPONSE_TARGET_LABELS: Record<ActiveRedFlagSeverity, string> = { High: "24 hours", Medium: "72 hours", Low: "7 days" };
+
 export type RedFlagStatus = "Open" | "Action Created" | "In Progress" | "Awaiting Closure" | "Closed" | "Cancelled";
 export type RedFlagEvidenceGroup = "initial" | "additional" | "closure";
 

@@ -1,6 +1,8 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { ORGANIZATION_ZONE_SEEDS } from "@/lib/organization-store";
+import { selectableImprovementOwners } from "./owner";
 import { getAdminUser } from "@/features/five-s/administration/store";
 import { safeSetStorage, safeSetStorageString, STORAGE_FULL_MESSAGE } from "@/lib/browser-storage";
 import type { DemoUser } from "@/lib/current-user";
@@ -37,7 +39,7 @@ const seedEvent = (id: string, type: ImprovementEventType, actorId: string, acto
 
 function seed(input: Partial<ContinuousImprovement> & Pick<ContinuousImprovement, "id" | "title" | "status" | "createdAt">): ContinuousImprovement {
   const zone = input.zone ?? "Zone B";
-  const zoneConfig = getFiveSZoneConfiguration(zone)!;
+  const zoneConfig = ORGANIZATION_ZONE_SEEDS.find(item => item.name === zone)!;
   const proposedById = input.proposedById ?? "USR-SIVA-KUMAR";
   const proposedByName = input.proposedByName ?? "Siva Kumar";
   const ownerId = input.ownerId ?? proposedById;
@@ -51,7 +53,7 @@ function seed(input: Partial<ContinuousImprovement> & Pick<ContinuousImprovement
     zone,
     zoneCode: zoneConfig.code,
     zoneLeaderId: zoneConfig.leaderId,
-    zoneLeaderName: zoneConfig.leader,
+    zoneLeaderName: zoneConfig.leaderName,
     issueDescription: "The current method adds avoidable motion and makes the work less consistent.",
     proposedImprovement: "Rearrange the point of use and introduce a clear visual standard.",
     expectedBenefit: "Reduce handling time and make the improved method easier to sustain.",
@@ -206,6 +208,25 @@ export function useImprovements() { return useSyncExternalStore(subscribe, snaps
 export function getImprovements() { load(); return records; }
 export function getImprovementById(id: string) { load(); return records.find((item) => item.id === id); }
 export function setImprovements(next: ContinuousImprovement[]) { records = next; loaded = true; listeners.forEach((listener) => listener()); }
+/** Match User Management's existing non-completed assignment scope, by owner only. */
+export function getOutstandingUserImprovements(userId: string) {
+  return getImprovements().filter(item => item.ownerId === userId && item.status !== "completed");
+}
+
+/** Administrative transfer for deactivation; does not edit proposal content or lifecycle. */
+export function reassignImprovementOwnerForDeactivation(id: string, previousOwnerId: string, replacementId: string, reason: string, actorId: string) {
+  const current = getImprovementById(id);
+  const manager = getAdminUser(actorId);
+  const replacement = getAdminUser(replacementId);
+  if (!current || current.status === "completed" || !reason.trim() || manager?.status !== "Active" || !manager.roles.includes("Admin") || !manager.permissions.includes("administration.manage_users") || (manager.plant !== current.plant && manager.plant !== "All organizations")) return null;
+  if (!replacement || replacement.id === previousOwnerId || !selectableImprovementOwners([replacement], current.plant, current.zone).length) return null;
+  if (current.ownerId === replacement.id) return current;
+  if (current.ownerId !== previousOwnerId) return null;
+  return update(id, item => ({ ...item, ownerId: replacement.id, ownerName: replacement.name,
+    timeline: [...item.timeline, event("owner_changed", { id: manager.id, name: manager.name }, `${item.ownerName} → ${replacement.name}. ${reason.trim()}`)],
+  }));
+}
+
 export function isZoneMember(user: DemoUser) { return Boolean(getFiveSZoneConfiguration(user.primaryZone)?.members.some((member) => member.id === user.id)); }
 export function canSeeImprovement(item: ContinuousImprovement, user: DemoUser) { return canViewImprovement(getAdminUser(user.id), user, item); }
 

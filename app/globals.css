@@ -22,6 +22,162 @@
   }
 }
 
+/* Visual Management board packs are isolated from the application shell and
+   use physical page dimensions. Keep these rules global: CSS-module scope
+   cannot reliably hide every app-shell sibling during browser printing. */
+@page vm-board-a3 {
+  size: A3 landscape;
+  margin: 10mm;
+}
+
+@page vm-board-a4 {
+  size: A4 landscape;
+  margin: 10mm;
+}
+
+@media print {
+  body:has(#visual-management-print-root) {
+    margin: 0 !important;
+    background: #fff !important;
+  }
+
+  body:has(#visual-management-print-root) * {
+    visibility: hidden !important;
+  }
+
+  #visual-management-print-root,
+  #visual-management-print-root * {
+    visibility: visible !important;
+  }
+
+  body:has(#visual-management-print-root) [data-app-shell],
+  body:has(#visual-management-print-root) [data-app-workspace],
+  body:has(#visual-management-print-root) [data-app-main],
+  body:has(#visual-management-print-root) [data-app-content] {
+    display: contents !important;
+  }
+
+  #visual-management-print-root {
+    position: absolute !important;
+    inset: 0 auto auto 0 !important;
+    display: block !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  #visual-management-print-root [data-print-sheet] {
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
+    break-inside: avoid-page !important;
+    page-break-inside: avoid !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #visual-management-print-root[data-paper="A3"] [data-print-sheet] {
+    page: vm-board-a3;
+    width: 399mm !important;
+    height: 276mm !important;
+    padding: 8mm !important;
+    gap: 4mm !important;
+  }
+
+  #visual-management-print-root[data-paper="A4"] [data-print-sheet] {
+    page: vm-board-a4;
+    width: 276mm !important;
+    height: 189mm !important;
+    padding: 5mm !important;
+    gap: 2.5mm !important;
+  }
+
+  #visual-management-print-root [data-print-sheet]:not(:last-child) {
+    break-after: page !important;
+    page-break-after: always !important;
+  }
+
+  #visual-management-print-root [data-print-sheet]:last-child {
+    break-after: auto !important;
+    page-break-after: auto !important;
+  }
+
+  #visual-management-print-root [data-print-hero] {
+    grid-template-columns: minmax(0, 1fr) 62mm !important;
+    gap: 5mm !important;
+    min-height: 0 !important;
+    flex: 1 1 auto !important;
+  }
+
+  #visual-management-print-root [data-print-letter],
+  #visual-management-print-root [data-print-target],
+  #visual-management-print-root [data-print-table],
+  #visual-management-print-root [data-print-monthly] {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  #visual-management-print-root[data-paper="A3"] [data-print-letter] {
+    min-height: 135mm !important;
+  }
+
+  #visual-management-print-root[data-paper="A4"] [data-print-letter] {
+    min-height: 82mm !important;
+  }
+
+  #visual-management-print-root[data-paper="A3"] [data-print-glyph] {
+    font-size: 105mm !important;
+  }
+
+  #visual-management-print-root[data-paper="A3"] [data-print-marker] {
+    width: 10mm !important;
+    height: 10mm !important;
+    border-width: 0.6mm !important;
+    font-size: 7.5pt !important;
+  }
+
+  #visual-management-print-root[data-paper="A4"] [data-print-glyph] {
+    font-size: 62mm !important;
+  }
+
+  #visual-management-print-root[data-paper="A4"] [data-print-marker] {
+    width: 7mm !important;
+    height: 7mm !important;
+    font-size: 5.5pt !important;
+  }
+
+  #visual-management-print-root [data-print-target] {
+    padding: 6mm !important;
+  }
+
+  #visual-management-print-root [data-print-target] b {
+    font-size: 27pt !important;
+  }
+
+  #visual-management-print-root [data-print-legend] {
+    font-size: 8pt !important;
+    gap: 6mm !important;
+  }
+
+  #visual-management-print-root [data-print-table] table {
+    font-size: 6.5pt !important;
+  }
+
+  #visual-management-print-root [data-print-table] th,
+  #visual-management-print-root [data-print-table] td {
+    height: 6mm !important;
+  }
+
+  #visual-management-print-root [data-print-monthly] {
+    flex: 1 1 auto !important;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

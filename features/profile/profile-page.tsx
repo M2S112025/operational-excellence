@@ -293,7 +293,7 @@ function PasswordField({ id, label, value, visible, autoComplete, onChange, onTo
 
 function SelectField({ label, value, options, help, onChange }: { label: string; value: string; options: Array<{ value: string; label: string }>; help?: string; onChange: (value: string) => void }) {
   const id = `profile-${label.toLowerCase().replaceAll(" ", "-")}`;
-  return <div className="grid gap-2"><Label htmlFor={id}>{label}</Label><Select value={value} onValueChange={(next) => { if (next) onChange(next); }}><SelectTrigger id={id} className="w-full"><SelectValue /></SelectTrigger><SelectContent>{options.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent></Select><FieldMessage>{help}</FieldMessage></div>;
+  return <div className="grid gap-2"><Label htmlFor={id}>{label}</Label><Select searchLabel={label} value={value} onValueChange={(next) => { if (next) onChange(next); }}><SelectTrigger id={id} className="w-full"><SelectValue /></SelectTrigger><SelectContent>{options.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent></Select><FieldMessage>{help}</FieldMessage></div>;
 }
 
 function Feedback({ value }: { value: { tone: "success" | "error"; message: string } | null }) {

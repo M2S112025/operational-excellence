@@ -1,4 +1,5 @@
 "use client";
+import { OpsPersonSelect } from "@/components/ops/ops-person-select";
 
 /**
  * Create Continuous Improvement from Gemba Observation
@@ -9,7 +10,8 @@
  */
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { OpsFeedback } from "@/components/ops/ops-feedback";
 import { Lightbulb } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -60,7 +62,8 @@ export function CreateCIFromGembaDialog({
   zone,
   onCreated,
 }: CreateCIFromGembaProps) {
-  const router = useRouter();
+  const [pendingId, setPendingId] = useState<string>();
+  const [linkedId, setLinkedId] = useState<string>();
   const currentUser = useCurrentUser();
   const adminUsers = useAdminUsers();
   const adminUser = adminUsers.find((u) => u.id === currentUser.id);
@@ -130,7 +133,7 @@ export function CreateCIFromGembaDialog({
 
     try {
       // Create CI using canonical store command
-      const improvement = createImprovement({
+      const improvement = pendingId ? { id: pendingId } : createImprovement({
         title: title.trim(),
         issueDescription: problem.trim(),
         proposedImprovement: proposedImprovement.trim(),
@@ -152,30 +155,11 @@ export function CreateCIFromGembaDialog({
         return;
       }
 
-      // Create Phase 4 relationship
-      try {
-        linkGembaObservationToImprovement(
-          walkId,
-          observation.id,
-          improvement.id,
-          observation.title
-        );
-      } catch (relationshipError) {
-        console.error("Failed to create relationship after CI creation:", relationshipError);
-        // CI was created successfully, but relationship failed
-        // User can still access the CI record directly
-        setError("Improvement created but linking failed. The improvement record is still valid.");
-        // Continue to callback
-      }
-
-      // Success
-      onOpenChange(false);
-      if (onCreated) {
-        onCreated(improvement.id);
-      }
-
-      // Navigate to the new CI record
-      router.push(`/continuous-improvement/${improvement.id}`);
+      setPendingId(improvement.id);
+      linkGembaObservationToImprovement(walkId, observation.id, improvement.id, observation.title, currentUser);
+      setLinkedId(improvement.id);
+      setCreating(false);
+      onCreated?.(improvement.id);
     } catch (err) {
       console.error("Failed to create Continuous Improvement:", err);
       setError(
@@ -201,18 +185,18 @@ export function CreateCIFromGembaDialog({
 
         <div className="space-y-4 py-4">
           {error && (
-            <div className="rounded-md bg-red-50 dark:bg-red-950/20 p-3 text-sm text-red-800 dark:text-red-400">
-              {error}
-            </div>
+            <OpsFeedback tone="error" message={error} />
           )}
 
+          {linkedId && <div className="grid gap-3"><OpsFeedback tone="success" message={`${linkedId} created and linked. You can continue the Gemba walk.`} /><Link className="font-medium text-primary underline" href={`/continuous-improvement/${encodeURIComponent(linkedId)}`}>Open improvement {linkedId}</Link><Button variant="outline" onClick={handleClose}>Continue Gemba walk</Button></div>}
+          {pendingId && !linkedId && <p className="text-sm">Existing improvement {pendingId} will be reused when you retry. No duplicate will be created.</p>}
           {/* Title - prefilled from Gemba */}
           <Field label="Title *">
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter improvement title"
-              disabled={creating}
+              disabled={creating || Boolean(pendingId)}
             />
           </Field>
 
@@ -222,7 +206,7 @@ export function CreateCIFromGembaDialog({
               value={problem}
               onChange={(e) => setProblem(e.target.value)}
               placeholder="Describe the current problem or opportunity"
-              disabled={creating}
+              disabled={creating || Boolean(pendingId)}
               rows={4}
             />
           </Field>
@@ -233,7 +217,7 @@ export function CreateCIFromGembaDialog({
               value={proposedImprovement}
               onChange={(e) => setProposedImprovement(e.target.value)}
               placeholder="Describe the proposed change or solution"
-              disabled={creating}
+              disabled={creating || Boolean(pendingId)}
               rows={4}
             />
           </Field>
@@ -244,24 +228,21 @@ export function CreateCIFromGembaDialog({
               value={expectedBenefit}
               onChange={(e) => setExpectedBenefit(e.target.value)}
               placeholder="What measurable benefit will this improvement deliver?"
-              disabled={creating}
+              disabled={creating || Boolean(pendingId)}
               rows={3}
             />
           </Field>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Owner *">
-              <Select value={ownerId} onValueChange={(value) => setOwnerId(value ?? "")} disabled={creating}>
-                <SelectTrigger><SelectValue placeholder="Select owner" /></SelectTrigger>
-                <SelectContent>{ownerOptions.map((owner) => <SelectItem key={owner.id} value={owner.id}>{owner.name} · {owner.zoneMemberships.find((membership) => membership.zone === zone)?.responsibility ?? "Admin"}</SelectItem>)}</SelectContent>
-              </Select>
+              <OpsPersonSelect label="Owner" clearable={false} people={ownerOptions.map(owner => ({ ...owner, description: owner.zoneMemberships.find(membership => membership.zone === zone)?.responsibility ?? "Admin" }))} value={ownerId} onValueChange={setOwnerId} disabled={creating || Boolean(pendingId)} />
             </Field>
             {/* Benefit Type - CI-specific field */}
             <Field label="Benefit Type *">
-              <Select
+              <Select searchLabel={"Benefit Type"}
                 value={benefitType}
                 onValueChange={(value) => setBenefitType(value as ImprovementBenefitType)}
-                disabled={creating}
+                disabled={creating || Boolean(pendingId)}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -284,7 +265,7 @@ export function CreateCIFromGembaDialog({
                 value={proposedSaving}
                 onChange={(e) => setProposedSaving(e.target.value)}
                 placeholder="0"
-                disabled={creating}
+                disabled={creating || Boolean(pendingId)}
               />
             </Field>
           </div>
@@ -297,15 +278,15 @@ export function CreateCIFromGembaDialog({
                 min="1"
                 value={estimatedTime}
                 onChange={(e) => setEstimatedTime(e.target.value)}
-                disabled={creating}
+                disabled={creating || Boolean(pendingId)}
               />
             </Field>
 
             <Field label="Time Unit *">
-              <Select
+              <Select searchLabel={"Time Unit"}
                 value={estimatedTimeUnit}
                 onValueChange={(value) => setEstimatedTimeUnit(value as TimeUnit)}
-                disabled={creating}
+                disabled={creating || Boolean(pendingId)}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -340,9 +321,9 @@ export function CreateCIFromGembaDialog({
           </Button>
           <Button
             onClick={handleCreate}
-            disabled={creating}
+            disabled={creating || Boolean(linkedId)}
           >
-            {creating ? "Creating..." : "Create Improvement"}
+            {creating ? "Saving..." : pendingId && !linkedId ? "Retry linking existing improvement" : linkedId ? "Improvement linked" : "Create Improvement"}
           </Button>
         </div>
       </DialogContent>

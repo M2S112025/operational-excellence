@@ -1,3 +1,5 @@
+
+import { auditScorePercentage } from "@/lib/five-s/scoring-policy";
 import { inferActionSourceModule } from "@/lib/actions/action-config";
 import { ACTION_LIFECYCLE_STAGES, getActionLifecycleStage } from "@/lib/five-s/lifecycle-status";
 import { FIVE_S_ZONE_CONFIGURATION } from "@/lib/five-s/configuration";
@@ -23,7 +25,7 @@ function auditDate(audit: FiveSAudit) {
 }
 
 function auditScore(audit: FiveSAudit) {
-  return audit.maxScore ? Math.round((audit.score / audit.maxScore) * 100) : 0;
+  return auditScorePercentage(audit);
 }
 
 function monthKey(value?: string) {

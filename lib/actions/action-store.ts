@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { getAdminUser } from "@/features/five-s/administration/store";
 
 import {
   MY_ACTIONS,
@@ -11,9 +12,9 @@ import type {
   MyActionActivity,
 } from "@/features/five-s/types/my-actions";
 import { createNotification } from "@/lib/notifications/notification-store";
-import { getFiveSZoneConfiguration } from "@/lib/five-s/configuration";
+import { getFiveSZoneConfiguration, getPriorityDueDate } from "@/lib/five-s/configuration";
 import { safeSetStorage, safeSetStorageString } from "@/lib/browser-storage";
-import { getActionSourceDefinition, normalizeActionSource } from "@/lib/actions/action-config";
+import { getActionSourceDefinition, normalizeActionSource, inferActionSourceModule } from "@/lib/actions/action-config";
 
 export interface ActionActor {
   id: string;
@@ -38,6 +39,8 @@ const DEMO_FIXTURE_VERSION = "canonical-zone-a-dashboard-v4";
 let hasLoadedFromStorage = false;
 
 let actions: MyAction[] = MY_ACTIONS.map(normalizeEvidence);
+
+let fallbackActionIdSequence = 0;
 
 const listeners =
   new Set<() => void>();
@@ -208,7 +211,9 @@ export function createAction(
   input: CreateActionInput
 ): MyAction {
   loadFromStorage();
-  const actionId = `ACT-${Date.now()}`;
+  const uniqueSuffix = globalThis.crypto?.randomUUID?.().slice(0, 8)
+    ?? `${(++fallbackActionIdSequence).toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  const actionId = `ACT-${Date.now()}-${uniqueSuffix}`;
 
   const action: MyAction = normalizeEvidence({
     ...input,
@@ -263,10 +268,10 @@ export function createAction(
 }
 
 /** Removes only a just-created Action when its source-link transaction fails. */
-export function rollbackCreatedAction(actionId: string): boolean {
+export function rollbackCreatedAction(actionId: string, actor?: ActionActor): boolean {
   loadFromStorage();
   const action = actions.find((item) => item.id === actionId);
-  if (!action || (action.activityHistory?.length ?? 0) > 1 || action.activityHistory?.[0]?.type !== "created") return false;
+  if (!action || !activeActionActor(action, actor) || !isCreator(action, getAdminUser(actor!.id)!) || (action.activityHistory?.length ?? 0) > 1 || action.activityHistory?.[0]?.type !== "created") return false;
   const previousActions = actions;
   actions = actions.filter((item) => item.id !== actionId);
   const result = saveToStorage();
@@ -325,28 +330,99 @@ function isCreator(action: MyAction, actor: ActionActor) {
   return Boolean(action.auditor && action.auditor === actor.name);
 }
 
+/** Current configured leadership, not historical Action ownership metadata. */
+function isZoneLeader(action: MyAction, actor: ActionActor) {
+  const user = getAdminUser(actor.id);
+  return Boolean(user?.status === "Active" && user.roles.includes("Zone Leader") && user.permissions.includes("actions.assign") && user.plant === action.plant && getFiveSZoneConfiguration(action.area)?.leaderId === user.id);
+}
+
+export function canEditActionDueDate(action: MyAction, actor: ActionActor) {
+  const user = getAdminUser(actor.id);
+  return action.status !== "Completed" && Boolean(user?.status === "Active" && ((user.roles.includes("Admin") && user.permissions.includes("actions.assign") && (user.plant === action.plant || user.plant === "All organizations")) || isZoneLeader(action, actor)));
+}
+
+export function validateActionDueDate(value: string, now = new Date()) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return "Select a valid due date.";
+  const date = new Date(`${value}T12:00:00`);
+  if (!Number.isFinite(date.getTime()) || date.getFullYear() !== Number(value.slice(0, 4)) || date.getMonth() + 1 !== Number(value.slice(5, 7)) || date.getDate() !== Number(value.slice(8, 10))) return "Select a valid calendar date.";
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  return value < today ? "The new due date cannot be in the past." : "";
+}
+
+export function changeActionDueDate(actionId: string, actor: ActionActor, newDate: string, reason: string) {
+  const action = getActionById(actionId);
+  if (!action || !canEditActionDueDate(action, actor) || validateActionDueDate(newDate) || !reason.trim() || newDate === action.dueDate) return undefined;
+  const user = getAdminUser(actor.id)!;
+  const change = { previousDate: action.dueDate, newDate, reason: reason.trim(), actorId: user.id, actorName: user.name, changedAt: new Date().toISOString() };
+  return updateActionInternal(actionId, { priorityDueDate: action.priorityDueDate ?? action.dueDate, dueDateOverride: newDate, dueDate: newDate, dueDateHistory: [...(action.dueDateHistory ?? []), change], activityHistory: appendActivity(action, createActivity("due_date_changed", user, `${change.previousDate} → ${newDate}. ${change.reason}`)) });
+}
+
 export function canReviewAction(action: MyAction, actor: ActionActor) {
-  if (action.reviewerId || action.reviewerName) return action.reviewerId === actor.id || action.reviewerName === actor.name;
-  if (action.auditor) return action.auditor === actor.name;
-  if (action.createdByUserId || action.createdByName) return isCreator(action, actor);
-  return Boolean(actor.roles?.includes("Admin") && actor.permissions?.includes("actions.review") && actor.permissions?.includes("actions.close"));
+  const user = getAdminUser(actor.id);
+  if (user?.status !== "Active" || isResponsible(action, user)) return false;
+  if (user.roles.includes("Zone Leader") && !user.roles.some(role => ["Admin", "Auditor", "Reviewer"].includes(role)) && !isZoneLeader(action, user)) return false;
+  const designated = action.reviewerId ? action.reviewerId === user.id
+    : action.reviewerName ? action.reviewerName === user.name
+    : action.auditor ? action.auditor === user.name
+    : (action.createdByUserId || action.createdByName) ? isCreator(action, user)
+    : user.roles.includes("Admin") && user.permissions.includes("actions.review") && user.permissions.includes("actions.close");
+  if (inferActionSourceModule(action) === "audit") return designated;
+  const ownerId = action.responsiblePersonId ?? getFiveSZoneConfiguration(action.area)?.members.find(member => member.name === (action.responsiblePersonName ?? action.assignedTo))?.id;
+  const eligibleOwner = getFiveSZoneConfiguration(action.area)?.members.some(member => member.id === ownerId);
+  return designated || Boolean(eligibleOwner && isZoneLeader(action, user));
+}
+
+/** Shared readiness checks for designated reviewers and scoped delegated reviewers. */
+export function getActionClosureError(action: MyAction, actor: ActionActor) {
+  const user = getAdminUser(actor.id);
+  if (user?.status !== "Active") return "You are not authorized to review this Action.";
+  if (isResponsible(action, user)) return "Action owners cannot approve their own work.";
+  if (!canReviewAction(action, user)) return "You are not authorized to review this Action.";
+  if (!["Pending Review", "Pending Auditor Review", "Awaiting Review"].includes(action.status) || !action.submittedForReviewAt) return "The Action owner must submit the completed work for review first.";
+  if (!action.evidence.length) return "Completion evidence is required before verification and closure.";
+  if (!(action.resolutionObservation ?? action.actionTakenDescription)?.trim() || !action.correctiveActionCategory) return "Completion notes and corrective action category are required.";
+  if (!Number.isFinite(action.costSaving) || action.costSaving! < 0) return "A valid non-negative cost saving amount is required.";
+  return "";
 }
 
 export function canReassignAction(action: MyAction, actor: ActionActor) {
-  if (action.status === "Completed") return false;
-  return Boolean(actor.roles?.includes("Admin") || action.zoneLeaderId === actor.id || isCreator(action, actor));
+  const user = getAdminUser(actor.id);
+  if (action.status === "Completed" || user?.status !== "Active") return false;
+  return Boolean(user.roles.includes("Admin") || getFiveSZoneConfiguration(action.area)?.leaderId === actor.id || isCreator(action, actor));
 }
 
 function appendActivity(action: MyAction, activity: MyActionActivity) {
   return [...(action.activityHistory ?? []), activity];
 }
 
+function activeActionActor(action: MyAction, actor?: ActionActor) {
+  const user = actor?.id ? getAdminUser(actor.id) : undefined;
+  return user?.status === "Active" && (user.plant === action.plant || user.plant === "All organizations") ? user : undefined;
+}
+
+export function canEditActionContent(action: MyAction, actor?: ActionActor) {
+  const user = activeActionActor(action, actor);
+  return Boolean(user && user.permissions.includes("actions.work") && isResponsible(action, user)
+    && ["Assigned", "Open", "In Progress", "Rework Required"].includes(action.status)
+    && (user.roles.includes("Admin") || user.zoneMemberships.some(membership => membership.zone === action.area)));
+}
+
+function canEditActionSetup(action: MyAction, actor?: ActionActor) {
+  const user = activeActionActor(action, actor);
+  return Boolean(user && action.status === "Awaiting Assignment" && user.permissions.includes("actions.create") && (user.roles.includes("Admin") || isCreator(action, user)));
+}
+
+function canEditAuditFinding(action: MyAction, actor?: ActionActor) {
+  const user = activeActionActor(action, actor);
+  return Boolean(user && action.status !== "Completed" && inferActionSourceModule(action) === "audit" && user.permissions.includes("actions.create") && isCreator(action, user));
+}
+
 export function startAssignedAction(actionId: string, actor: ActionActor) {
   const action = getActionById(actionId);
-  if (!action || !isResponsible(action, actor) || !["Assigned", "Open", "Rework Required"].includes(action.status)) return undefined;
+  if (!action || !canEditActionContent(action, actor) || !["Assigned", "Open", "Rework Required"].includes(action.status)) return undefined;
   return updateActionInternal(actionId, {
     status: "In Progress",
-    activityHistory: appendActivity(action, createActivity("started", actor)),
+    activityHistory: appendActivity(action, createActivity("started", getAdminUser(actor.id)!)),
   });
 }
 
@@ -356,7 +432,7 @@ export function submitActionForReview(
   resolution: { observation: string; correctiveActionCategory: string; costSaving: number }
 ) {
   const action = getActionById(actionId);
-  if (!action || !isResponsible(action, actor) || !["Assigned", "Open", "In Progress", "Rework Required"].includes(action.status)) return undefined;
+  if (!action || !canEditActionContent(action, actor)) return undefined;
   if (!resolution.observation.trim() || !resolution.correctiveActionCategory || action.evidence.length === 0 || !Number.isFinite(resolution.costSaving) || resolution.costSaving < 0) return undefined;
   const isResubmission = action.status === "Rework Required" || (action.reviewHistory?.length ?? 0) > 0;
   const now = new Date().toISOString();
@@ -369,7 +445,7 @@ export function submitActionForReview(
     currency: action.currency ?? "INR",
     submittedForReviewAt: now,
     completedAt: undefined,
-    activityHistory: appendActivity(action, createActivity(isResubmission ? "resubmitted" : "submitted", actor)),
+    activityHistory: appendActivity(action, createActivity(isResubmission ? "resubmitted" : "submitted", getAdminUser(actor.id)!)),
   });
   if (updated && reviewerRecipientId(action)) createNotification({
     recipientUserId: reviewerRecipientId(action)!,
@@ -403,17 +479,18 @@ export function sendActionBack(actionId: string, actor: ActionActor, remark: str
 
 export function closeReviewedAction(actionId: string, actor: ActionActor, closureRemark?: string) {
   const action = getActionById(actionId);
-  if (!action || !canReviewAction(action, actor) || !["Pending Review", "Pending Auditor Review", "Awaiting Review"].includes(action.status)) return undefined;
+  if (!action || getActionClosureError(action, actor)) return undefined;
+  const reviewer = getAdminUser(actor.id)!;
   const now = new Date().toISOString();
-  const reviewedActivity = createActivity("verified", actor, closureRemark?.trim() || undefined);
-  const closedActivity = createActivity("closed", actor);
+  const reviewedActivity = createActivity("verified", reviewer, closureRemark?.trim() || undefined);
+  const closedActivity = createActivity("closed", reviewer);
   const updated = updateActionInternal(actionId, {
     status: "Completed",
-    reviewedBy: actor.name,
+    reviewedBy: reviewer.name,
     reviewedAt: now,
     completedAt: now,
-    closedByUserId: actor.id,
-    closedBy: actor.name,
+    closedByUserId: reviewer.id,
+    closedBy: reviewer.name,
     closedAt: now,
     closureRemark: closureRemark?.trim() || undefined,
     completedByUserId: action.responsiblePersonId,
@@ -424,7 +501,7 @@ export function closeReviewedAction(actionId: string, actor: ActionActor, closur
   if (updated) createNotification({
     recipientUserId: responsibleId(action),
     title: "Action approved and closed",
-    message: `${action.title} · Reviewed by: ${actor.name} · Cost Saving: ₹${(action.costSaving ?? 0).toLocaleString("en-IN")}`,
+    message: `${action.title} · Reviewed by: ${reviewer.name} · Cost Saving: ₹${(action.costSaving ?? 0).toLocaleString("en-IN")}`,
     href: `/5s/actions/${encodeURIComponent(action.id)}`,
   });
   return updated;
@@ -434,7 +511,7 @@ export function reassignActionOwner(actionId: string, actor: ActionActor, member
   const action = getActionById(actionId);
   const zone = action ? getFiveSZoneConfiguration(action.area) : undefined;
   const member = zone?.members.find((item) => item.id === memberId);
-  if (!action || !zone || !member || !reason.trim() || !canReassignAction(action, actor)) return undefined;
+  if (!action || !zone || !member || member.id === action.responsiblePersonId || !reason.trim() || !canReassignAction(action, actor)) return undefined;
   const changedAt = new Date().toISOString();
   const previousOwnerName = action.responsiblePersonName ?? action.assignedTo ?? "Unassigned";
   const reassignment = {
@@ -472,6 +549,7 @@ function updateActionInternal(
 ): MyAction | undefined {
   loadFromStorage();
 
+  const previousActions = actions;
   let updatedAction:
     MyAction | undefined;
 
@@ -491,18 +569,64 @@ function updateActionInternal(
       return updatedAction;
     });
 
-  emitChange();
+  if (typeof window !== "undefined" && !saveToStorage()?.success) {
+    actions = previousActions;
+    return undefined;
+  }
+  listeners.forEach((listener) => listener());
 
   return updatedAction;
 }
 
-/** Update editable fields without bypassing the authoritative lifecycle. */
-export function updateAction(
-  actionId: string,
-  updates: Partial<MyAction>
-): MyAction | undefined {
-  if ("status" in updates) return undefined;
-  return updateActionInternal(actionId, updates);
+export function canEditActionPriority(action: MyAction, actor: ActionActor) {
+  const user = getAdminUser(actor.id);
+  return canEditActionDueDate(action, actor) || Boolean(action.status === "Awaiting Assignment" && user?.status === "Active" && user.plant === action.plant && user.permissions.includes("actions.create") && isCreator(action, user));
+}
+
+/** Existing Audit creators retain priority setup authority before assignment. */
+export function changeActionPriority(actionId: string, actor: ActionActor, priority: MyAction["priority"]) {
+  const action = getActionById(actionId);
+  if (!action || !["Low", "Medium", "High", "Critical"].includes(priority) || !canEditActionPriority(action, actor)) return undefined;
+  if (priority === action.priority) return action;
+  const baseline = getPriorityDueDate(priority);
+  return updateActionInternal(actionId, { priority, priorityDueDate: baseline, dueDate: action.dueDateOverride ?? baseline });
+}
+
+/** Attention automation may only append its own event types, never replace lifecycle history. */
+export function appendActionAttentionActivity(actionId: string, activity: MyActionActivity) {
+  const action = getActionById(actionId);
+  if (!action || action.status === "Completed" || !["reminder_generated", "escalated", "escalation_acknowledged"].includes(activity.type)) return undefined;
+  if (action.activityHistory?.some(event => event.id === activity.id)) return action;
+  return updateActionInternal(actionId, { activityHistory: appendActivity(action, activity) });
+}
+
+/** Generic edits cannot write identity, source, ownership, dates or lifecycle metadata. */
+export function updateAction(actionId: string, updates: Partial<MyAction>, actor?: ActionActor): MyAction | undefined {
+  const action = getActionById(actionId);
+  if (!action || !activeActionActor(action, actor) || !Object.keys(updates).length) return undefined;
+  const content = new Set(["title", "description", "actionCategory"]);
+  const finding = new Set(["originalFinding", "issueEvidence"]);
+  const completion = new Set(["actionTakenDescription", "resolutionObservation", "correctiveActionCategory", "costSaving", "currency", "evidence", "progressEvidence"]);
+  for (const key of Object.keys(updates)) {
+    if (key === "priority") { if (!canEditActionPriority(action, actor!)) return undefined; }
+    else if (content.has(key)) { if (!canEditActionContent(action, actor) && !canEditActionSetup(action, actor)) return undefined; }
+    else if (finding.has(key)) { if (!canEditActionSetup(action, actor) && !canEditAuditFinding(action, actor)) return undefined; }
+    else if (completion.has(key)) { if (!canEditActionContent(action, actor)) return undefined; }
+    else return undefined;
+  }
+  for (const key of ["evidence", "progressEvidence", "issueEvidence"] as const) {
+    if (key in updates && (!Array.isArray(updates[key]) || updates[key]!.some(item => !item || typeof item !== "object" || typeof item.id !== "string"))) return undefined;
+  }
+  const safeUpdates = structuredClone(updates);
+  for (const key of ["evidence", "progressEvidence", "issueEvidence"] as const) {
+    if (safeUpdates[key]) safeUpdates[key] = safeUpdates[key]!.map(item => ({ ...item, actionId, evidenceType: key === "issueEvidence" ? "finding" : key === "progressEvidence" ? "progress" : "resolution" }));
+  }
+  if ("priority" in updates) {
+    if (!updates.priority || !["Low", "Medium", "High", "Critical"].includes(updates.priority)) return undefined;
+    const baseline = updates.priority === action.priority ? action.priorityDueDate ?? action.dueDate : getPriorityDueDate(updates.priority);
+    return updateActionInternal(actionId, { ...safeUpdates, priorityDueDate: baseline, dueDate: action.dueDateOverride ?? baseline });
+  }
+  return updateActionInternal(actionId, safeUpdates);
 }
 
 /**
@@ -518,28 +642,30 @@ export function addActionEvidence(
       actionId
     );
 
-  if (!action) {
+  if (!action || !canEditActionContent(action, actor)) {
     return undefined;
   }
+  const user = getAdminUser(actor!.id)!;
 
-  return updateAction(
+  return updateActionInternal(
     actionId,
     {
       evidence: [
         ...action.evidence,
-        { ...evidence, actionId, evidenceType: "resolution" },
+        { ...structuredClone(evidence), actionId, evidenceType: "resolution", uploadedBy: user.name },
       ],
-      ...(actor ? { activityHistory: appendActivity(action, createActivity("evidence_uploaded", actor, `Completion evidence: ${evidence.name}`)) } : {}),
+      activityHistory: appendActivity(action, createActivity("evidence_uploaded", user, `Completion evidence: ${evidence.name}`)),
     }
   );
 }
 
 export function addActionProgressEvidence(actionId: string, evidence: ActionEvidence, actor?: ActionActor) {
   const action = getActionById(actionId);
-  if (!action) return undefined;
-  return updateAction(actionId, {
-    progressEvidence: [...(action.progressEvidence ?? []), { ...evidence, actionId, evidenceType: "progress" }],
-    ...(actor ? { activityHistory: appendActivity(action, createActivity("evidence_uploaded", actor, `Progress evidence: ${evidence.name}`)) } : {}),
+  if (!action || !canEditActionContent(action, actor)) return undefined;
+  const user = getAdminUser(actor!.id)!;
+  return updateActionInternal(actionId, {
+    progressEvidence: [...(action.progressEvidence ?? []), { ...structuredClone(evidence), actionId, evidenceType: "progress", uploadedBy: user.name }],
+    activityHistory: appendActivity(action, createActivity("evidence_uploaded", user, `Progress evidence: ${evidence.name}`)),
   });
 }
 
@@ -548,7 +674,8 @@ export function addActionProgressEvidence(actionId: string, evidence: ActionEvid
  */
 export function removeActionEvidence(
   actionId: string,
-  evidenceId: string
+  evidenceId: string,
+  actor?: ActionActor
 ): MyAction | undefined {
   const action =
     getActionById(
@@ -568,14 +695,15 @@ export function removeActionEvidence(
             evidence.id !==
             evidenceId
         ),
-    }
+    },
+    actor
   );
 }
 
-export function removeActionProgressEvidence(actionId: string, evidenceId: string) {
+export function removeActionProgressEvidence(actionId: string, evidenceId: string, actor?: ActionActor) {
   const action = getActionById(actionId);
   if (!action) return undefined;
-  return updateAction(actionId, { progressEvidence: (action.progressEvidence ?? []).filter((evidence) => evidence.id !== evidenceId) });
+  return updateAction(actionId, { progressEvidence: (action.progressEvidence ?? []).filter((evidence) => evidence.id !== evidenceId) }, actor);
 }
 
 /**
@@ -584,6 +712,7 @@ export function removeActionProgressEvidence(actionId: string, evidenceId: strin
 export function setActions(
   nextActions: MyAction[]
 ) {
+  if (process.env.NODE_ENV !== "test") throw new Error("Action fixture replacement is test-only.");
   actions = [
     ...nextActions,
   ];
@@ -595,6 +724,7 @@ export function setActions(
  * Reset actions to original demo data.
  */
 export function resetActions() {
+  if (process.env.NODE_ENV !== "test") throw new Error("Action fixture reset is test-only.");
   actions = MY_ACTIONS.map(normalizeEvidence);
 
   emitChange();
@@ -606,6 +736,7 @@ export function resetActions() {
  * Useful if you want a fresh demo.
  */
 export function clearSavedActions() {
+  if (process.env.NODE_ENV !== "test") throw new Error("Action fixture reset is test-only.");
   if (
     typeof window !==
     "undefined"

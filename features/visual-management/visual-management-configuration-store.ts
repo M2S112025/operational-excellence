@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { canManageVisualManagementConfiguration, type VisualManagementActor } from "./visual-management-access";
 import { safeSetStorage } from "@/lib/browser-storage";
 
 export type VisualManagementBoardConfigurationStatus = "Active" | "Inactive";
@@ -129,7 +130,9 @@ export function validateVisualManagementBoard(input: VisualManagementBoardConfig
   return errors;
 }
 
-export function saveVisualManagementBoard(input: VisualManagementBoardConfiguration, context: Parameters<typeof validateVisualManagementBoard>[1]) {
+export function saveVisualManagementBoard(input: VisualManagementBoardConfiguration, context: Parameters<typeof validateVisualManagementBoard>[1], actor?: VisualManagementActor) {
+  if (!canManageVisualManagementConfiguration(actor)) return { success: false as const, errors: { permission: "Configuration permission is required." } };
+
   const errors = validateVisualManagementBoard(input, context);
   if (Object.keys(errors).length) return { success: false as const, errors };
   const current = getVisualManagementConfiguration();
@@ -140,7 +143,9 @@ export function saveVisualManagementBoard(input: VisualManagementBoardConfigurat
   return result.success ? { success: true as const, board } : { success: false as const, errors: { save: result.message } };
 }
 
-export function setVisualManagementBoardStatus(id: string, status: VisualManagementBoardConfigurationStatus) {
+export function setVisualManagementBoardStatus(id: string, status: VisualManagementBoardConfigurationStatus, actor?: VisualManagementActor) {
+  if (!canManageVisualManagementConfiguration(actor)) return false;
+
   const current = getVisualManagementConfiguration();
   return persist({ ...current, boards: current.boards.map((item) => item.id === id ? { ...item, status, updatedAt: new Date().toISOString() } : item) }).success;
 }
@@ -166,7 +171,9 @@ export function validateVisualManagementTiers(tiers: readonly VisualManagementTi
   return errors;
 }
 
-export function saveVisualManagementTiers(tiers: VisualManagementTierConfiguration[]) {
+export function saveVisualManagementTiers(tiers: VisualManagementTierConfiguration[], actor?: VisualManagementActor) {
+  if (!canManageVisualManagementConfiguration(actor)) return { success: false as const, errors: { permission: "Configuration permission is required." } };
+
   const errors = validateVisualManagementTiers(tiers);
   if (Object.keys(errors).length) return { success: false as const, errors };
   const result = persist({ ...getVisualManagementConfiguration(), tiers: tiers.map((item) => ({ ...item, name: item.name.trim(), description: item.description.trim(), scope: item.scope.trim() })) });
@@ -179,7 +186,9 @@ export function getNextVisualManagementTierName(tierName: string) {
   return current.tiers.find((item) => item.id === tier?.nextTierId && item.active)?.name;
 }
 
-export function addVisualManagementKpiSection(input: { name: string; shortLabel?: string; description?: string; active?: boolean }) {
+export function addVisualManagementKpiSection(input: { name: string; shortLabel?: string; description?: string; active?: boolean }, actor?: VisualManagementActor) {
+  if (!canManageVisualManagementConfiguration(actor)) return undefined;
+
   const current = getVisualManagementConfiguration();
   const name = input.name.trim();
   if (!name || current.kpiSections.some((item) => item.name.toLowerCase() === name.toLowerCase())) return undefined;
@@ -188,19 +197,25 @@ export function addVisualManagementKpiSection(input: { name: string; shortLabel?
   return persist({ ...current, kpiSections: [...current.kpiSections, item] }).success ? item : undefined;
 }
 
-export function updateVisualManagementKpiSection(id: string, input: { name: string; shortLabel?: string; description?: string; active?: boolean }) {
+export function updateVisualManagementKpiSection(id: string, input: { name: string; shortLabel?: string; description?: string; active?: boolean }, actor?: VisualManagementActor) {
+  if (!canManageVisualManagementConfiguration(actor)) return false;
+
   const current = getVisualManagementConfiguration();
   const name = input.name.trim();
   if (!name || current.kpiSections.some((item) => item.id !== id && item.name.toLowerCase() === name.toLowerCase())) return false;
   return persist({ ...current, kpiSections: current.kpiSections.map((item) => item.id === id ? { ...item, name, shortLabel: input.shortLabel?.trim() || undefined, description: input.description?.trim() || undefined, active: input.active ?? item.active, updatedAt: new Date().toISOString() } : item) }).success;
 }
 
-export function setVisualManagementKpiSectionActive(id: string, active: boolean) {
+export function setVisualManagementKpiSectionActive(id: string, active: boolean, actor?: VisualManagementActor) {
+  if (!canManageVisualManagementConfiguration(actor)) return false;
+
   const current = getVisualManagementConfiguration();
   return persist({ ...current, kpiSections: current.kpiSections.map((item) => item.id === id ? { ...item, active, updatedAt: new Date().toISOString() } : item) }).success;
 }
 
-export function moveVisualManagementKpiSection(id: string, direction: -1 | 1) {
+export function moveVisualManagementKpiSection(id: string, direction: -1 | 1, actor?: VisualManagementActor) {
+  if (!canManageVisualManagementConfiguration(actor)) return false;
+
   const current = getVisualManagementConfiguration();
   const ordered = [...current.kpiSections].sort((a, b) => a.order - b.order);
   const index = ordered.findIndex((item) => item.id === id);

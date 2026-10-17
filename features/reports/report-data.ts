@@ -136,7 +136,7 @@ export function buildRedTagReportData(redTags: RedTag[]): ReportLibraryItem[] {
     reference: tag.tagNumber,
     plant: tag.plant,
     zone: tag.zone,
-    generatedBy: tag.closure?.verifiedByName ?? tag.createdByName,
+    generatedBy: tag.workflowVersion === "5s-v2" ? tag.reviewedBy ?? tag.createdByName : tag.closure?.verifiedByName ?? tag.createdByName,
     date: tag.closedAt ?? tag.closure?.verifiedAt ?? tag.createdAt,
     status: tag.status === "Closed" ? "Final" : "Draft",
     previewHref: `/5s/red/${encodeURIComponent(tag.id)}/report`,
@@ -167,7 +167,7 @@ export function buildVisualManagementReportData(state: VisualManagementState): R
     return item({
       id: `visual-management:${meeting.id}`,
       reportTypeId: "visualManagementMeetingReport",
-      title: `${board?.name ?? meeting.boardId} · Meeting Report`,
+      title: `${meeting.boardName || board?.name || meeting.boardId} · Meeting Report`,
       reference: meeting.id,
       plant: meeting.plant,
       zone: meeting.zone ?? "All Zones",

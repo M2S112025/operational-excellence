@@ -50,7 +50,7 @@ function MobileNavDrawer() {
                 <ClipboardCheck className="size-[18px]" />
               </span>
               <span className="text-left leading-tight">
-                <span className="block text-[15px] font-semibold">OPS</span>
+                <span className="block text-[15px] font-semibold">OE</span>
                 <span className="mt-0.5 block text-[11px] font-medium text-slate-400">{superAdminContext ? "Platform Administration" : "Operational Excellence Platform"}</span>
               </span>
             </Link>

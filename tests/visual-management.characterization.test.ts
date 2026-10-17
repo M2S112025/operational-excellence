@@ -64,14 +64,14 @@ describe("Visual Management module migration", () => {
 
   it("groups enabled capabilities by lifecycle and removes empty groups", () => {
     const groups = getEnabledNavigationGroups({ ...DEFAULT_MODULE_ENTITLEMENTS });
-    expect(groups.map((group) => group.id)).toEqual(["operationalExcellence", "execution", "visualize", "analytics"]);
+    expect(groups.map((group) => group.id)).toEqual(["operationalExcellence", "execution", "analytics"]);
     expect(groups.flatMap((group) => group.items.map((item) => item.id))).toEqual([
-      "gemba", "redTag", "continuousImprovement", "audit", "actions", "visualManagement", "reports",
+      "gemba", "redTag", "continuousImprovement", "audit", "visualManagement", "actions", "reports",
     ]);
 
     expect(getEnabledNavigationGroups({ ...DEFAULT_MODULE_ENTITLEMENTS, gemba: false }).find((group) => group.id === "operationalExcellence")?.items.map((item) => item.id)).not.toContain("gemba");
     const withoutIdentifyAndImprove = getEnabledNavigationGroups({ ...DEFAULT_MODULE_ENTITLEMENTS, redFlag: false, continuousImprovement: false });
-    expect(withoutIdentifyAndImprove.find((group) => group.id === "operationalExcellence")?.items.map((item) => item.id)).toEqual(["gemba", "redTag", "audit"]);
+    expect(withoutIdentifyAndImprove.find((group) => group.id === "operationalExcellence")?.items.map((item) => item.id)).toEqual(["gemba", "redTag", "audit", "visualManagement"]);
 
     const auditOnly = Object.fromEntries(
       Object.keys(DEFAULT_MODULE_ENTITLEMENTS).map((id) => [id, ["audit", "actions", "dashboards", "reports"].includes(id)]),
@@ -105,26 +105,29 @@ describe("Visual Management module migration", () => {
     const store = await import("@/features/visual-management/visual-management-store");
     const meeting = store.startVisualManagementMeeting("VM-ZD-T1", { id: "USR-RITIKA", name: "Ritika" });
     expect(meeting?.boardId).toBe("VM-ZD-T1");
-    store.setMeetingAttendance(meeting!.id, meeting!.participants[0].id, "Absent");
-    store.updateMeetingKpi(meeting!.id, "Safety", { status: "Red", actual: "1 near miss", note: "Guard issue observed" });
+    store.setMeetingAttendance(meeting!.id, meeting!.participants[0].id, "Absent", { id: "USR-LAKSHMAN" });
+    store.updateMeetingKpi(meeting!.id, "Safety", { status: "Red", actual: "1 near miss", note: "Guard issue observed" }, { id: "USR-LAKSHMAN" });
     const topic = store.addMeetingTopic(meeting!.id, { section: "Safety", title: "Guard issue", description: "Machine guard needs plant support" }, { id: "USR-RITIKA", name: "Ritika" });
     const escalation = store.createMeetingEscalation(topic!.id, "VM-PLANT-T2", "Requires maintenance support", { id: "USR-RITIKA", name: "Ritika" });
-    const linkedEscalation = store.linkEscalationAction(escalation!.id, "ACT-ESC-001");
+    const linkedEscalation = store.linkEscalationAction(escalation!.id, "ACT-ESC-001", { id: "USR-LAKSHMAN" });
     const actionStore = await import("@/lib/actions/action-store");
     const { MY_ACTIONS } = await import("@/features/five-s/data/my-actions-data");
     actionStore.setActions([{ ...MY_ACTIONS[0], id: "ACT-ESC-001", status: "In Progress" }]);
-    expect(() => store.updateEscalationStatus(escalation!.id, "Resolved")).toThrow(/Complete linked Action ACT-ESC-001/);
+    expect(() => store.updateEscalationStatus(escalation!.id, "Resolved", { id: "USR-LAKSHMAN" })).toThrow(/Complete linked Action ACT-ESC-001/);
     expect(store.getVisualManagementState().escalations.find((item) => item.id === escalation!.id)?.status).toBe("Open");
     actionStore.setActions([{ ...MY_ACTIONS[0], id: "ACT-ESC-001", status: "Completed" }]);
-    expect(store.updateEscalationStatus(escalation!.id, "Resolved")?.status).toBe("Resolved");
-    const duplicateLink = store.linkEscalationAction(escalation!.id, "ACT-ESC-002");
-    store.linkTopicFollowUp(topic!.id, "Action", "ACT-TEST-001");
-    store.linkTopicFollowUp(topic!.id, "Red Flag", "RF-TEST-001");
-    store.linkTopicFollowUp(topic!.id, "Continuous Improvement", "CI-TEST-001");
-    store.linkTopicFollowUp(topic!.id, "Gemba", "GW-TEST-001");
-    const decision = store.addMeetingDecision(meeting!.id, "Stop the machine until the guard is verified.", { id: "USR-RITIKA", name: "Ritika" }, topic!.id, "ACT-TEST-001");
+    expect(store.updateEscalationStatus(escalation!.id, "Resolved", { id: "USR-LAKSHMAN" })?.status).toBe("Resolved");
+    const duplicateLink = store.linkEscalationAction(escalation!.id, "ACT-ESC-002", { id: "USR-LAKSHMAN" });
+    expect(store.linkTopicFollowUp(topic!.id, "Action", "ACT-TEST-001", { id: "USR-LAKSHMAN" })).toBeNull();
+    expect(store.getVisualManagementState().topics.find(item => item.id === topic!.id)?.linkedActionId).toBe("ACT-ESC-001");
+    const separateTopic = store.addMeetingTopic(meeting!.id, { section: "Safety", title: "Separate follow-up", description: "Independent Action relationship" }, { id: "USR-LAKSHMAN", name: "Lakshman" })!;
+    expect(store.linkTopicFollowUp(separateTopic.id, "Action", "ACT-TEST-001", { id: "USR-LAKSHMAN" })?.linkedActionId).toBe("ACT-TEST-001");
+    store.linkTopicFollowUp(topic!.id, "Red Flag", "RF-TEST-001", { id: "USR-LAKSHMAN" });
+    store.linkTopicFollowUp(topic!.id, "Continuous Improvement", "CI-TEST-001", { id: "USR-LAKSHMAN" });
+    store.linkTopicFollowUp(topic!.id, "Gemba", "GW-TEST-001", { id: "USR-LAKSHMAN" });
+    const decision = store.addMeetingDecision(meeting!.id, "Stop the machine until the guard is verified.", { id: "USR-RITIKA", name: "Ritika" }, topic!.id, "ACT-TEST-001", { id: "USR-LAKSHMAN" });
     const onward = store.escalateExistingEscalation(escalation!.id, "VM-LEAD-T3", { id: "USR-RUMESH", name: "Rumesh" });
-    const completed = store.completeVisualManagementMeeting(meeting!.id);
+    const completed = store.completeVisualManagementMeeting(meeting!.id, { id: "USR-LAKSHMAN" });
     expect(escalation).toMatchObject({ sourceBoardId: "VM-ZD-T1", targetBoardId: "VM-PLANT-T2", status: "Open" });
     expect(linkedEscalation).toMatchObject({ id: escalation!.id, actionId: "ACT-ESC-001" });
     expect(duplicateLink).toBeNull();

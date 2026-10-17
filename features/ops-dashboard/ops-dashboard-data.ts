@@ -1,3 +1,4 @@
+import { scoringPercentage } from "@/lib/five-s/scoring-policy";
 import type { FiveSAudit } from "@/features/five-s/types/five-s";
 import type { MyAction } from "@/features/five-s/types/my-actions";
 import type { ContinuousImprovement } from "@/features/five-s/continuous-improvement/types";
@@ -6,7 +7,7 @@ import type { RedFlag } from "@/features/red-flag/types";
 import { isRedFlagOverdue } from "@/features/red-flag/red-flag-store";
 import { getVisualManagementMetrics } from "@/features/visual-management/visual-management-store";
 import type { VisualManagementState } from "@/features/visual-management/types";
-import { inferActionSourceModule } from "@/lib/actions/action-config";
+import { inferActionSourceModule, isActionOverdue } from "@/lib/actions/action-config";
 import type { DemoUser } from "@/lib/current-user";
 import type { AccessCapabilityId, OperationalModuleId } from "@/lib/modules";
 
@@ -145,13 +146,13 @@ function matchesScope(plant: string, zone: string, filters: OpsDashboardFilters)
 }
 
 function actionIsOverdue(action: MyAction, now: Date) {
-  return action.status === "Overdue" || (action.status !== CLOSED_ACTION_STATUS && dateValue(action.dueDate) < now.getTime());
+  return isActionOverdue(action, now);
 }
 
 function averageAuditScore(audits: FiveSAudit[]) {
   const maximum = audits.reduce((sum, audit) => sum + audit.maxScore, 0);
   if (!maximum) return 0;
-  return Math.round((audits.reduce((sum, audit) => sum + audit.score, 0) / maximum) * 100);
+  return scoringPercentage(audits.reduce((sum, audit) => sum + audit.score, 0), maximum);
 }
 
 function money(value: number) {
@@ -201,7 +202,8 @@ export function buildOpsDashboardModel(input: OpsDashboardInput): OpsDashboardMo
   const now = input.now ?? new Date();
   const { access, filters, currentUser } = input;
   const actionTab = currentUser.role.includes("Member") ? "my-actions" : "team-actions";
-  const actionHref = (status?: string) => `/actions?tab=${actionTab}${status ? `&status=${status}` : ""}`;
+  const actionScope = `${filters.plant !== "All" ? `&plant=${encodeURIComponent(filters.plant)}` : ""}${filters.zone !== "All" ? `&zone=${encodeURIComponent(filters.zone)}` : ""}`;
+  const actionHref = (status?: string) => `/actions?tab=${actionTab}${status ? `&status=${status}` : ""}${actionScope}`;
   const options = getOpsDashboardFilterOptions(input);
 
   const scopedAudits = input.audits.filter((audit) => matchesScope(audit.plant, audit.area, filters));
@@ -254,7 +256,7 @@ export function buildOpsDashboardModel(input: OpsDashboardInput): OpsDashboardMo
   const activeImprovements = scopedImprovements.filter((item) => ACTIVE_IMPROVEMENT_STATUSES.has(item.status));
   const completedImprovements = periodImprovements.filter((item) => item.status === "completed");
   const improvementsThisMonth = scopedImprovements.filter((item) => item.status === "completed" && isSameMonth(item.completedAt, now));
-  const completedSaving = periodImprovements.reduce((sum, item) => sum + (item.status === "completed" ? item.actualSaving ?? item.proposedSaving : 0), 0);
+  const completedSaving = periodImprovements.reduce((sum, item) => sum + (item.status === "completed" ? item.actualSaving ?? 0 : 0), 0);
 
   const scoreParts: Array<{ value: number; weight: number; label: string }> = [];
   if (access.audit && completedAudits.length) scoreParts.push({ value: auditScore, weight: 45, label: "audit performance" });
@@ -351,11 +353,11 @@ export function buildOpsDashboardModel(input: OpsDashboardInput): OpsDashboardMo
 
   const actionSources: DashboardActionSource[] = [];
   const sourceCount = (moduleId: OperationalModuleId) => openActions.filter((action) => inferActionSourceModule(action) === moduleId).length;
-  if (access.audit) actionSources.push({ id: "audit", label: "Audit", value: sourceCount("audit"), href: `/actions?tab=${actionTab}&source=audit` });
-  if (access.continuousImprovement) actionSources.push({ id: "continuousImprovement", label: "Continual Improvement", value: sourceCount("continuousImprovement"), href: `/actions?tab=${actionTab}&source=continuousImprovement` });
-  if (access.redFlag) actionSources.push({ id: "redFlag", label: "Red Flag", value: sourceCount("redFlag"), href: `/actions?tab=${actionTab}&source=redFlag` });
-  if (access.visualManagement) actionSources.push({ id: "visualManagement", label: "Visual Management", value: sourceCount("visualManagement"), href: `/actions?tab=${actionTab}&source=visualManagement` });
-  if (access.gemba) actionSources.push({ id: "gemba", label: "Gemba", value: sourceCount("gemba"), href: `/actions?tab=${actionTab}&source=gemba` });
+  if (access.audit) actionSources.push({ id: "audit", label: "Audit", value: sourceCount("audit"), href: `/actions?tab=${actionTab}${actionScope}&source=audit` });
+  if (access.continuousImprovement) actionSources.push({ id: "continuousImprovement", label: "Continual Improvement", value: sourceCount("continuousImprovement"), href: `/actions?tab=${actionTab}${actionScope}&source=continuousImprovement` });
+  if (access.redFlag) actionSources.push({ id: "redFlag", label: "Red Flag", value: sourceCount("redFlag"), href: `/actions?tab=${actionTab}${actionScope}&source=redFlag` });
+  if (access.visualManagement) actionSources.push({ id: "visualManagement", label: "Visual Management", value: sourceCount("visualManagement"), href: `/actions?tab=${actionTab}${actionScope}&source=visualManagement` });
+  if (access.gemba) actionSources.push({ id: "gemba", label: "Gemba", value: sourceCount("gemba"), href: `/actions?tab=${actionTab}${actionScope}&source=gemba` });
 
   const activity: DashboardActivity[] = [];
   if (access.audit) periodAudits.filter((audit) => audit.status === "Completed" && audit.completedAt).forEach((audit) => activity.push({ id: `activity-${audit.id}`, moduleId: "audit", text: `Audit ${audit.id} completed`, user: audit.auditor, at: audit.completedAt!, href: "/audits" }));

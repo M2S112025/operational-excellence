@@ -28,8 +28,9 @@ import { deleteGembaPhoto, getGembaPhoto, isGembaPhotoStorageAvailable, saveGemb
 import { useOrganizationConfiguration } from "@/lib/organization-store";
 import { cn } from "@/lib/utils";
 import { CompactEmpty, GembaEvidenceImage, GembaEvidenceLightbox, GembaStatusBadge, ObservationCard, OBSERVATION_TYPE_STYLE } from "./gemba-components";
+import { getDeploymentRecipients } from "./gemba-deployment";
 import { canConductGembaWalk, canViewGembaWalk } from "./gemba-access";
-import { completeGembaWalk, linkGembaAction, linkGembaRedTag, linkGembaImprovement, saveGembaObservation, startGembaWalk, useGembaStore } from "./gemba-store";
+import { completeGembaWalk, linkGembaAction, linkGembaRedTag, saveGembaObservation, startGembaWalk, useGembaStore } from "./gemba-store";
 import { isEvidencePhotoRequired, resolveGembaCorrectiveActionNeeded, type GembaEvidence, type GembaObservation, type GembaObservationType, type GembaVoiceNote, type GembaWalk } from "./types";
 import { VoiceCaptureFlow } from "./voice-capture-flow";
 import { formatGembaZoneLabel } from "./gemba-zone-labels";
@@ -95,17 +96,13 @@ export default function GembaWalkPage({ walkId }: { walkId: string }) {
   }
   function redTagCreated(redTagId: string) {
     if (!redTagObservation) return;
-    const linked = linkGembaRedTag(walk!.id, redTagObservation.id, redTagId, currentUser);
+    const linked = redTagObservation.redTagId === redTagId || linkGembaRedTag(walk!.id, redTagObservation.id, redTagId, currentUser);
     if (linked) {
       setNotice(`${redTagId} created and linked to ${redTagObservation.id}.`);
     }
   }
   function improvementCreated(improvementId: string) {
-    if (!improvementObservation) return;
-    const linked = linkGembaImprovement(walk!.id, improvementObservation.id, improvementId, currentUser);
-    if (linked) {
-      setNotice(`${improvementId} created and linked to ${improvementObservation.id}.`);
-    }
+    if (improvementObservation) setNotice(`${improvementId} created and linked to ${improvementObservation.id}.`);
   }
   function confirmComplete() {
     completeGembaWalk(walk!.id, currentUser);
@@ -126,7 +123,7 @@ export default function GembaWalkPage({ walkId }: { walkId: string }) {
     <div className="grid gap-3">{observations.map((observation) => <ObservationCard key={observation.id} observation={observation} action={observation.actionId ? actionMap.get(observation.actionId) : undefined} onEdit={() => openEdit(observation)} onCreateAction={() => openAction(observation)} onCreateRedTag={() => openRedTag(observation)} onCreateImprovement={() => openImprovement(observation)} />)}{observations.length === 0 && <Card className="gap-0"><CompactEmpty title="No observations captured yet" description="Use + Add Observation while walking the area. A title and type are enough to save quickly." action={<Button onClick={openNew}><Plus className="size-4" />Add Observation</Button>} /></Card>}</div>
 
     <div className="mobile-safe-bottom fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 p-3 backdrop-blur sm:hidden"><Button className="w-full" onClick={openNew}><Plus className="size-4" />Add Observation</Button></div>
-    <ObservationCaptureDialog key={`${editing?.id ?? "new"}-${captureOpen}`} open={captureOpen} onOpenChange={setCaptureOpen} walkId={walk.id} plant={walk.plant} zone={walk.zone} walkPurpose={walk.purpose} currentUser={currentUser} participants={walk.participants.map((item) => item.name)} observation={editing} onSaved={(observation, createAction) => { setNotice(`${observation.id} ${editing ? "updated" : "saved"}.`); setCaptureOpen(false); setEditing(null); if (createAction) { setLinkedContext(toLinkedContext(walk, observation)); setActionOpen(true); } }} />
+    <ObservationCaptureDialog key={`${editing?.id ?? "new"}-${captureOpen}`} open={captureOpen} onOpenChange={setCaptureOpen} walkId={walk.id} plant={walk.plant} zone={walk.zone} walkPurpose={walk.purpose} currentUser={currentUser} participants={walk.participants.map((item) => item.name)} observation={editing} onSaved={(observation, createAction) => { setNotice(`${observation.id} ${editing ? "updated" : "saved"}.${observation.horizontalDeployment?.recipients.some(item => item.notificationError) ? " Some in-app notifications could not be confirmed. Save again to retry." : ""}`); setCaptureOpen(false); setEditing(null); if (createAction) { setLinkedContext(toLinkedContext(walk, observation)); setActionOpen(true); } }} />
     <CreateLinkedActionDialog key={linkedContext?.sourceObservationId ?? "no-observation"} open={actionOpen} onOpenChange={setActionOpen} context={linkedContext} onCreated={actionCreated} />
     {redTagObservation && <CreateRedTagFromGembaDialog key={redTagObservation.id} open={redTagOpen} onOpenChange={setRedTagOpen} observation={redTagObservation} walkId={walk.id} plant={walk.plant} zone={walk.zone} onCreated={redTagCreated} />}
     {improvementObservation && <CreateCIFromGembaDialog key={improvementObservation.id} open={improvementOpen} onOpenChange={setImprovementOpen} observation={improvementObservation} walkId={walk.id} plant={walk.plant} zone={walk.zone} onCreated={improvementCreated} />}
@@ -153,8 +150,6 @@ function ObservationCaptureDialog({ open, onOpenChange, walkId, plant, zone, wal
   const [correctiveActionNeeded, setCorrectiveActionNeeded] = useState<boolean | undefined>(observation ? resolveGembaCorrectiveActionNeeded(observation) : undefined);
   const [createAction, setCreateAction] = useState(false);
   const [deploymentEnabled, setDeploymentEnabled] = useState(Boolean(observation?.horizontalDeployment?.enabled));
-  const [targetZoneIds, setTargetZoneIds] = useState<string[]>(observation?.horizontalDeployment?.targetZoneIds ?? []);
-  const [deploymentError, setDeploymentError] = useState("");
   const [more, setMore] = useState(Boolean(observation));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -168,9 +163,9 @@ function ObservationCaptureDialog({ open, onOpenChange, walkId, plant, zone, wal
   const originalEvidenceIdsRef = useRef(new Set(observation?.evidence.map((item) => item.id) ?? []));
   const sessionStorageKeysRef = useRef(new Set<string>());
   const removedOriginalBlobsRef = useRef(new Map<string, Blob>());
-  const organization = useOrganizationConfiguration();
-  const sourcePlant = organization.plants.find((item) => item.name === plant || item.id === plant);
-  const targetZones = organization.zones.filter((item) => item.status === "Active" && item.plantId === sourcePlant?.id && item.name !== zone && item.id !== zone);
+  useOrganizationConfiguration();
+  useAdminUsers();
+  const eligibleLeaderCount = new Set(getDeploymentRecipients(plant).flatMap(item => item.leaderUserId ? [item.leaderUserId] : [])).size;
 
   async function storeEvidenceFile(file: File, note?: string): Promise<GembaEvidence> {
     if (!isGembaPhotoStorageAvailable()) throw new Error("Photo storage is unavailable in this browser. Try a different browser or continue without a photo.");
@@ -268,16 +263,14 @@ function ObservationCaptureDialog({ open, onOpenChange, walkId, plant, zone, wal
   }
 
   function submit() {
-    setError(""); setEvidenceError(""); setDeploymentError("");
+    setError(""); setEvidenceError("");
     if (!title.trim()) { setError("Add a short observation title."); return; }
     if (isEvidencePhotoRequired(type) && evidence.length === 0) {
       setEvidenceError("Photo evidence is required for an Issue. Take or upload a photo before saving.");
       evidenceRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
-    const validTargetZoneIds = targetZoneIds.filter((id) => targetZones.some((item) => item.id === id));
-    if (deploymentEnabled && validTargetZoneIds.length === 0) { setDeploymentError("Select at least one other target zone."); return; }
-    const saved = saveGembaObservation(walkId, { type, title: title.trim(), description: description.trim() || title.trim(), location: location.trim() || zone, peopleInvolved: people, evidence, voiceNote, correctiveActionNeeded: type === "Positive" ? undefined : observation?.actionId ? true : correctiveActionNeeded, noActionReason: type !== "Positive" && correctiveActionNeeded === false && !observation?.actionId ? noActionReason.trim() || undefined : undefined, horizontalDeployment: { enabled: deploymentEnabled, targetZoneIds: validTargetZoneIds } }, currentUser, observation?.id);
+    const saved = saveGembaObservation(walkId, { type, title: title.trim(), description: description.trim() || title.trim(), location: location.trim() || zone, peopleInvolved: people, evidence, voiceNote, correctiveActionNeeded: type === "Positive" ? undefined : observation?.actionId ? true : correctiveActionNeeded, noActionReason: type !== "Positive" && correctiveActionNeeded === false && !observation?.actionId ? noActionReason.trim() || undefined : undefined, horizontalDeployment: { enabled: deploymentEnabled } }, currentUser, observation?.id);
     if (!saved) { setError("Unable to save this observation locally. Please try again."); return; }
     sessionStorageKeysRef.current.clear();
     removedOriginalBlobsRef.current.clear();
@@ -381,8 +374,8 @@ function ObservationCaptureDialog({ open, onOpenChange, walkId, plant, zone, wal
         {type !== "Positive" && <div className={cn("rounded-lg border p-3", type === "Issue" ? "border-red-500/25 bg-red-500/[0.045]" : "bg-muted/[0.12]")}><p className="text-sm font-medium">Corrective Action Needed?</p><p className="mt-0.5 text-[11px] text-muted-foreground">Choose whether this observation requires tracked follow-up in the shared Action Center.</p><div className="mt-3 grid grid-cols-2 gap-2"><Button type="button" variant={correctiveActionNeeded === true ? "default" : "outline"} disabled={Boolean(observation?.actionId)} onClick={() => { setCorrectiveActionNeeded(true); setCreateAction(true); setNoActionReason(""); }}>Yes</Button><Button type="button" variant={correctiveActionNeeded === false ? "default" : "outline"} disabled={Boolean(observation?.actionId)} onClick={() => { setCorrectiveActionNeeded(false); setCreateAction(false); setMore(true); }}>No</Button></div>{observation?.actionId && <p className="mt-2 text-[11px] text-muted-foreground">Yes — Action {observation.actionId} is already linked and will not be removed.</p>}{correctiveActionNeeded === true && !observation?.actionId && <p className="mt-2 text-[11px] text-muted-foreground">The canonical Action form will open after this observation is saved.</p>}</div>}
 
         <div className="rounded-xl border bg-muted/[0.08] p-3 sm:p-4">
-          <label className="flex cursor-pointer items-start gap-3"><Checkbox checked={deploymentEnabled} onCheckedChange={(checked) => { const enabled = checked === true; setDeploymentEnabled(enabled); if (!enabled) setTargetZoneIds([]); setDeploymentError(""); }} /><span><span className="block text-sm font-medium">Deployment Opportunity at other Zones</span><span className="mt-0.5 block text-[11px] leading-5 text-muted-foreground">Share this observation with selected zone leaders for review. No duplicate observation or follow-up record is created.</span></span></label>
-          {deploymentEnabled && <div className="mt-4 border-t pt-4"><p className="text-xs font-semibold">Target Zones *</p>{targetZones.length > 0 ? <div className="mt-2 grid gap-1 rounded-lg border bg-background p-2 sm:grid-cols-2 lg:grid-cols-3">{targetZones.map((item) => <label key={item.id} className="flex min-h-10 cursor-pointer items-center gap-2 rounded px-2 text-sm hover:bg-muted/40"><Checkbox checked={targetZoneIds.includes(item.id)} onCheckedChange={(checked) => { setTargetZoneIds((current) => checked === true ? [...new Set([...current, item.id])] : current.filter((id) => id !== item.id)); setDeploymentError(""); }} /><span className="font-medium">{formatGembaZoneLabel(item.name)}</span></label>)}</div> : <p className="mt-2 text-xs text-muted-foreground">No other active zones are available for this plant.</p>}{deploymentError && <p role="alert" className="mt-2 text-xs text-red-700 dark:text-red-400">{deploymentError}</p>}</div>}
+          <label className="flex cursor-pointer items-start gap-3"><Checkbox checked={deploymentEnabled} onCheckedChange={checked => setDeploymentEnabled(checked === true)} /><span><span className="block text-sm font-medium">Deployment Opportunity at other Zones</span><span className="mt-0.5 block text-[11px] leading-5 text-muted-foreground">No duplicate observation or follow-up record is created.</span></span></label>
+          {deploymentEnabled && <div className="mt-3 text-sm"><p>Horizontal Deployment will be shared with all active Zone Leaders in this Plant.</p><p className="mt-1 text-xs text-muted-foreground">{eligibleLeaderCount} eligible Zone Leader{eligibleLeaderCount === 1 ? "" : "s"} · In-app notifications on this browser only.</p>{eligibleLeaderCount === 0 && <p role="alert" className="mt-2 text-amber-700">No eligible active Zone Leaders. The observation can be saved, but no notification will be created.</p>}</div>}
         </div>
 
         <button type="button" onClick={() => setMore((value) => !value)} className="flex min-h-10 items-center justify-between border-y py-2 text-sm font-medium"><span>Additional details <span className="font-normal text-muted-foreground">(optional)</span></span><ChevronDown className={cn("size-4 transition-transform", more && "rotate-180")} /></button>
@@ -430,7 +423,7 @@ function VoiceNoteAttachment({ voiceNote, onRemove }: { voiceNote: GembaVoiceNot
 }
 
 function toLinkedContext(walk: GembaWalk, observation: GembaObservation): LinkedActionContext {
-  const evidence: MyActionEvidence[] = observation.evidence.map((item) => ({ id: item.id, evidenceType: "finding", name: item.name, type: "image", mimeType: item.mimeType, uploadedAt: item.uploadedAt, uploadedBy: item.uploadedBy, url: item.url?.startsWith("blob:") || item.url?.startsWith("data:") ? undefined : item.url }));
+  const evidence: MyActionEvidence[] = observation.evidence.map((item) => ({ id: item.id, evidenceType: "finding", name: item.name, type: "image", mimeType: item.mimeType, uploadedAt: item.uploadedAt, uploadedBy: item.uploadedBy, storageKey: item.storageKey, url: item.url?.startsWith("blob:") || item.url?.startsWith("data:") ? undefined : item.url }));
   return { source: "Gemba", sourceModule: "gemba", sourceId: walk.id, sourceObservationId: observation.id, sourceObservation: observation.title, title: observation.type === "Issue" ? `Resolve: ${observation.title}` : `Improve: ${observation.title}`, description: observation.description, plant: walk.plant, zone: walk.zone, location: observation.location, evidence, defaultPriority: observation.type === "Opportunity" ? "Low" : undefined, hidePriority: observation.type === "Opportunity" };
 }
 

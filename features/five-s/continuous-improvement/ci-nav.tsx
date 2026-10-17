@@ -8,7 +8,6 @@ const CI_TABS = [
   { id: "improvements", label: "Improvements", href: "/continuous-improvement?tab=improvements" },
   { id: "review", label: "Review Queue", href: "/continuous-improvement?tab=review" },
   { id: "completed", label: "Completed", href: "/continuous-improvement?tab=completed" },
-  { id: "settings", label: "Settings", href: "/continuous-improvement/settings" },
 ];
 
 export function ContinuousImprovementNav() {

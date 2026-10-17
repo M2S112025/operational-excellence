@@ -1,5 +1,6 @@
 "use client";
 
+import { scoringPercentage, auditScorePercentage, questionComplianceResponse, getAuditScoringValues, scoreForComplianceResponse, type ComplianceResponse } from "@/lib/five-s/scoring-policy";
 import { ArrowLeft, FileText, Printer } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -38,7 +39,7 @@ function formatDateTime(value?: string, locale = "en-IN") {
 }
 
 function percentage(score: number, maxScore: number) {
-  return maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+  return scoringPercentage(score, maxScore);
 }
 
 function ReportSection({ title, children }: { title: string; children: React.ReactNode }) {
@@ -66,7 +67,7 @@ function EvidenceItem({ evidence }: { evidence: FiveSEvidence | NonNullable<MyAc
         </span>
       )}
       <div className="min-w-0">
-        <p className="truncate text-xs font-medium" title={evidence.name}>{evidence.name}</p>
+        <p className="truncate text-xs font-medium" title={evidence.name}>{url && evidence.type === "document" ? <a href={url} download={evidence.name} className="underline">{evidence.name}</a> : evidence.name}</p>
         <p className="mt-0.5 text-[10px] uppercase text-muted-foreground">{evidence.type}</p>
       </div>
     </div>
@@ -106,7 +107,7 @@ export default function FiveSAuditReport({ auditId, origin, returnTo }: { auditI
       (question.evidence ?? []).map((item) => ({ section: section.category, question, item }))
     )
   );
-  const scorePercent = percentage(audit.score, audit.maxScore);
+  const scorePercent = auditScorePercentage(audit);
   const displayStatus = audit.status === "Completed" ? "Completed" : completedQuestions === questions.length ? "Ready for Completion" : audit.status;
   const generatedAt = formatDateTime(new Date().toISOString(), locale);
   // Completed Audit records predate organization editing, so reports retain the seeded ownership snapshot.
@@ -205,7 +206,7 @@ export default function FiveSAuditReport({ auditId, origin, returnTo }: { auditI
             <div><p className="text-3xl font-bold tabular-nums">{scorePercent}%</p><p className="text-sm text-muted-foreground">Overall Compliance</p></div>
             <p className="text-xl font-semibold tabular-nums">{audit.score} / {audit.maxScore}</p>
             <div className="flex flex-wrap gap-2">
-              {[0, 1, 2].map((score) => <Badge key={score} variant="outline" className={SCORE_STYLES[score]}>{score} — {SCORE_LABELS[score]}</Badge>)}
+              {([0, 1, 2] as ComplianceResponse[]).map((response) => <Badge key={response} variant="outline" className={SCORE_STYLES[response]}>{scoreForComplianceResponse(response, getAuditScoringValues(audit))} — {SCORE_LABELS[response]}</Badge>)}
             </div>
           </div>
         </ReportSection>
@@ -218,7 +219,7 @@ export default function FiveSAuditReport({ auditId, origin, returnTo }: { auditI
               </tr></thead>
               <tbody>{audit.sections.map((section) => {
                 const sectionActions = section.questions.filter((question) => question.actionId).length;
-                const nonCompliances = section.questions.filter((question) => question.score === 0).length;
+                const nonCompliances = section.questions.filter((question) => questionComplianceResponse(question) === 0).length;
                 const answered = section.questions.filter(isAuditQuestionAnswered).length;
                 return <tr key={section.category} className="audit-report-block border-b border-slate-200 last:border-0 dark:border-slate-700">
                   <td className="py-3 pr-3 font-semibold">{section.category}</td><td className="px-3 py-3">{answered} / {section.questions.length}</td><td className="px-3 py-3">{section.score} / {section.maxScore}</td><td className="px-3 py-3 font-medium">{percentage(section.score, section.maxScore)}%</td><td className="px-3 py-3">{sectionActions}</td><td className="pl-3 py-3">{nonCompliances}</td>
@@ -291,11 +292,12 @@ export default function FiveSAuditReport({ auditId, origin, returnTo }: { auditI
 
 function QuestionFinding({ question, number }: { question: FiveSQuestion; number: number }) {
   const score = question.score;
-  const border = score === 0 ? "border-l-red-500" : score === 1 ? "border-l-amber-500" : score === 2 ? "border-l-green-500" : "border-l-slate-300 dark:border-l-slate-600";
+  const compliance = questionComplianceResponse(question);
+  const border = compliance === 0 ? "border-l-red-500" : compliance === 1 ? "border-l-amber-500" : compliance === 2 ? "border-l-green-500" : "border-l-slate-300 dark:border-l-slate-600";
   const response = question.responseType === "Text" ? question.textResponse : question.responseType === "Yes / No" ? question.yesNoResponse : undefined;
   return (
     <article className={`audit-report-block rounded-md border border-l-4 border-slate-200 p-3 dark:border-slate-700 ${border}`}>
-      <div className="flex items-start justify-between gap-3"><p className="text-xs font-medium leading-5"><span className="mr-2 text-muted-foreground">Q{number}</span>{question.question}{question.questionSource === "custom" && <Badge variant="outline" className="ml-2 text-[9px]">Custom</Badge>}</p>{score !== null ? <Badge variant="outline" className={`shrink-0 ${SCORE_STYLES[score]}`}>{score} — {SCORE_LABELS[score]}</Badge> : response ? <Badge variant="outline" className="shrink-0">{question.responseType === "Text" ? "Answered" : response}</Badge> : null}</div>
+      <div className="flex items-start justify-between gap-3"><p className="text-xs font-medium leading-5"><span className="mr-2 text-muted-foreground">Q{number}</span>{question.question}{question.questionSource === "custom" && <Badge variant="outline" className="ml-2 text-[9px]">Custom</Badge>}</p>{score !== null ? <Badge variant="outline" className={`shrink-0 ${SCORE_STYLES[compliance ?? -1]}`}>{score} — {SCORE_LABELS[compliance ?? -1]}</Badge> : response ? <Badge variant="outline" className="shrink-0">{question.responseType === "Text" ? "Answered" : response}</Badge> : null}</div>
       <div className="mt-2 grid gap-2 text-xs sm:grid-cols-[1fr_auto_auto]">
         <p><span className="text-muted-foreground">{response ? "Response:" : "Observation:"}</span> {response || question.observation || "No observation recorded"}</p>
         <p><span className="text-muted-foreground">Action:</span> {question.actionId ? "Created" : "None"}</p>

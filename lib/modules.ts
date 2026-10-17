@@ -71,13 +71,13 @@ export const OPERATIONAL_MODULES: readonly OperationalModule[] = [
     id: "redTag",
     label: "Red Tag",
     route: "/5s/red",
-    description: "Evaluate and disposition physical workplace items.",
+    description: "Raise workplace issues, plan work, execute and review completion.",
     icon: Tag,
     enabled: true,
     group: "operations",
     navigationGroup: "operationalExcellence",
     conceptStage: "dispose",
-    stageLabel: "Item Disposition",
+    stageLabel: "Plan & Execute",
     order: 25,
   },
   {
@@ -116,9 +116,10 @@ export const OPERATIONAL_MODULES: readonly OperationalModule[] = [
     icon: Eye,
     enabled: true,
     group: "operations",
-    navigationGroup: "visualize",
+    navigationGroup: "operationalExcellence",
     conceptStage: "visualize",
-    order: 60,
+    stageLabel: "Visualize",
+    order: 45,
   },
 ] as const;
 

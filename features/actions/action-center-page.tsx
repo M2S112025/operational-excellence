@@ -1,20 +1,23 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { useUrlState } from "@/lib/navigation/use-url-state";
+import { withActionReturn, currentReturnPath } from "@/lib/navigation/return-to";
 import { useRouter } from "next/navigation";
 import {
   CalendarDays,
   CheckCircle2,
-  ChevronDown,
   Eye,
   FileText,
   Paperclip,
   Plus,
   Search,
-  SlidersHorizontal,
   X,
 } from "lucide-react";
 
+import { OpsDataTable } from "@/components/ops/ops-data-table";
+import { OpsFilterBar } from "@/components/ops/ops-filter-bar";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { PageContainer } from "@/components/layout/page-container";
 import { OpsEmptyState } from "@/components/ops/ops-empty-state";
 import { OpsTabBar } from "@/components/ops/ops-tabs";
@@ -44,7 +47,8 @@ import {
 import { getActionEscalations } from "@/lib/actions/action-attention-store";
 import { createAction, useActionStore } from "@/lib/actions/action-store";
 import { useCurrentUser } from "@/lib/current-user";
-import { MAX_EVIDENCE_IMAGES, optimizeEvidenceImage } from "@/lib/evidence-images";
+import { OpsPersonSelect } from "@/components/ops/ops-person-select";
+import { MAX_EVIDENCE_IMAGES, optimizeEvidenceImage, validateEvidenceSelection } from "@/lib/evidence-images";
 import { useFiveSZoneConfiguration } from "@/lib/five-s/configuration";
 import { useActiveActionCategories } from "@/lib/actions/action-category-store";
 import { getPriorityDueDate, useActiveActionPriorities } from "@/lib/actions/action-configuration-store";
@@ -68,6 +72,8 @@ interface ActionCenterPageProps {
   initialTab?: string;
   initialStatus?: string;
   initialSource?: string;
+  initialPlant?: string;
+  initialZone?: string;
 }
 
 const STATUS_FILTERS: ActionStatusFilter[] = ["All", "Open", "Overdue", "Awaiting Assignment", "Assigned", "In Progress", "Pending Auditor Review", "Rework Required", "Completed"];
@@ -83,7 +89,7 @@ function validStatus(value?: string): ActionStatusFilter {
   return STATUS_FILTERS.includes(normalized as ActionStatusFilter) ? normalized as ActionStatusFilter : "All";
 }
 
-export default function ActionCenterPage({ initialTab, initialStatus, initialSource }: ActionCenterPageProps) {
+export default function ActionCenterPage({ initialTab, initialStatus, initialSource, initialPlant, initialZone }: ActionCenterPageProps) {
   const router = useRouter();
   const actions = useActionStore();
   const hasLegacyCritical = actions.some((action) => action.priority === "Critical");
@@ -92,19 +98,25 @@ export default function ActionCenterPage({ initialTab, initialStatus, initialSou
   const access = useModuleEntitlements();
   const adminUser = adminUsers.find((user) => user.id === currentUser.id);
   const canCreate = hasPermission(adminUser, "actions.create") && !currentUser.isSuperAdmin;
-  const [activeTab, setActiveTab] = useState<ActionCenterTab>(() => validTab(initialTab));
+  const url = useUrlState();
+  const activeTab = validTab(url.params.get("tab") ?? initialTab);
+  const setActiveTab = (value: ActionCenterTab) => url.update({tab:value});
   const [moreFilters, setMoreFilters] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
-  const [filters, setFilters] = useState<ActionCenterFilters>(() => ({
-    search: "",
-    source: getEnabledActionSources(access).some((source) => source.id === initialSource) ? initialSource as ActionCenterFilters["source"] : "All",
-    status: validStatus(initialStatus),
-    priority: "All",
-    plant: "All",
-    zone: "All",
-    assignedTo: "All",
-    due: initialStatus === "overdue" ? "Overdue" : "All",
-  }));
+  const urlPath = url.path;
+  const filters: ActionCenterFilters = useMemo(() => { const params = new URLSearchParams(urlPath.split("?")[1]?.split("#")[0]); const requestedSource = params.get("source") ?? initialSource; return ({
+    search: params.get("search") ?? "",
+    source: getEnabledActionSources(access).some(source => source.id === requestedSource) ? requestedSource as ActionCenterFilters["source"] : "All",
+    status: validStatus(params.get("status") ?? initialStatus),
+    priority: (params.get("priority") ?? "All") as ActionCenterFilters["priority"],
+    plant: params.get("plant") ?? initialPlant ?? "All",
+    zone: params.get("zone") ?? initialZone ?? "All",
+    assignedTo: params.get("assignedTo") ?? "All",
+    due: (params.get("due") ?? ((params.get("status") ?? initialStatus) === "overdue" ? "Overdue" : "All")) as ActionCenterFilters["due"],
+  }); }, [urlPath, access, initialSource, initialStatus, initialPlant, initialZone]);
+  function setFilters(next: ActionCenterFilters | ((current: ActionCenterFilters) => ActionCenterFilters)) {
+    url.update({ ...(typeof next === "function" ? next(filters) : next) });
+  }
 
   const now = useMemo(() => new Date(), []);
   const counts = useMemo(() => getActionCenterCounts(actions, currentUser, adminUser, now), [actions, currentUser, adminUser, now]);
@@ -140,9 +152,10 @@ export default function ActionCenterPage({ initialTab, initialStatus, initialSou
   return <PageContainer className="max-w-none">
     <FiveSPageHeader eyebrow="OPS Workspace" title="Actions" description="Track, complete, review, and close actions created across OPS." actions={canCreate ? <Button onClick={() => setCreateOpen(true)}><Plus className="size-4" />Create Action</Button> : undefined} />
 
-    <OpsTabBar label="Actions sections" active={activeTab} onChange={(id) => setActiveTab(id as ActionCenterTab)} tabs={[...tabs.map((tab) => ({ ...tab, count: counts.tabs[tab.id] })), { id: "settings", label: "Settings", href: "/actions/settings" }]} />
+    <OpsTabBar label="Actions sections" active={activeQuickFilter ? "" : activeTab} onChange={(id) => setActiveTab(id as ActionCenterTab)} tabs={[...tabs.map((tab) => ({ ...tab, count: counts.tabs[tab.id] })), { id: "settings", label: "Settings", href: "/actions/settings" }]} />
 
-    <section aria-label="Action summary" className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+    <p className="text-xs text-muted-foreground">Summary across all Actions visible to your role. Open and Overdue show that full visible scope.</p>
+    <section aria-label="All visible Action summary" className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
       <SummaryMetric label="Open" value={counts.open} tone="warning" selected={activeQuickFilter === "open"} onClick={() => toggleQuickFilter("open")} />
       <SummaryMetric label="Overdue" value={counts.overdue} tone="danger" selected={activeQuickFilter === "overdue"} onClick={() => toggleQuickFilter("overdue")} />
       <SummaryMetric label="Critical" value={counts.critical} tone="danger" onClick={() => updateFilter("priority", "Critical")} />
@@ -153,35 +166,24 @@ export default function ActionCenterPage({ initialTab, initialStatus, initialSou
     <Card className="min-w-0 gap-0 overflow-hidden">
       <CardContent className="border-b p-3">
         {activeQuickFilter && <div className="mb-3 flex min-w-0 items-center justify-between gap-3 rounded-lg bg-primary/[0.06] px-3 py-2 text-xs"><p className="min-w-0 truncate"><span className="font-semibold">{activeQuickFilter === "open" ? "Open actions" : "Overdue actions"}</span><span className="text-muted-foreground"> · {filtered.length} {filtered.length === 1 ? "record" : "records"}</span></p><Button type="button" variant="ghost" size="sm" className="h-8 shrink-0" onClick={() => toggleQuickFilter(activeQuickFilter)}><X className="size-3.5" />Clear</Button></div>}
-        <div className="grid min-w-0 gap-2 lg:grid-cols-[minmax(240px,1fr)_180px_170px_160px_auto]">
-          <div className="relative"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input value={filters.search} onChange={(event) => updateFilter("search", event.target.value)} className="pl-9" placeholder="Search actions, source, person..." /></div>
+        <OpsFilterBar expanded={moreFilters} onToggle={() => setMoreFilters(value => !value)} activeCount={activeFilterCount} className="lg:grid-cols-[minmax(220px,1fr)_180px_170px_160px_auto]" primary={<>          <div className="relative"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input value={filters.search} onChange={(event) => updateFilter("search", event.target.value)} className="pl-9" placeholder="Search actions, source, person..." /></div>
           <FilterSelect value={filters.source} onChange={(value) => updateFilter("source", value as ActionCenterFilters["source"])} ariaLabel="Source module"><SelectItem value="All">All sources</SelectItem>{sourceOptions.map((source) => <SelectItem key={source.id} value={source.id}>{source.label}</SelectItem>)}</FilterSelect>
           <FilterSelect value={filters.status} onChange={(value) => updateStatusFilter(value as ActionStatusFilter)} ariaLabel="Status"><SelectItem value="All">All statuses</SelectItem>{STATUS_FILTERS.filter((item) => item !== "All").map((item) => <SelectItem key={item} value={item}>{item === "Open" ? "Open / Active" : item}</SelectItem>)}</FilterSelect>
           <FilterSelect value={filters.priority} onChange={(value) => updateFilter("priority", value as ActionCenterFilters["priority"])} ariaLabel="Priority"><SelectItem value="All">All priorities</SelectItem>{PRIORITIES.filter((item) => item !== "All").map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}{hasLegacyCritical && <SelectItem value="Critical">Legacy: Critical</SelectItem>}</FilterSelect>
-          <Button type="button" variant={moreFilters || activeFilterCount > 3 ? "secondary" : "outline"} onClick={() => setMoreFilters((value) => !value)}><SlidersHorizontal className="size-4" />More filters{activeFilterCount > 0 && <span className="rounded bg-primary px-1.5 text-[10px] text-primary-foreground">{activeFilterCount}</span>}<ChevronDown className={cn("size-3.5 transition-transform", moreFilters && "rotate-180")} /></Button>
-        </div>
-        {moreFilters && <div className="mt-2 grid min-w-0 gap-2 border-t pt-3 sm:grid-cols-2 lg:grid-cols-[repeat(4,minmax(0,1fr))_auto]">
-          <FilterSelect value={filters.plant} onChange={(value) => updateFilter("plant", value)} ariaLabel="Plant"><SelectItem value="All">All plants</SelectItem>{counts.plants.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</FilterSelect>
+</>} extra={<>          <FilterSelect value={filters.plant} onChange={(value) => updateFilter("plant", value)} ariaLabel="Plant"><SelectItem value="All">All plants</SelectItem>{counts.plants.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</FilterSelect>
           <FilterSelect value={filters.zone} onChange={(value) => updateFilter("zone", value)} ariaLabel="Zone"><SelectItem value="All">All zones</SelectItem>{counts.zones.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</FilterSelect>
           <FilterSelect value={filters.assignedTo} onChange={(value) => updateFilter("assignedTo", value)} ariaLabel="Action Owner"><SelectItem value="All">All Action Owners</SelectItem>{counts.assignees.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</FilterSelect>
           <FilterSelect value={filters.due} onChange={(value) => updateFilter("due", value as ActionDueFilter)} ariaLabel="Due date"><SelectItem value="All">Any due date</SelectItem>{DUE_FILTERS.filter((item) => item !== "All").map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</FilterSelect>
           <Button variant="ghost" onClick={resetFilters}><X className="size-4" />Clear</Button>
-        </div>}
+        </>} />
       </CardContent>
 
-      <div className="hidden min-w-0 overflow-x-auto lg:block">
-        <table className="w-full min-w-[1040px] text-sm">
-          <thead className="border-b bg-muted/25 text-left text-[10px] uppercase tracking-wide text-muted-foreground"><tr><th className="px-4 py-3">Action</th><th className="px-4 py-3">Source</th><th className="px-4 py-3">Action Owner</th><th className="px-4 py-3">Priority</th><th className="px-4 py-3">Due / Review Age</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Updated</th><th className="px-4 py-3 text-right">Actions</th></tr></thead>
-          <tbody className="divide-y divide-border/65">{filtered.map((action) => <ActionTableRow key={action.id} action={action} reviewMode={!activeQuickFilter && activeTab === "awaiting-review"} onOpen={() => router.push(`/actions/${encodeURIComponent(action.id)}`)} onReport={() => router.push(`/actions/${encodeURIComponent(action.id)}/report`)} />)}</tbody>
-        </table>
-      </div>
-
-      <div className="grid gap-2 p-3 lg:hidden">{filtered.map((action) => <ActionMobileCard key={action.id} action={action} reviewMode={!activeQuickFilter && activeTab === "awaiting-review"} onOpen={() => router.push(`/actions/${encodeURIComponent(action.id)}`)} />)}</div>
+      <OpsDataTable label="Actions" headers={["Action", "Source", "Action Owner", "Priority", "Due / Review Age", "Status", "Updated", "Actions"]} mobile={<>{filtered.map((action) => <ActionMobileCard key={action.id} action={action} reviewMode={!activeQuickFilter && activeTab === "awaiting-review"} onOpen={() => router.push(withActionReturn(action.id, currentReturnPath("/actions")))} />)}</>}>{filtered.map((action) => <ActionTableRow key={action.id} action={action} reviewMode={!activeQuickFilter && activeTab === "awaiting-review"} onOpen={() => router.push(withActionReturn(action.id, currentReturnPath("/actions")))} onReport={() => router.push(`/actions/${encodeURIComponent(action.id)}/report`)} />)}</OpsDataTable>
 
       {filtered.length === 0 && <OpsEmptyState icon={CheckCircle2} title={activeQuickFilter === "overdue" ? "No overdue actions" : activeQuickFilter === "open" ? "No open actions" : `No actions in ${ACTION_CENTER_TABS.find((tab) => tab.id === activeTab)?.label ?? "this view"}`} description={activeQuickFilter ? activeQuickFilter === "overdue" ? "You’re up to date." : "No active work matches the current filters." : "Try changing the current filters."} action={activeFilterCount > 0 ? <Button size="sm" variant="outline" onClick={resetFilters}>Clear filters</Button> : undefined} />}
     </Card>
 
-    <ManualActionDialog open={createOpen} onOpenChange={setCreateOpen} onCreated={(action) => router.push(`/actions/${encodeURIComponent(action.id)}`)} />
+    <ManualActionDialog open={createOpen} onOpenChange={setCreateOpen} onCreated={(action) => router.push(withActionReturn(action.id, currentReturnPath("/actions")))} />
   </PageContainer>;
 }
 
@@ -191,7 +193,7 @@ function SummaryMetric({ label, value, tone, selected = false, onClick }: { labe
 }
 
 function FilterSelect({ value, onChange, ariaLabel, children }: { value: string; onChange: (value: string) => void; ariaLabel: string; children: React.ReactNode }) {
-  return <Select value={value} onValueChange={(next) => onChange(next ?? "All")}><SelectTrigger className="w-full" aria-label={ariaLabel}><SelectValue /></SelectTrigger><SelectContent>{children}</SelectContent></Select>;
+  return <Select searchLabel={ariaLabel} value={value} onValueChange={(next) => onChange(next ?? "All")}><SelectTrigger className="w-full" aria-label={ariaLabel}><SelectValue>{value === "All" ? ({"Source module":"All sources","Status":"All statuses","Priority":"All priorities","Plant":"All plants","Zone":"All zones","Action Owner":"All Action Owners","Due date":"Any due date"}[ariaLabel] ?? "All") : value === "Open" && ariaLabel === "Status" ? "Open / Active" : value === "Critical" && ariaLabel === "Priority" ? "Legacy: Critical" : undefined}</SelectValue></SelectTrigger><SelectContent>{children}</SelectContent></Select>;
 }
 
 function SourceBadge({ action }: { action: MyAction }) {
@@ -205,12 +207,12 @@ function ActionTableRow({ action, reviewMode, onOpen, onReport }: { action: MyAc
   const priority = ACTION_PRIORITY_CONFIG[action.priority];
   const overdue = isActionOverdue(action);
   return <tr className="transition-colors hover:bg-muted/25">
-    <td className="max-w-[300px] px-4 py-3"><button type="button" onClick={onOpen} className="block min-w-0 text-left outline-none focus-visible:underline"><span className="block truncate font-medium">{action.title}</span><span className="mt-0.5 block font-mono text-[10px] text-muted-foreground">{action.id}</span></button></td>
+    <td className="max-w-[300px] px-4 py-3"><button type="button" onClick={onOpen} className="block min-w-0 text-left outline-none focus-visible:underline"><span className="block truncate font-medium">{action.title}</span><span className="mt-0.5 block font-mono text-[10px] text-muted-foreground">{action.id}</span><span className="mt-0.5 block text-[10px] text-muted-foreground">Created {formatShortDate(action.createdAt)}</span></button></td>
     <td className="max-w-[190px] px-4 py-3"><SourceBadge action={action} /><p className="mt-1 truncate text-[11px] text-muted-foreground" title={getActionSourceRecordLabel(action)}>{getActionSourceRecordLabel(action)}</p></td>
     <td className="max-w-[150px] px-4 py-3"><p className="truncate text-xs font-medium">{action.responsiblePersonName ?? action.assignedTo ?? "Unassigned"}</p><p className="mt-0.5 truncate text-[11px] text-muted-foreground">{action.area}</p></td>
     <td className="px-4 py-3"><Badge variant={priority.variant} size="sm">{priority.label}</Badge></td>
     <td className="px-4 py-3"><p className={cn("whitespace-nowrap text-xs font-medium", overdue && "text-red-600 dark:text-red-400")}>{reviewMode ? getReviewAgeLabel(action) : getActionDueLabel(action)}</p>{reviewMode && <p className="mt-0.5 text-[10px] text-muted-foreground">{formatShortDate(action.submittedForReviewAt ?? getActionUpdatedAt(action))}</p>}</td>
-    <td className="px-4 py-3"><div className="flex flex-wrap gap-1"><Badge variant={status.variant} size="sm">{status.label}</Badge><ActionAttentionBadges action={action} /></div></td>
+    <td className="px-4 py-3"><div className="flex flex-wrap gap-1"><StatusBadge variant={status.variant} status={status.label} /><ActionAttentionBadges action={action} /></div></td>
     <td className="whitespace-nowrap px-4 py-3 text-xs text-muted-foreground">{formatShortDate(getActionUpdatedAt(action))}</td>
     <td className="px-4 py-3"><div className="flex justify-end gap-1"><Button size="icon-sm" variant="ghost" onClick={onOpen} aria-label={`View ${action.id}`}><Eye className="size-4" /></Button>{action.status === "Completed" && <Button size="icon-sm" variant="ghost" onClick={onReport} aria-label={`View report for ${action.id}`}><FileText className="size-4" /></Button>}</div></td>
   </tr>;
@@ -219,7 +221,7 @@ function ActionTableRow({ action, reviewMode, onOpen, onReport }: { action: MyAc
 function ActionMobileCard({ action, reviewMode, onOpen }: { action: MyAction; reviewMode: boolean; onOpen: () => void }) {
   const priority = ACTION_PRIORITY_CONFIG[action.priority];
   const status = ACTION_STATUS_CONFIG[action.status];
-  return <button type="button" onClick={onOpen} className="min-w-0 rounded-lg border bg-background p-4 text-left outline-none transition-colors hover:bg-muted/35 focus-visible:ring-2 focus-visible:ring-ring"><div className="flex min-w-0 items-start justify-between gap-3"><div className="min-w-0"><p className="line-clamp-2 text-sm font-semibold">{action.title}</p><p className="mt-1 font-mono text-[10px] text-muted-foreground">{action.id}</p></div><Badge variant={priority.variant} size="sm">{priority.label}</Badge></div><div className="mt-3 flex flex-wrap items-center gap-2"><SourceBadge action={action} /><Badge variant={status.variant} size="sm">{status.label}</Badge><ActionAttentionBadges action={action} /></div><div className="mt-3 flex items-center justify-between gap-3 text-xs"><span className={cn("inline-flex items-center gap-1 text-muted-foreground", isActionOverdue(action) && "text-red-600 dark:text-red-400")}><CalendarDays className="size-3.5" />{reviewMode ? getReviewAgeLabel(action) : getActionDueLabel(action)}</span><span className="truncate text-muted-foreground">{action.area}</span></div></button>;
+  return <button type="button" onClick={onOpen} className="min-w-0 rounded-lg border bg-background p-4 text-left outline-none transition-colors hover:bg-muted/35 focus-visible:ring-2 focus-visible:ring-ring"><div className="flex min-w-0 items-start justify-between gap-3"><div className="min-w-0"><p className="line-clamp-2 text-sm font-semibold">{action.title}</p><p className="mt-1 font-mono text-[10px] text-muted-foreground">{action.id}</p><p className="mt-0.5 text-[10px] text-muted-foreground">Created {formatShortDate(action.createdAt)}</p></div><Badge variant={priority.variant} size="sm">{priority.label}</Badge></div><div className="mt-3 flex flex-wrap items-center gap-2"><SourceBadge action={action} /><StatusBadge variant={status.variant} status={status.label} /><ActionAttentionBadges action={action} /></div><div className="mt-3 flex items-center justify-between gap-3 text-xs"><span className={cn("inline-flex items-center gap-1 text-muted-foreground", isActionOverdue(action) && "text-red-600 dark:text-red-400")}><CalendarDays className="size-3.5" />{reviewMode ? getReviewAgeLabel(action) : getActionDueLabel(action)}</span><span className="truncate text-muted-foreground">{action.area}</span></div></button>;
 }
 
 function ActionAttentionBadges({ action }: { action: MyAction }) {
@@ -229,7 +231,7 @@ function ActionAttentionBadges({ action }: { action: MyAction }) {
   return <>{days === 1 && <Badge variant="warning" size="sm">Due Soon</Badge>}{days < 0 && <Badge variant="danger" size="sm">Overdue</Badge>}{escalation && <Badge variant="danger" size="sm">Escalated · L{escalation.level}</Badge>}</>;
 }
 
-function ManualActionDialog({ open, onOpenChange, onCreated }: { open: boolean; onOpenChange: (open: boolean) => void; onCreated: (action: MyAction) => void }) {
+export function ManualActionDialog({ open, onOpenChange, onCreated }: { open: boolean; onOpenChange: (open: boolean) => void; onCreated: (action: MyAction) => void }) {
   const actionCategories = useActiveActionCategories();
   const actionPriorities = useActiveActionPriorities();
   const currentUser = useCurrentUser();
@@ -245,26 +247,35 @@ function ManualActionDialog({ open, onOpenChange, onCreated }: { open: boolean; 
   const [responsibleId, setResponsibleId] = useState("");
   const [evidence, setEvidence] = useState<MyActionEvidence[]>([]);
   const [busy, setBusy] = useState(false);
+  const [formError, setFormError] = useState("");
+  const busyRef = useRef(false);
   const zone = zones.find((item) => item.name === zoneName) ?? defaultZone;
   const effectivePriority = actionPriorities.some((item) => item.id === priority) ? priority : actionPriorities[0]?.id ?? priority;
   const dueDate = getPriorityDueDate(effectivePriority);
   const valid = title.trim() && description.trim() && category && responsibleId && zone;
 
   async function addEvidence(files: FileList | null) {
-    if (!files) return;
-    const selected = Array.from(files).slice(0, Math.max(0, MAX_EVIDENCE_IMAGES - evidence.length));
-    for (const file of selected) {
-      if (!file.type.startsWith("image/")) continue;
-      const optimized = await optimizeEvidenceImage(file);
-      setEvidence((items) => [...items, { id: `EV-${crypto.randomUUID()}`, evidenceType: "finding", name: file.name, type: "image", mimeType: file.type, uploadedAt: new Date().toISOString(), uploadedBy: currentUser.name, url: optimized.dataUrl }]);
-    }
+    if (!files || busyRef.current) return;
+    busyRef.current = true; setBusy(true); setFormError("");
+    try {
+      const selected = Array.from(files);
+      validateEvidenceSelection(selected, evidence.length);
+      const next: MyActionEvidence[] = [];
+      for (const file of selected) {
+        const optimized = await optimizeEvidenceImage(file);
+        next.push({ id: `EV-${crypto.randomUUID()}`, evidenceType: "finding", name: file.name, type: "image", mimeType: file.type, uploadedAt: new Date().toISOString(), uploadedBy: currentUser.name, url: optimized.dataUrl });
+      }
+      setEvidence(items => [...items, ...next]);
+    } catch (error) { setFormError(error instanceof Error ? error.message : "Unable to add this image."); }
+    finally { busyRef.current = false; setBusy(false); }
   }
 
   function submit() {
-    if (!valid || !zone || busy) return;
+    if (!valid || !zone || busyRef.current) return;
     const responsible = zone.members.find((member) => member.id === responsibleId);
     if (!responsible) return;
-    setBusy(true);
+    busyRef.current = true; setBusy(true); setFormError("");
+    try {
     const action = createAction({
       title: title.trim(), description: description.trim(), source: "Manual", sourceTitle: "Manual action", sourceModule: "manual", sourceLabel: "Manual", sourceLocation: zone.name, sourceObservation: description.trim(),
       plant: currentPlant, department: zone.department, area: zone.name, zoneId: zone.name, assignedTo: responsible.name,
@@ -276,9 +287,11 @@ function ManualActionDialog({ open, onOpenChange, onCreated }: { open: boolean; 
     onOpenChange(false);
     setBusy(false);
     onCreated(action);
+    } catch (error) { setFormError(error instanceof Error ? error.message : "Unable to create this Action. Please try again."); }
+    finally { busyRef.current = false; setBusy(false); }
   }
 
-  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto"><DialogHeader><DialogTitle>Create Manual Action</DialogTitle><DialogDescription>Create work that did not originate from another OPS module. The source will be recorded as Manual.</DialogDescription></DialogHeader><div className="grid gap-4 py-1"><Field label="Action Title *"><Input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Describe the required action" /></Field><Field label="Description *"><Textarea className="min-h-24" value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Explain what needs to be completed..." /></Field><div className="grid gap-4 sm:grid-cols-2"><Field label="Plant"><Input value={currentPlant} disabled /></Field><Field label="Zone *"><Select value={zoneName} onValueChange={(value) => { const next = value ?? defaultZone?.name ?? ""; setZoneName(next); setResponsibleId(""); }}><SelectTrigger className="w-full"><SelectValue /></SelectTrigger><SelectContent>{zones.map((item) => <SelectItem key={item.name} value={item.name}>{item.name}</SelectItem>)}</SelectContent></Select></Field><Field label="Priority *"><Select value={effectivePriority} onValueChange={(value) => setPriority((value ?? actionPriorities[0]?.id ?? "Medium") as MyActionPriority)}><SelectTrigger className="w-full"><SelectValue /></SelectTrigger><SelectContent>{actionPriorities.map((item) => <SelectItem key={item.id} value={item.id}>{item.label}</SelectItem>)}</SelectContent></Select></Field><Field label="Due Date"><Input type="date" value={dueDate} disabled /></Field><Field label="Action Category *"><Select value={category} onValueChange={(value) => setCategory(value ?? "")}><SelectTrigger className="w-full"><SelectValue placeholder="Select category" /></SelectTrigger><SelectContent>{actionCategories.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</SelectContent></Select></Field><Field label="Zone Leader"><Input value={zone?.leader ?? "—"} disabled /></Field><Field label="Action Owner *"><Select value={responsibleId} onValueChange={(value) => setResponsibleId(value ?? "")}><SelectTrigger className="w-full"><SelectValue placeholder="Select Zone member" /></SelectTrigger><SelectContent>{zone?.members.map((member) => <SelectItem key={member.id} value={member.id}>{member.name}</SelectItem>)}</SelectContent></Select></Field><Field label="Assigned By"><Input value={currentUser.name} disabled /></Field><Field label="Source"><Input value="Manual" disabled /></Field></div><Field label="Before Evidence"><label className="flex min-h-20 cursor-pointer items-center justify-center rounded-lg border border-dashed bg-muted/15 px-4 text-center text-xs text-muted-foreground hover:bg-muted/30"><input hidden type="file" accept="image/*" multiple onChange={(event) => { void addEvidence(event.target.files); event.target.value = ""; }} /><span><Paperclip className="mx-auto mb-1 size-4" />Add up to {MAX_EVIDENCE_IMAGES} images</span></label>{evidence.length > 0 && <div className="mt-2 flex flex-wrap gap-2">{evidence.map((item) => <span key={item.id} className="inline-flex max-w-full items-center gap-1 rounded-md border bg-background px-2 py-1 text-xs"><span className="max-w-40 truncate">{item.name}</span><button type="button" onClick={() => setEvidence((items) => items.filter((evidenceItem) => evidenceItem.id !== item.id))} aria-label={`Remove ${item.name}`}><X className="size-3" /></button></span>)}</div>}</Field></div><DialogFooter><Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button><Button disabled={!valid || busy} onClick={submit}>{busy ? "Creating..." : "Create Action"}</Button></DialogFooter></DialogContent></Dialog>;
+  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto"><DialogHeader><DialogTitle>Create Action</DialogTitle><DialogDescription>Choose the Action details and owner. Actions created here use Manual as their source.</DialogDescription></DialogHeader><div className="grid gap-4 py-1"><Field label="Action Title *"><Input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Describe the required action" /></Field><Field label="Description *"><Textarea className="min-h-24" value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Explain what needs to be completed..." /></Field><div className="grid gap-4 sm:grid-cols-2"><Field label="Plant"><Input value={currentPlant} disabled /></Field><Field label="Zone *"><OpsPersonSelect label="Zone" clearable={false} entityLabel="Zone" entityPlural="Zones" people={zones.map(item => ({ id: item.name, name: item.name }))} value={zoneName} onValueChange={value => { setZoneName(value); setResponsibleId(""); }} /></Field><Field label="Priority *"><Select searchLabel={"Priority"} value={effectivePriority} onValueChange={(value) => setPriority((value ?? actionPriorities[0]?.id ?? "Medium") as MyActionPriority)}><SelectTrigger className="w-full"><SelectValue /></SelectTrigger><SelectContent>{actionPriorities.map((item) => <SelectItem key={item.id} value={item.id}>{item.label}</SelectItem>)}</SelectContent></Select></Field><Field label="Due Date"><Input type="date" value={dueDate} disabled /></Field><Field label="Action Category *"><Select searchLabel={"Action Category"} value={category} onValueChange={(value) => setCategory(value ?? "")}><SelectTrigger className="w-full"><SelectValue placeholder="Select category" /></SelectTrigger><SelectContent>{actionCategories.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</SelectContent></Select></Field><Field label="Zone Leader"><Input value={zone?.leader ?? "—"} disabled /></Field><div className="grid min-w-0 gap-1.5 text-sm font-medium"><p>Action Owner *</p><OpsPersonSelect people={zone?.members ?? []} value={responsibleId} onValueChange={setResponsibleId} label="Action Owner" /></div><Field label="Assigned By"><Input value={currentUser.name} disabled /></Field><Field label="Source"><Input value="Manual · Created in Actions" disabled /></Field></div><div className="grid min-w-0 gap-1.5 text-sm font-medium"><p>Observation Evidence</p><label className="flex min-h-20 cursor-pointer items-center justify-center rounded-lg border border-dashed bg-muted/15 px-4 text-center text-xs text-muted-foreground hover:bg-muted/30"><input hidden type="file" accept="image/*" multiple onChange={(event) => { void addEvidence(event.target.files); event.target.value = ""; }} /><span><Paperclip className="mx-auto mb-1 size-4" />Add up to {MAX_EVIDENCE_IMAGES} images</span></label>{evidence.length > 0 && <div className="mt-2 flex flex-wrap gap-2">{evidence.map((item) => <span key={item.id} className="inline-flex max-w-full items-center gap-1 rounded-md border bg-background px-2 py-1 text-xs"><span className="max-w-40 truncate">{item.name}</span><button type="button" onClick={() => setEvidence((items) => items.filter((evidenceItem) => evidenceItem.id !== item.id))} aria-label={`Remove ${item.name}`}><X className="size-3" /></button></span>)}</div>}</div>{formError && <p role="alert" className="text-sm text-destructive">{formError}</p>}</div><DialogFooter><Button variant="outline" disabled={busy} onClick={() => onOpenChange(false)}>Cancel</Button><Button disabled={!valid || busy} onClick={submit}>{busy ? "Creating..." : "Create Action"}</Button></DialogFooter></DialogContent></Dialog>;
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {

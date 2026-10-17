@@ -1,10 +1,14 @@
+import { questionComplianceResponse } from "@/lib/five-s/scoring-policy";
 import type { FiveSAudit } from "@/features/five-s/types/five-s";
 import type { MyAction } from "@/features/five-s/types/my-actions";
 import type { ContinuousImprovement } from "@/features/five-s/continuous-improvement/types";
 import type { GembaState } from "@/features/gemba/types";
+import { improvementOwnerDisplayName } from "@/features/five-s/continuous-improvement/owner";
+import type { RedTag } from "@/features/five-s/red-tag/types";
+import { resolveActionSourceBeforeEvidence } from "@/lib/actions/action-evidence";
 import type { RedFlag } from "@/features/red-flag/types";
 import type { VisualImprovement } from "@/features/visual-improvement/types";
-import { getActionSourceDefinition } from "@/lib/actions/action-config";
+import { getActionSourceDefinition, isActionOverdue } from "@/lib/actions/action-config";
 import { REPORT_TYPES, getReportModule, type ReportTypeId } from "./report-registry";
 
 export interface ReportSummaryColumn {
@@ -18,6 +22,7 @@ export interface ReportSummaryEvidencePair {
   module: string;
   title: string;
   before?: string;
+  beforeEvidence?: MyAction["evidence"][number];
   after?: string;
   description: string;
   owner: string;
@@ -42,6 +47,7 @@ export interface ReportSummaryInput {
   actions: MyAction[];
   improvements: ContinuousImprovement[];
   redFlags: RedFlag[];
+  redTags?: RedTag[];
   visualImprovements: VisualImprovement[];
   gemba: GembaState;
   now?: Date;
@@ -75,7 +81,7 @@ export function reportLibraryToCsv(rows: Array<Record<string, string>>) {
 function nonCompliance(input: ReportSummaryInput, generatedAt: string): ReportSummaryModel {
   const actionMap = new Map(input.actions.map((action) => [action.id, action]));
   const rows = input.audits.flatMap((audit) => audit.sections.flatMap((section) => section.questions
-    .filter((question) => question.status === "Fail" || question.score === 0 || question.actionRequired)
+    .filter((question) => question.status === "Fail" || questionComplianceResponse(question) === 0 || question.actionRequired)
     .map((question) => {
       const linked = question.actionId ? actionMap.get(question.actionId) : input.actions.find((action) => action.auditId === audit.id && action.questionId === question.id);
       return {
@@ -98,7 +104,8 @@ function nonCompliance(input: ReportSummaryInput, generatedAt: string): ReportSu
 function beforeAfter(input: ReportSummaryInput, generatedAt: string): ReportSummaryModel {
   const actionPairs: ReportSummaryEvidencePair[] = input.actions.filter((action) => action.status === "Completed").map((action) => ({
     id: `action:${action.id}`, reference: action.id, module: "Actions", title: action.title,
-    before: firstImage(action.issueEvidence), after: firstImage(action.evidence),
+    before: firstImage(resolveActionSourceBeforeEvidence(action, input.redTags ?? [], input.gemba).evidence),
+    beforeEvidence: resolveActionSourceBeforeEvidence(action, input.redTags ?? [], input.gemba).evidence.find(item => item.type === "image"), after: firstImage(action.evidence),
     description: action.resolutionObservation ?? action.actionTakenDescription ?? action.description,
     owner: action.completedByName ?? action.responsiblePersonName ?? action.assignedTo,
     completionDate: action.completedAt ?? "",
@@ -108,11 +115,11 @@ function beforeAfter(input: ReportSummaryInput, generatedAt: string): ReportSumm
     before: item.beforeEvidence[0]?.url ?? item.existingPhotos[0]?.url,
     after: item.afterEvidence[0]?.url ?? item.evidence[0]?.url,
     description: item.actualBenefit ?? item.actionTaken ?? item.proposedImprovement,
-    owner: item.completedByName ?? item.ownerName, completionDate: item.completedAt ?? "",
+    owner: improvementOwnerDisplayName(item), completionDate: item.completedAt ?? "",
   }));
   const evidencePairs = [...actionPairs, ...ciPairs];
   const rows = evidencePairs.map((pair) => ({
-    module: pair.module, reference: pair.reference, title: pair.title, before: pair.before ?? "No image",
+    module: pair.module, reference: pair.reference, title: pair.title, before: pair.before ?? pair.beforeEvidence?.storageKey ?? "No image",
     after: pair.after ?? "No image", description: pair.description, owner: pair.owner, completionDate: pair.completionDate,
   }));
   return {
@@ -126,7 +133,7 @@ function beforeAfter(input: ReportSummaryInput, generatedAt: string): ReportSumm
 
 function overdueActions(input: ReportSummaryInput, generatedAt: string): ReportSummaryModel {
   const now = new Date(generatedAt);
-  const rows = input.actions.filter((action) => action.status !== "Completed" && new Date(`${action.dueDate}T23:59:59`).getTime() < now.getTime()).map((action) => ({
+  const rows = input.actions.filter((action) => isActionOverdue(action, now)).map((action) => ({
     action: action.id, title: action.title, source: getActionSourceDefinition(action).label, plant: action.plant, zone: action.area,
     priority: action.priority, owner: action.responsiblePersonName ?? action.assignedTo, dueDate: action.dueDate, status: action.status,
   }));

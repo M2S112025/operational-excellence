@@ -72,8 +72,8 @@ describe("custom audit question characterization", () => {
     vi.stubGlobal("crypto", { randomUUID: () => "question-test-id" });
     vi.resetModules();
     const store = await import("@/features/settings/custom-audit-questions/store");
-    const created = store.createCustomAuditQuestion({ question: "Is the team board current?", stage: "Sustain", responseType: "Yes / No", mandatory: true, requireEvidenceOnNonCompliance: false, active: true, order: 2 }, "Admin User")!;
-    expect(created).toMatchObject({ id: "CUSTOM-AUDIT-question-test-id", source: "custom", createdBy: "Admin User" });
+    const created = store.createCustomAuditQuestion({ question: "Is the team board current?", stage: "Sustain", responseType: "Yes / No", mandatory: true, requireEvidenceOnNonCompliance: false, active: true, order: 2 })!;
+    expect(created).toMatchObject({ id: "CUSTOM-AUDIT-question-test-id", source: "custom", createdBy: "Lakshman" });
     expect(store.updateCustomAuditQuestion(created.id, { ...created, question: "Is the team board updated today?" })?.question).toBe("Is the team board updated today?");
     expect(store.setCustomAuditQuestionActive(created.id, false)).toBe(true);
     expect(store.getActiveCustomAuditQuestions().some((question) => question.id === created.id)).toBe(false);

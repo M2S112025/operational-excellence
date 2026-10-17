@@ -1,4 +1,8 @@
 "use client";
+import { ActionLink } from "@/components/ops/ops-return-link";
+import { OpsPersonSelect } from "@/components/ops/ops-person-select";
+import { canOperateVisualManagementBoard } from "./visual-management-access";
+import { getCurrentDemoUser } from "@/lib/current-user";
 
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
@@ -9,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { createCanonicalLinkedAction, type LinkedActionContext } from "@/features/actions/create-linked-action-dialog";
 import { useAdminUsers } from "@/features/five-s/administration/store";
@@ -111,7 +114,7 @@ export function DailyManagementMeetingWorkspace({ meeting }: { meeting: VisualMa
     });
     const order = ["safety", "quality", "delivery", "cost", "people", "environment", "morale", "5s"];
     return Array.from(categories, ([bucket, allMetrics]) => {
-      return { bucket, label: KPI_BUCKET_LABELS[bucket as keyof typeof KPI_BUCKET_LABELS], metrics: allMetrics.slice(0, 1), allMetrics };
+      return { bucket, label: KPI_BUCKET_LABELS[bucket as keyof typeof KPI_BUCKET_LABELS], metrics: allMetrics, allMetrics };
     }).sort((a, b) => order.indexOf(a.bucket) - order.indexOf(b.bucket));
   }, [assigned]);
 
@@ -229,7 +232,7 @@ export function DailyManagementMeetingWorkspace({ meeting }: { meeting: VisualMa
         const draft = draftFor(kpi);
         let createdActionId = "";
         try {
-          const context = buildActionContext(board, kpi, draft, result.entry, result.deviation, users);
+          const context = buildActionContext(board, meeting.id, kpi, draft, result.entry, result.deviation, users);
           const action = createCanonicalLinkedAction(
             context,
             draft.responsibleId,
@@ -238,11 +241,11 @@ export function DailyManagementMeetingWorkspace({ meeting }: { meeting: VisualMa
             result.deviation.status === "red" ? "High" : "Medium",
           );
           createdActionId = action.id;
-          if (!linkDeviationAction(result.deviation.id, action.id)) {
+          if (!linkDeviationAction(result.deviation.id, action.id, getCurrentDemoUser())) {
             throw new Error("The Action could not be linked to this metric.");
           }
         } catch (caught) {
-          if (createdActionId) rollbackCreatedAction(createdActionId);
+          if (createdActionId) rollbackCreatedAction(createdActionId, current);
           update(kpi.id, {
             error: caught instanceof Error ? caught.message : "Action creation failed.",
           });
@@ -251,7 +254,7 @@ export function DailyManagementMeetingWorkspace({ meeting }: { meeting: VisualMa
         }
       }
     }
-    if (completeVisualManagementMeeting(meeting.id)) {
+    if (completeVisualManagementMeeting(meeting.id, getCurrentDemoUser())) {
       router.push(`/visual-management/meetings/${meeting.id}`);
     }
   }
@@ -266,6 +269,8 @@ export function DailyManagementMeetingWorkspace({ meeting }: { meeting: VisualMa
   const redCount = assigned.filter((kpi) => (currentEntry(kpi)?.statusSnapshot ?? resultFor(kpi, draftFor(kpi))) === "red").length;
   const amberCount = assigned.filter((kpi) => (currentEntry(kpi)?.statusSnapshot ?? resultFor(kpi, draftFor(kpi))) === "amber").length;
   const relevantActions = actions.filter((action) => action.visualManagementSource?.boardId === board.id || action.area === board.zone).slice(0, 6);
+
+  if (!canOperateVisualManagementBoard(board, current) || meeting.status !== "In Progress") return <p className="p-8">This meeting is read-only for your account.</p>;
 
   return (
     <div className="fixed inset-0 z-[90] overflow-y-auto bg-background">
@@ -299,12 +304,12 @@ export function DailyManagementMeetingWorkspace({ meeting }: { meeting: VisualMa
             <CardContent className="p-3">
               <div className="flex flex-wrap gap-2">
                 {meeting.participants.map((person) => (
-                  <Button key={person.id} type="button" aria-pressed={person.attendance === "Present"} variant="outline" size="sm" onClick={() => setMeetingAttendance(meeting.id, person.id, person.attendance === "Present" ? "Absent" : "Present")} className={person.attendance === "Present" ? "border-emerald-500/30 bg-emerald-500/[0.06]" : ""}>
+                  <Button key={person.id} type="button" aria-pressed={person.attendance === "Present"} variant="outline" size="sm" onClick={() => setMeetingAttendance(meeting.id, person.id, person.attendance === "Present" ? "Absent" : "Present", getCurrentDemoUser())} className={person.attendance === "Present" ? "border-emerald-500/30 bg-emerald-500/[0.06]" : ""}>
                     {person.attendance === "Present" ? <Check className="size-3.5 text-emerald-600" /> : <span aria-hidden="true" className="size-3.5 rounded-full border" />}{person.name}{person.companyOrRole ? ` · ${person.companyOrRole}` : ""}{person.guest ? " · Guest" : ""}
                   </Button>
                 ))}
               </div>
-              <MeetingAttendanceControls attendees={meeting.participants} onAddUser={(person) => addMeetingAttendee(meeting.id, person)} onAddGuest={(name, companyOrRole) => addMeetingGuest(meeting.id, name, companyOrRole)} onRemove={(id) => removeMeetingAttendee(meeting.id, id)} />
+              <MeetingAttendanceControls attendees={meeting.participants} onAddUser={(person) => addMeetingAttendee(meeting.id, person, getCurrentDemoUser())} onAddGuest={(name, companyOrRole) => addMeetingGuest(meeting.id, name, companyOrRole, getCurrentDemoUser())} onRemove={(id) => removeMeetingAttendee(meeting.id, id, getCurrentDemoUser())} />
             </CardContent>
           </Card>
           <Card className="gap-0 shadow-sm">
@@ -382,26 +387,7 @@ export function DailyManagementMeetingWorkspace({ meeting }: { meeting: VisualMa
                          {needsException && !action ? (
                                 <div className="border-t pt-3">
                                   <p className="text-sm font-medium">Action owner *</p>
-                                   <Select
-                                     value={draft.responsibleId}
-                                     onValueChange={(value) => update(kpi.id, { responsibleId: value ?? "" })}
-                                   >
-                                     <SelectTrigger className="mt-2 w-full">
-                                       <SelectValue placeholder="Select action owner">
-                                         {draft.responsibleId ? board.members.find((member) => member.id === draft.responsibleId)?.name ?? "Select action owner" : undefined}
-                                       </SelectValue>
-                                     </SelectTrigger>
-                                     <SelectContent>
-                                       {board.members.filter((member) => member.id === current.id).map((member) => (
-                                         <SelectItem key={member.id} value={member.id}>{member.name} — Assign to me</SelectItem>
-                                       ))}
-                                       {board.members.filter((member) => member.id !== current.id).map((member) => (
-                                         <SelectItem key={member.id} value={member.id}>
-                                           {member.name}
-                                         </SelectItem>
-                                       ))}
-                                     </SelectContent>
-                                   </Select>
+                                   <OpsPersonSelect label="Action Owner" clearable={false} people={[...board.members.filter(member => member.id === current.id).map(member => ({ ...member, description: "Assign to me" })), ...board.members.filter(member => member.id !== current.id)]} value={draft.responsibleId} onValueChange={value => update(kpi.id, { responsibleId: value })} />
                                </div>
                              ) : needsException && action ? (
                                <div className="flex flex-wrap items-center gap-2 rounded-md bg-muted/45 p-3 text-sm">
@@ -414,7 +400,7 @@ export function DailyManagementMeetingWorkspace({ meeting }: { meeting: VisualMa
                                   size="sm"
                                   variant="outline"
                                   nativeButton={false}
-                                  render={<Link href={`/actions/${action.id}`} target="_blank" />}
+                                  render={<ActionLink href={`/actions/${action.id}`} target="_blank" />}
                                 >
                                   View Action
                                 </Button>
@@ -453,7 +439,7 @@ export function DailyManagementMeetingWorkspace({ meeting }: { meeting: VisualMa
                 <div key={action.id} className="flex items-center gap-3 rounded-lg border px-3 py-2 text-sm">
                   <div className="min-w-0 flex-1"><p className="truncate font-medium">{action.title}</p><p className="text-xs text-muted-foreground">{action.responsiblePersonName ?? action.assignedTo} · Due {action.dueDate}</p></div>
                   <Badge variant={action.status === "Completed" ? "success" : action.status === "Overdue" ? "danger" : "warning"}>{action.status}</Badge>
-                  <Button size="sm" variant="ghost" nativeButton={false} render={<Link href={`/actions/${action.id}`} target="_blank" />}>View</Button>
+                  <Button size="sm" variant="ghost" nativeButton={false} render={<ActionLink href={`/actions/${action.id}`} target="_blank" />}>View</Button>
                 </div>
               ))}
               {!relevantActions.length ? <p className="py-3 text-center text-sm text-muted-foreground">No previous Actions for this board.</p> : null}
@@ -506,6 +492,7 @@ function Summary({ label, value }: { label: string; value: string }) {
 
 function buildActionContext(
   board: ReturnType<typeof useVisualManagementStore>["boards"][number],
+  meetingId: string,
   kpi: VisualManagementKpiDefinition,
   draft: Draft,
   entry: NonNullable<ReturnType<typeof getLatestActual>>,
@@ -539,6 +526,7 @@ ${note}`,
     defaultResponsibleId: kpi.ownerUserId && users.some((item) => item.id === kpi.ownerUserId) ? kpi.ownerUserId : undefined,
     visualManagementSource: {
       boardId: board.id,
+      meetingId,
       configuredKpiId: kpi.id,
       actualEntryId: entry.id,
       deviationId: deviation.id,

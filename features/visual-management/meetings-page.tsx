@@ -1,4 +1,5 @@
 "use client";
+import { getCurrentDemoUser } from "@/lib/current-user";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -50,12 +51,12 @@ export default function MeetingsPage() {
     const board = boardMap.get(item.boardId);
     if (!board || board.status !== "Active") return;
     const active = meetings.find((meeting) => meeting.boardId === board.id && meeting.status === "In Progress");
-    if (!active) startVisualManagementMeeting(board.id, board.owner, { scheduleId: item.scheduleId, occurrenceDate: item.occurrenceDate, scheduledTime: item.time, durationMinutes: item.durationMinutes, attendees: item.attendees });
+    if (!active) startVisualManagementMeeting(board.id, getCurrentDemoUser(), { scheduleId: item.scheduleId, occurrenceDate: item.occurrenceDate, scheduledTime: item.time, durationMinutes: item.durationMinutes, attendees: item.attendees }, board.owner);
     router.push(`/visual-management/boards/${board.id}/meeting`);
   }
   function cancel() {
     if (!cancelling) return;
-    if (!changeMeetingSchedule(cancelling.scheduleId, cancelling.occurrenceDate, scope, {}, true)) return setError("This meeting could not be cancelled. It may have already started.");
+    if (!changeMeetingSchedule(cancelling.scheduleId, cancelling.occurrenceDate, scope, {}, true, getCurrentDemoUser())) return setError("This meeting could not be cancelled. It may have already started.");
     setCancelling(null);
   }
   function occurrenceRow(item: MeetingOccurrence) {

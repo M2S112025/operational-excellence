@@ -35,7 +35,7 @@ export const IMPROVEMENT_BENEFIT_TYPES: readonly ImprovementBenefitType[] = [
 ];
 
 export const IMPROVEMENT_PIPELINE = [
-  { id: "proposed", label: "Proposed", statuses: ["draft", "submitted"] },
+  { id: "proposed", label: "Proposals", statuses: ["draft", "submitted"] },
   { id: "review", label: "Under Review", statuses: ["under_review", "on_hold"] },
   { id: "approved", label: "Approved", statuses: ["approved"] },
   { id: "implementation", label: "In Progress", statuses: ["in_progress"] },
@@ -43,11 +43,12 @@ export const IMPROVEMENT_PIPELINE = [
   { id: "completed", label: "Completed", statuses: ["completed"] },
 ] as const satisfies ReadonlyArray<{ id: string; label: string; statuses: readonly ImprovementStatus[] }>;
 
-export type ImprovementQuickFilter = "proposal" | "under-review" | "in-progress";
+export type ImprovementQuickFilter = "proposal" | "under-review" | "approved" | "in-progress";
 
 export const IMPROVEMENT_QUICK_FILTERS = [
-  { id: "proposal", label: "Proposal", statuses: ["draft", "submitted"] },
+  { id: "proposal", label: "Proposals", statuses: ["draft", "submitted"] },
   { id: "under-review", label: "Under Review", statuses: ["submitted", "under_review"] },
+  { id: "approved", label: "Approved", statuses: ["approved"] },
   { id: "in-progress", label: "In Progress", statuses: ["in_progress"] },
 ] as const satisfies ReadonlyArray<{ id: ImprovementQuickFilter; label: string; statuses: readonly ImprovementStatus[] }>;
 
@@ -63,4 +64,14 @@ export function generateImprovementId(records: readonly Pick<ContinuousImproveme
     return Math.max(maximum, Number(record.id.slice(prefix.length)) || 0);
   }, 0) + 1;
   return `${prefix}${String(next).padStart(3, "0")}`;
+}
+
+// Pipeline groups can contain several existing lifecycle statuses. Preserve the
+// same set in the destination list rather than linking only its first status.
+export function improvementStageFilter(value?: string) {
+  const statuses = (value ?? "").split(",").filter((status): status is ImprovementStatus => IMPROVEMENT_STATUSES.includes(status as ImprovementStatus));
+  return statuses.length ? [...new Set(statuses)].join(",") : "All";
+}
+export function matchesImprovementStage(item: Pick<ContinuousImprovement, "status">, stage: string) {
+  return stage === "All" || stage.split(",").includes(item.status);
 }

@@ -1,3 +1,4 @@
+import { canReviewAction } from "@/lib/actions/action-store";
 import type { AdminUser } from "@/features/five-s/administration/types";
 import type { ActionSourceModule, MyAction, MyActionPriority, MyActionStatus } from "@/features/five-s/types/my-actions";
 import type { DemoUser } from "@/lib/current-user";
@@ -42,10 +43,8 @@ function isCreator(action: MyAction, user: DemoUser) {
 }
 
 function isReviewer(action: MyAction, user: DemoUser, adminUser?: AdminUser) {
-  if (action.reviewerId || action.reviewerName) return action.reviewerId === user.id || action.reviewerName === user.name;
-  if (action.auditor) return action.auditor === user.name;
-  if (action.createdByUserId || action.createdByName) return isCreator(action, user);
-  return Boolean(adminUser?.roles.includes("Admin") && adminUser.permissions.includes("actions.review") && adminUser.permissions.includes("actions.close"));
+  if (adminUser && adminUser.id !== user.id) return false;
+  return canReviewAction(action, user);
 }
 
 export function canViewTeamActions(adminUser: AdminUser | undefined) {

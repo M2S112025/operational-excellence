@@ -1,4 +1,5 @@
 "use client";
+import { OpsPersonSelect } from "@/components/ops/ops-person-select";
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
@@ -11,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAdminUsers } from "@/features/five-s/administration/store";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { formatOpsDate, formatOpsDateTime } from "@/lib/ops-formatters";
 import { useCurrentUser } from "@/lib/current-user";
@@ -76,7 +76,7 @@ export function StartMeetingDialog({ open, onOpenChange, initialBoardId }: { ope
     onOpenChange(false);
     router.push(`/visual-management/boards/${selected.id}/meeting`);
   }
-  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="sm:max-w-lg"><DialogHeader><DialogTitle>Start Visual Management Meeting</DialogTitle><DialogDescription>Select a board. Plant, zone, tier, members, lead, and KPI sections are carried into the confirmation automatically.</DialogDescription></DialogHeader><div className="grid gap-4"><label className="grid gap-2 text-sm font-medium">Board<Select value={boardId} onValueChange={(value) => setBoardId(value ?? "")}><SelectTrigger className="w-full"><SelectValue placeholder="Select a board" /></SelectTrigger><SelectContent>{boards.filter((board) => board.status === "Active").map((board) => <SelectItem key={board.id} value={board.id}>{board.name} · {board.tier}</SelectItem>)}</SelectContent></Select></label>{selected && <div className="rounded-lg border bg-muted/25 p-4"><div className="flex items-center gap-2"><Badge variant="outline">{selected.tier}</Badge>{active && <Badge variant="info">Meeting in progress</Badge>}</div><p className="mt-2 text-sm font-semibold">{selected.name}</p><p className="mt-1 text-xs text-muted-foreground">{selected.plant}{selected.zone ? ` · ${selected.zone}` : ""} · Default lead: {selected.owner.name}</p><p className="mt-2 inline-flex items-center gap-1.5 text-xs text-muted-foreground"><CalendarClock className="size-3.5" />{selected.meetingFrequency} · {selected.members.length} expected members</p></div>}</div><DialogFooter><Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button><Button onClick={start} disabled={!selected}><CirclePlay className="size-4" />{active ? "Resume Meeting" : "Review & Start"}</Button></DialogFooter></DialogContent></Dialog>;
+  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className="sm:max-w-lg"><DialogHeader><DialogTitle>Start Visual Management Meeting</DialogTitle><DialogDescription>Select a board. Plant, zone, tier, members, lead, and KPI sections are carried into the confirmation automatically.</DialogDescription></DialogHeader><div className="grid gap-4"><label className="grid gap-2 text-sm font-medium">Board<OpsPersonSelect label="Board" clearable={false} entityLabel="board" entityPlural="boards" people={boards.filter(board => board.status === "Active").map(board => ({ ...board, description: board.tier }))} value={boardId} onValueChange={setBoardId} /></label>{selected && <div className="rounded-lg border bg-muted/25 p-4"><div className="flex items-center gap-2"><Badge variant="outline">{selected.tier}</Badge>{active && <Badge variant="info">Meeting in progress</Badge>}</div><p className="mt-2 text-sm font-semibold">{selected.name}</p><p className="mt-1 text-xs text-muted-foreground">{selected.plant}{selected.zone ? ` · ${selected.zone}` : ""} · Default lead: {selected.owner.name}</p><p className="mt-2 inline-flex items-center gap-1.5 text-xs text-muted-foreground"><CalendarClock className="size-3.5" />{selected.meetingFrequency} · {selected.members.length} expected members</p></div>}</div><DialogFooter><Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button><Button onClick={start} disabled={!selected}><CirclePlay className="size-4" />{active ? "Resume Meeting" : "Review & Start"}</Button></DialogFooter></DialogContent></Dialog>;
 }
 
 export function formatVmDate(value: string, includeTime = false) {

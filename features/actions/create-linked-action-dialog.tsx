@@ -1,4 +1,5 @@
 "use client";
+import { OpsPersonSelect } from "@/components/ops/ops-person-select";
 
 import { useState } from "react";
 import { Link2 } from "lucide-react";
@@ -83,7 +84,7 @@ export function CreateLinkedActionDialog({ open, onOpenChange, context, onCreate
     try {
       const action = createCanonicalLinkedAction(context, responsible.id, currentUser, category, effectivePriority);
       if (onCreated(action) === false) {
-        const rolledBack = rollbackCreatedAction(action.id);
+        const rolledBack = rollbackCreatedAction(action.id, currentUser);
         throw new Error(rolledBack
           ? "The Action could not be linked to its source record, so it was not retained. Please try again."
           : "The Action was created, but its source link failed. Refresh the source record before trying again.");
@@ -110,10 +111,10 @@ export function CreateLinkedActionDialog({ open, onOpenChange, context, onCreate
             <p className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground"><Link2 className="size-3.5" />{context.zone} · {context.location} · {sourceEvidenceCount} evidence photo{sourceEvidenceCount === 1 ? "" : "s"}</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            {!context.hidePriority && <Field label="Priority *"><Select value={effectivePriority} onValueChange={(value) => setPriority((value ?? actionPriorities[0]?.id ?? "Medium") as MyActionPriority)}><SelectTrigger className="w-full"><SelectValue /></SelectTrigger><SelectContent>{actionPriorities.map((item) => <SelectItem key={item.id} value={item.id}>{item.label}</SelectItem>)}</SelectContent></Select></Field>}
+            {!context.hidePriority && <Field label="Priority *"><Select searchLabel={"Priority"} value={effectivePriority} onValueChange={(value) => setPriority((value ?? actionPriorities[0]?.id ?? "Medium") as MyActionPriority)}><SelectTrigger className="w-full"><SelectValue /></SelectTrigger><SelectContent>{actionPriorities.map((item) => <SelectItem key={item.id} value={item.id}>{item.label}</SelectItem>)}</SelectContent></Select></Field>}
             <Field label="Due Date" derived><Input type="date" value={dueDate} disabled /></Field>
-            <Field label="Action Category *"><Select value={category} onValueChange={(value) => setCategory(value ?? "")}><SelectTrigger className="w-full"><SelectValue placeholder="Select category" /></SelectTrigger><SelectContent>{actionCategories.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</SelectContent></Select></Field>
-            <Field label="Responsible *"><div className="grid gap-1.5"><div className="flex gap-2"><Button type="button" disabled={!currentMember} variant={currentMember && normalizeActionUserId(responsibleId) === normalizeActionUserId(currentMember.id) ? "default" : "outline"} onClick={() => { if (!currentMember) return; setResponsibleId(currentMember.id); setError(""); }}>Assign to me</Button><Select value={responsibleId} onValueChange={(value) => { setResponsibleId(value ?? ""); setError(""); }}><SelectTrigger className="min-w-0 flex-1"><SelectValue placeholder="Select member" /></SelectTrigger><SelectContent>{zone?.members.map((member) => <SelectItem key={member.id} value={member.id}>{member.name} · {zone.name} · Member</SelectItem>)}</SelectContent></Select></div>{!currentMember && context && <p className="text-xs text-muted-foreground">Assign to me unavailable — you are not a member of {context.zone}.</p>}</div></Field>
+            <Field label="Action Category *"><Select searchLabel={"Action Category"} value={category} onValueChange={(value) => setCategory(value ?? "")}><SelectTrigger className="w-full"><SelectValue placeholder="Select category" /></SelectTrigger><SelectContent>{actionCategories.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</SelectContent></Select></Field>
+            <Field label="Responsible *"><div className="grid gap-1.5"><div className="flex gap-2"><Button type="button" disabled={!currentMember} variant={currentMember && normalizeActionUserId(responsibleId) === normalizeActionUserId(currentMember.id) ? "default" : "outline"} onClick={() => { if (!currentMember) return; setResponsibleId(currentMember.id); setError(""); }}>Assign to me</Button><OpsPersonSelect label="Responsible person" people={zone?.members ?? []} value={responsibleId} onValueChange={value => { setResponsibleId(value); setError(""); }} /></div>{!currentMember && context && <p className="text-xs text-muted-foreground">Assign to me unavailable — you are not a member of {context.zone}.</p>}</div></Field>
             <Field label="Zone Leader" derived><Input value={zone?.leader ?? "—"} disabled /></Field>
             <Field label="Assigned By" derived><Input value={currentUser.name} disabled /></Field>
           </div>

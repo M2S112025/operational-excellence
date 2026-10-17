@@ -20,22 +20,22 @@ describe("Visual Management Daily V1", () => {
   });
 
   it("stores No Production / Holiday as an explicit neutral immutable entry", () => {
-    assignKpiToBoard("BOARD", "M1", "USER");
-    const result = submitKpiActual({ boardId: "BOARD", kpiId: "M1", value: 0, reportingPeriod: { type: "daily", key: "2026-10-03", label: "3 October 2026" }, reportedByUserId: "USER", neutralReason: "no_production_holiday" });
+    assignKpiToBoard("VM-ZA-T1", "M1", "USR-LAKSHMAN");
+    const result = submitKpiActual({ boardId: "VM-ZA-T1", kpiId: "M1", value: 0, reportingPeriod: { type: "daily", key: "2026-10-03", label: "3 October 2026" }, reportedByUserId: "USR-LAKSHMAN", neutralReason: "no_production_holiday" });
     expect(result).toMatchObject({ success: true, entry: { statusSnapshot: "unavailable", neutralReason: "no_production_holiday" } });
     expect(getKpiExecution().deviations).toHaveLength(0);
   });
 
   it("reorders board metrics without changing their definitions", () => {
-    assignKpiToBoard("BOARD", "M1", "USER"); assignKpiToBoard("BOARD", "M2", "USER"); moveBoardKpiAssignment("BOARD", "M2", -1);
+    assignKpiToBoard("VM-ZA-T1", "M1", "USR-LAKSHMAN"); assignKpiToBoard("VM-ZA-T1", "M2", "USR-LAKSHMAN"); moveBoardKpiAssignment("VM-ZA-T1", "M2", -1, { id: "USR-LAKSHMAN" });
     expect(getKpiExecution().assignments.sort((a, b) => a.displayOrder - b.displayOrder).map((item) => item.kpiId)).toEqual(["M2", "M1"]);
   });
 
   it("reuses one definition with different board-specific targets and thresholds", () => {
-    assignKpiToBoard("ZONE-A", "M1", "USER", { target: 98, performanceThreshold: { direction: "higher_is_better", amberBoundary: 95 } });
-    assignKpiToBoard("ZONE-B", "M1", "USER", { target: 97, performanceThreshold: { direction: "higher_is_better", amberBoundary: 94 } });
-    const a = submitKpiActual({ boardId: "ZONE-A", kpiId: "M1", value: 97, reportingPeriod: { type: "daily", key: "2026-10-03", label: "3 October 2026" }, reportedByUserId: "USER", deviationComment: "Rework", correctiveActionRequired: true });
-    const b = submitKpiActual({ boardId: "ZONE-B", kpiId: "M1", value: 97, reportingPeriod: { type: "daily", key: "2026-10-03", label: "3 October 2026" }, reportedByUserId: "USER" });
+    assignKpiToBoard("VM-ZA-T1", "M1", "USR-LAKSHMAN", { target: 98, performanceThreshold: { direction: "higher_is_better", amberBoundary: 95 } });
+    assignKpiToBoard("VM-ZB-T1", "M1", "USR-LAKSHMAN", { target: 97, performanceThreshold: { direction: "higher_is_better", amberBoundary: 94 } });
+    const a = submitKpiActual({ boardId: "VM-ZA-T1", kpiId: "M1", value: 97, reportingPeriod: { type: "daily", key: "2026-10-03", label: "3 October 2026" }, reportedByUserId: "USR-LAKSHMAN", deviationComment: "Rework", correctiveActionRequired: true });
+    const b = submitKpiActual({ boardId: "VM-ZB-T1", kpiId: "M1", value: 97, reportingPeriod: { type: "daily", key: "2026-10-03", label: "3 October 2026" }, reportedByUserId: "USR-LAKSHMAN" });
     expect(a).toMatchObject({ success: true, entry: { targetSnapshot: 98, statusSnapshot: "amber" } });
     expect(b).toMatchObject({ success: true, entry: { targetSnapshot: 97, statusSnapshot: "green" } });
     expect(new Set(getKpiExecution().assignments.map((item) => item.kpiId))).toEqual(new Set(["M1"]));
@@ -80,9 +80,10 @@ describe("Visual Management Daily V1", () => {
     const source = read("features/visual-management/daily-management-meeting-workspace.tsx");
     expect(source).toContain("What happened? *");
     expect(source).toContain("Briefly explain why this KPI is outside target.");
-    expect(source).toContain("Select action owner");
-    expect(source).toContain("— Assign to me");
-    expect(source).toContain("board.members.find((member) => member.id === draft.responsibleId)?.name");
+    expect(source).toContain('<OpsPersonSelect label="Action Owner"');
+    expect(source).toContain('description: "Assign to me"');
+    expect(source).toContain("value={draft.responsibleId}");
+    expect(source).toContain("board.members.filter(member => member.id !== current.id)");
     expect(source).not.toContain("selectedKpiByBucket");
     expect(source).not.toContain('min-h-[520px]');
   });
@@ -113,7 +114,7 @@ describe("Visual Management Daily V1", () => {
     expect(editor).not.toContain('Dialog open onOpenChange={(open) => { if (!open) onClose(); }}');
     expect(editor).toContain("Select a zone to derive the department");
     expect(editor).toContain("entry.name");
-    expect(editor).toContain("user.name");
+    expect(editor).toContain('<OpsPersonSelect label="Board Owner" clearable={false} people={users}');
     expect(editor).toContain(">Edit</Button>");
     expect(editor).toContain(">Remove</Button>");
     expect(editor).not.toMatch(/Field label="Tier"|Field label="Plant"|KPI hierarchy|SMART/);
@@ -134,7 +135,7 @@ describe("Visual Management Daily V1", () => {
     expect(dialog).toContain('value="event">Event / Incident');
     expect(dialog).toContain("Enter a metric name.");
     expect(dialog).toContain("Enter a unit.");
-    expect(dialog).toContain("saveReusableVisualManagementMetric({ id: created ? undefined : item.id, name, category, metricType, measurementType, unit, direction })");
+    expect(dialog).toContain("saveReusableVisualManagementMetric({ id: created ? undefined : item.id, name, category, metricType, measurementType, unit, direction }, getCurrentDemoUser())");
   });
 
   it("derives daily, weekly, and monthly dashboard summaries from actual entries", () => {

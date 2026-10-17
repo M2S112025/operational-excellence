@@ -21,18 +21,18 @@ function AppShell({
   const shellContext = pathname.startsWith("/super-admin") && currentUser.isSuperAdmin ? "super-admin" : "ops";
 
   return (
-    <div className="min-h-screen bg-muted/35 dark:bg-background">
+    <div data-app-shell className="min-h-screen bg-muted/35 dark:bg-background">
       <Sidebar
         collapsed={sidebarCollapsed}
         context={shellContext}
         onToggleCollapsed={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
 
-      <div className="app-workspace-shell flex min-h-screen flex-col">
+      <div data-app-workspace className="app-workspace-shell flex min-h-screen flex-col">
         <Header />
 
-        <main className="flex min-w-0 flex-1 flex-col px-4 py-5 sm:px-5 sm:py-6 lg:px-6 lg:py-6 2xl:px-8 2xl:py-8">
-          <div className="flex w-full flex-1 flex-col">
+        <main data-app-main className="flex min-w-0 flex-1 flex-col px-4 py-5 sm:px-5 sm:py-6 lg:px-6 lg:py-6 2xl:px-8 2xl:py-8">
+          <div data-app-content className="flex w-full flex-1 flex-col">
             {children}
           </div>
         </main>

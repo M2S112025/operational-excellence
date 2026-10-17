@@ -1,5 +1,5 @@
-import { AuditScoringPage } from "@/features/settings/settings-reference-pages";
+import AuditScoringConfigurationPage from "@/features/settings/audit-scoring/page";
 
 export default function Page() {
-  return <AuditScoringPage />;
+  return <AuditScoringConfigurationPage />;
 }

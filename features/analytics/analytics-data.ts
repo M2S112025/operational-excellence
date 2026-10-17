@@ -1,3 +1,6 @@
+
+import { auditScorePercentage } from "@/lib/five-s/scoring-policy";
+import { isActionOverdue as canonicalActionIsOverdue } from "@/lib/actions/action-config";
 import type { ContinuousImprovement } from "@/features/five-s/continuous-improvement/types";
 import type { FiveSAudit } from "@/features/five-s/types/five-s";
 import type { MyAction } from "@/features/five-s/types/my-actions";
@@ -261,7 +264,7 @@ function averageOrNull(values: number[]) {
 }
 
 function auditScore(audit: FiveSAudit) {
-  return audit.maxScore ? Math.round((audit.score / audit.maxScore) * 100) : 0;
+  return auditScorePercentage(audit);
 }
 
 function formatMoney(value: number) {
@@ -338,7 +341,7 @@ function chart(config: Omit<AnalyticsChart, "emptyMessage"> & { emptyMessage?: s
 }
 
 function isActionOverdue(action: MyAction, now: Date) {
-  return action.status === "Overdue" || (action.status !== CLOSED_ACTION_STATUS && timestamp(action.dueDate) < now.getTime());
+  return canonicalActionIsOverdue(action, now);
 }
 
 function redFlagOpen(flag: RedFlag) {

@@ -10,6 +10,8 @@ export const RED_TAG_REASON_GROUPS = {
   "Inventory / Waste": ["Excess inventory", "Scrap/waste", "Redundant item"],
   Other: ["Free Text"],
 } as const;
+export function getRedTagReasonCategoryLabel(category: string) { return category === "Organization" ? "Arrangement" : category; }
+
 export type RedTagReasonCategory = keyof typeof RED_TAG_REASON_GROUPS;
 export type RedTagCategorizedReason = (typeof RED_TAG_REASON_GROUPS)[RedTagReasonCategory][number];
 
@@ -29,7 +31,7 @@ export const RED_TAG_DECISION_LABELS: Record<RedTagDecision, string> = {
 export const RED_TAG_DISPOSITIONS = ["Keep", "Relocate", "Repair", "Return", "Dispose", "Other"] as const;
 
 /** `In Progress` remains accepted only for the legacy Action-synchronization compatibility path. */
-export type RedTagStatus = "Open" | "Under Review" | "Decision Made" | "Disposition In Progress" | "Awaiting Verification" | "Closed" | "In Progress";
+export type RedTagStatus = "Open" | "Under Review" | "Decision Made" | "Disposition In Progress" | "Awaiting Verification" | "Closed" | "In Progress" | "Assigned" | "Awaiting Review" | "Rework Required";
 export type RedTagReason = (typeof RED_TAG_REASONS)[number] | RedTagCategorizedReason;
 export type RedTagDisposition = (typeof RED_TAG_DISPOSITIONS)[number];
 export type RedTagDecision = (typeof RED_TAG_DECISIONS)[number];
@@ -61,9 +63,11 @@ export interface RedTagEvidence {
 
 export interface RedTagHistoryEvent {
   id: string;
-  type: "created" | "printed" | "action_created" | "review_submitted" | "reviewed" | "decision_recorded" | "decision_updated" | "disposition_started" | "disposition_completed" | "keep_confirmed" | "started" | "awaiting_verification" | "verified" | "verification_failed" | "removed" | "closed";
+  type: "created" | "printed" | "action_created" | "review_submitted" | "reviewed" | "decision_recorded" | "decision_updated" | "disposition_started" | "disposition_completed" | "keep_confirmed" | "started" | "awaiting_verification" | "verified" | "verification_failed" | "removed" | "closed" | "planned" | "assigned" | "started" | "submitted" | "resubmitted" | "rework";
   label: string;
   actor: string;
+  actorRole?: "Auditor" | "Zone Leader" | "Zone Member";
+  comment?: string;
   actorId?: string;
   at: string;
 }
@@ -121,7 +125,35 @@ export interface RedTagClosure {
   closedByName?: string;
 }
 
+export type RedTagPriority = "Low" | "Medium" | "High" | "Critical";
+export type SourceRedTagStatus = "Open" | "Assigned" | "In Progress" | "Awaiting Review" | "Rework Required" | "Closed";
+export type RedTagDisplayStatus = "Raised" | "In Progress" | "Awaiting Review" | "Rework Required" | "Closed";
+export function getRedTagDisplayStatus(status: RedTagStatus): string { return status === "Open" ? "Raised" : status === "Assigned" ? "In Progress" : status; }
+
 export interface RedTag {
+  workflowVersion?: "5s-v2";
+  historical?: boolean;
+  actionPlan?: string;
+  priority?: RedTagPriority;
+  dueDate?: string;
+  instructions?: string;
+  zoneLeaderId?: string;
+  zoneLeaderName?: string;
+  assignedById?: string;
+  assignedByName?: string;
+  assignedAt?: string;
+  closureImageUrl?: string;
+  closureEvidenceHistory?: Array<{ imageUrl: string; comment: string; submittedByName: string; submittedAt: string }>;
+  completionComment?: string;
+  submittedById?: string;
+  submittedByName?: string;
+  submittedAt?: string;
+  reviewComment?: string;
+  reviewedBy?: string;
+  reviewedByRole?: "Zone Leader";
+  reviewedAt?: string;
+  closedBy?: string;
+  closedByRole?: "Zone Leader";
   id: string;
   tagNumber: string;
   plant: string;
@@ -169,3 +201,8 @@ export interface RedTag {
   closedAt?: string;
   history: RedTagHistoryEvent[];
 }
+
+/** User-facing initial evidence label; imageUrl/afterEvidence remain unchanged. */
+export const RED_TAG_INITIAL_EVIDENCE_LABEL = "Initial Evidence (Gap)";
+
+export type NewRedTag = RedTag & { workflowVersion: "5s-v2"; status: SourceRedTagStatus; quantity: number; requiredAction: string };

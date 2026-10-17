@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useCurrentUser } from "@/lib/current-user";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 import FiveSAuditList from "./components/FiveSAuditList";
 import FiveSAuditCreate from "./components/FiveSAuditCreate";
@@ -11,6 +13,7 @@ import { PageContainer } from "@/components/layout/page-container";
 import {
   createFiveSAudit,
   deleteFiveSAudit,
+  canDeleteFiveSAudit,
   startScheduledFiveSAudit,
   updateScheduledFiveSAuditSetup,
   useFiveSAuditStore,
@@ -22,6 +25,7 @@ import type {
   FiveSQuestion,
   FiveSSection,
 } from "./types/five-s";
+import { FIVE_S_QUESTIONS } from "@/features/settings/standard-audit-checklist/defaults";
 import { referenceFields } from "@/lib/five-s/reference-guides";
 import { createAuditChecklistSnapshot } from "@/features/settings/custom-audit-questions/checklist";
 import { AuditNav } from "./audit-nav";
@@ -30,61 +34,7 @@ import { AuditNav } from "./audit-nav";
    5S CHECKLIST
    ========================================================= */
 
-const FIVE_S_QUESTIONS: Record<FiveSCategory, string[]> = {
-  Sort: [
-    "Are unnecessary tools, materials, and items removed from the work area?",
-    "Are obsolete or unused items clearly identified and segregated?",
-    "Are only required materials stored at the workstation?",
-    "Are damaged, defective, or redundant items identified and removed?",
-    "Are excess raw materials and work-in-progress controlled to required quantities?",
-    "Are red-tagged or unwanted items reviewed and disposed of within the defined timeframe?",
-    "Is there a clear process for deciding whether an item is required or unnecessary?",
-  ],
 
-  "Set in Order": [
-    "Are tools and materials stored in clearly identified locations?",
-    "Are storage locations visually marked and easy to identify?",
-    "Can frequently used items be accessed without unnecessary movement?",
-    "Are tools and materials arranged according to frequency of use?",
-    "Are floor markings, location markings, and labels clearly visible?",
-    "Are shadow boards, racks, cabinets, or storage systems properly organized?",
-    "Does every required item have a defined and designated storage location?",
-    "Are items returned to their designated locations after use?",
-    "Are aisles, walkways, emergency routes, and access areas clearly identified and kept unobstructed?",
-  ],
-
-  Shine: [
-    "Is the work area clean and free from visible dirt and waste?",
-    "Are machines and equipment maintained in a clean condition?",
-    "Are abnormal conditions identified during cleaning activities?",
-    "Are floors, work surfaces, and surrounding areas cleaned regularly?",
-    "Are oil, coolant, grease, dust, and other contamination controlled?",
-    "Are cleaning tools and materials themselves clean, organized, and properly stored?",
-    "Are leaks, damage, loose parts, or other abnormalities reported and addressed?",
-    "Are cleaning and inspection activities performed according to the defined schedule?",
-  ],
-
-  Standardize: [
-    "Are standard 5S procedures available and followed?",
-    "Are visual standards available for the work area?",
-    "Are cleaning and inspection responsibilities clearly defined?",
-    "Are standard locations, markings, labels, and color codes consistently maintained?",
-    "Are 5S standards displayed or easily accessible to employees?",
-    "Are standard cleaning, inspection, and workplace organization schedules followed?",
-    "Are deviations from the defined 5S standards identified and corrected?",
-  ],
-
-  Sustain: [
-    "Are 5S practices consistently followed by employees?",
-    "Are regular 5S audits conducted according to the defined schedule?",
-    "Are previous audit findings reviewed and closed within the required timeframe?",
-    "Are employees aware of their 5S responsibilities?",
-    "Are recurring 5S problems identified and addressed?",
-    "Are 5S improvements communicated to the relevant employees?",
-    "Is management or area ownership involved in maintaining 5S standards?",
-    "Is continual improvement encouraged based on 5S audit findings?",
-  ],
-};
 
 /* =========================================================
    CREATE SECTIONS
@@ -180,6 +130,9 @@ function getCategoryDescription(
 
 export default function FiveSAuditListPage({ initialAuditId }: { initialAuditId?: string } = {}) {
   const audits = useFiveSAuditStore();
+  const actor = useCurrentUser();
+  const [pendingDelete, setPendingDelete] = useState<FiveSAudit | null>(null);
+  const [deleteError, setDeleteError] = useState("");
 
   const [selectedAudit, setSelectedAudit] =
     useState<FiveSAudit | null>(() => audits.find((audit) => audit.id === initialAuditId) ?? null);
@@ -256,19 +209,10 @@ export default function FiveSAuditListPage({ initialAuditId }: { initialAuditId?
      DELETE AUDIT
      ======================================================= */
 
-  function handleDeleteAudit(
-    audit: FiveSAudit
-  ) {
-    deleteFiveSAudit(audit.id);
-
-    if (
-      selectedAudit?.id ===
-      audit.id
-    ) {
-      setSelectedAudit(null);
-    }
-
-    setIsCreatingAudit(false);
+  function handleDeleteAudit(audit: FiveSAudit) {
+    setDeleteError("");
+    if (!canDeleteFiveSAudit(audit, actor)) { setDeleteError("Only the assigned auditor or an Admin can delete Draft/Scheduled Audits without linked Actions."); return; }
+    setPendingDelete(audit);
   }
 
   /* =======================================================
@@ -330,12 +274,15 @@ export default function FiveSAuditListPage({ initialAuditId }: { initialAuditId?
 
   return (
     <PageContainer>
+      {deleteError && <p role="alert" className="text-sm text-destructive">{deleteError}</p>}
+      <AlertDialog open={Boolean(pendingDelete)} onOpenChange={open => { if (!open) setPendingDelete(null); }}><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Delete {pendingDelete?.title}?</AlertDialogTitle><AlertDialogDescription>This removes the uncompleted Audit. Completed Audits and Audits with linked Actions cannot be deleted.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={() => { if (pendingDelete && !deleteFiveSAudit(pendingDelete.id, actor, true)) setDeleteError("Deletion could not be saved. Check permission, linked Actions and browser storage."); setPendingDelete(null); }}>Confirm Delete</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
       <FiveSAuditList
         audits={audits}
         onStartAudit={handleStartAudit}
         onViewAudit={handleViewAudit}
         onStartScheduledAudit={handleStartScheduledAudit}
         onDeleteAudit={handleDeleteAudit}
+        canDeleteAudit={audit => canDeleteFiveSAudit(audit, actor)}
         nav={<AuditNav />}
       />
     </PageContainer>

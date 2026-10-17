@@ -43,7 +43,7 @@ function crumbsForPath(pathname: string): Crumb[] {
     const base = bases.filter((route) => pathname === route || pathname.startsWith(`${route}/`)).sort((a, b) => b.length - a.length)[0];
     const remainder = pathname.slice(base.length).split("/").filter(Boolean);
     const parentLabel = capability.stageLabel ?? getNavigationGroup(capability.navigationGroup).label;
-    return [{ label: parentLabel }, { label: capability.label, href: remainder.length ? capability.route : undefined }, ...remainder.map((segment) => ({ label: title(segment) }))];
+    return [{ label: parentLabel }, { label: capability.label, href: remainder.length ? capability.route : undefined }, ...remainder.map((segment, index) => ({ label: title(segment), ...(index < remainder.length - 1 ? { href: `${base}/${remainder.slice(0, index + 1).join("/")}` } : {}) }))];
   }
   const segments = pathname.split("/").filter(Boolean);
   return segments.map((_, index) => {

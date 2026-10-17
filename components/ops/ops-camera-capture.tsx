@@ -37,8 +37,10 @@ export function OpsCameraCapture({ onCapture, trigger, fileNamePrefix = "ops-pho
   const streamRef = useRef<MediaStream | null>(null);
   const captureUrlRef = useRef<string | null>(null);
   const uploadRef = useRef<HTMLInputElement>(null);
+  const cameraRequestRef = useRef(0);
 
   const stopCamera = useCallback(() => {
+    cameraRequestRef.current += 1;
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
     if (videoRef.current) videoRef.current.srcObject = null;
@@ -52,21 +54,24 @@ export function OpsCameraCapture({ onCapture, trigger, fileNamePrefix = "ops-pho
 
   const startCamera = useCallback(async () => {
     stopCamera();
+    const request = cameraRequestRef.current;
     setError(null);
     setStarting(true);
     try {
       if (!navigator.mediaDevices?.getUserMedia || !window.isSecureContext) throw new DOMException("Camera unsupported", "NotSupportedError");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: "environment" } } });
+      if (request !== cameraRequestRef.current) { stream.getTracks().forEach(track => track.stop()); return; }
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
       }
     } catch (reason) {
+      if (request !== cameraRequestRef.current) return;
       stopCamera();
       setError(classifyCameraError(reason));
     } finally {
-      setStarting(false);
+      if (request === cameraRequestRef.current) setStarting(false);
     }
   }, [stopCamera]);
 
@@ -93,7 +98,9 @@ export function OpsCameraCapture({ onCapture, trigger, fileNamePrefix = "ops-pho
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas.getContext("2d")?.drawImage(video, 0, 0);
+    const request = cameraRequestRef.current;
     canvas.toBlob((blob) => {
+      if (request !== cameraRequestRef.current) return;
       if (!blob) { setError("unavailable"); return; }
       stopCamera();
       clearCapture();

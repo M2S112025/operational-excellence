@@ -82,7 +82,7 @@ describe("Team Feedback #27 — Gemba corrective-action decision", () => {
   });
 
   it("shows the compact decision and preserves historically accurate reporting", () => {
-    expect(cardSource).toContain("Corrective Action:");
+    expect(cardSource).toContain(">Action: <span");
     expect(cardSource).toContain('"Not required"');
     expect(reportSource).toContain("resolveGembaCorrectiveActionNeeded(observation)");
     expect(reportSource).toContain("Reason corrective action is not required");
@@ -94,7 +94,7 @@ describe("Team Feedback #27 — Gemba corrective-action decision", () => {
     expect(storeSource).toContain("event(\"action_created\"");
     expect(storeSource).not.toContain("CorrectiveActionV2");
     expect(source("lib/actions/action-store.ts")).toContain("export function createAction");
-    expect(source("features/five-s/components/FiveSAuditExecution.tsx")).toContain("Open actions must be completed");
-    expect(source("features/five-s/red-tag/red-tag-module.tsx")).toContain("Optional Execution Action");
+    expect(source("features/five-s/components/FiveSAuditExecution.tsx")).toContain("You can complete the Audit now");
+    expect(source("features/five-s/red-tag/red-tag-module.tsx")).toContain("Canonical Action");
   });
 });

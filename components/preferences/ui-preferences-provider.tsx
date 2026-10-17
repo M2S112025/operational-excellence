@@ -14,6 +14,7 @@ import {
 interface UiPreferencesContextValue extends UiPreferences {
   setNavigationPosition: (position: NavigationPosition) => void
   setSidebarCollapsed: (collapsed: boolean) => void
+  setSidebarCollapsedTemporarily: (collapsed: boolean | undefined) => void
   setAccentColor: (color: AccentColor) => void
   setLanguage: (language: AppLanguage) => void
 }
@@ -46,23 +47,34 @@ function UiPreferencesProvider({ children }: { children: React.ReactNode }) {
     }
   })
 
-  function updatePreferences(next: UiPreferences) {
+  // Execution focus is an in-memory override; it must never replace the saved preference.
+  const [sidebarOverride, setSidebarOverride] = React.useState<boolean | undefined>();
+  const sidebarCollapsed = sidebarOverride ?? preferences.sidebarCollapsed;
+  React.useEffect(() => {
+    applyPreferences({ ...preferences, sidebarCollapsed });
+  }, [preferences, sidebarCollapsed]);
+
+  const updatePreferences = React.useCallback((next: UiPreferences) => {
     setPreferences(next)
-    applyPreferences(next)
+    applyPreferences({ ...next, sidebarCollapsed: sidebarOverride ?? next.sidebarCollapsed })
     window.localStorage.setItem(UI_PREFERENCES_STORAGE_KEY, JSON.stringify(next))
-  }
+  }, [sidebarOverride])
 
   const value = React.useMemo<UiPreferencesContextValue>(() => ({
     ...preferences,
+    sidebarCollapsed,
+    setSidebarCollapsedTemporarily: setSidebarOverride,
     setNavigationPosition: (navigationPosition) =>
       updatePreferences({ ...preferences, navigationPosition }),
-    setSidebarCollapsed: (sidebarCollapsed) =>
-      updatePreferences({ ...preferences, sidebarCollapsed }),
+    setSidebarCollapsed: (collapsed) => {
+      if (sidebarOverride !== undefined) setSidebarOverride(collapsed)
+      else updatePreferences({ ...preferences, sidebarCollapsed: collapsed })
+    },
     setAccentColor: (accentColor) =>
       updatePreferences({ ...preferences, accentColor }),
     setLanguage: (language) =>
       updatePreferences({ ...preferences, language }),
-  }), [preferences])
+  }), [preferences, sidebarCollapsed, sidebarOverride, updatePreferences])
 
   return (
     <UiPreferencesContext.Provider value={value}>

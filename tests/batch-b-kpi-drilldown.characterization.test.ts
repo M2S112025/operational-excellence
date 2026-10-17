@@ -27,6 +27,7 @@ describe("Batch B interactive KPI drill-down", () => {
     expect(IMPROVEMENT_QUICK_FILTERS.map((filter) => [filter.id, records.filter((item) => matchesImprovementQuickFilter(item, filter.id)).length])).toEqual([
       ["proposal", 2],
       ["under-review", 2],
+      ["approved", 1],
       ["in-progress", 1],
     ]);
   });
@@ -62,6 +63,7 @@ describe("Batch B interactive KPI drill-down", () => {
     }
     expect(improvementPage).toContain('setActiveTab("improvements")');
     expect(actionPage).toContain("activeQuickFilter ? roleVisibleActions : tabActions");
-    expect(actionPage).toContain("lg:hidden");
+    expect(actionPage).toContain("<OpsDataTable");
+    expect(readFileSync("components/ops/ops-data-table.tsx", "utf8")).toContain("lg:hidden");
   });
 });

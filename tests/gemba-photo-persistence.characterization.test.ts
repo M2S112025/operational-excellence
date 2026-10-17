@@ -92,7 +92,8 @@ async function gembaStore(indexedDbImpl: ReturnType<typeof createFakeIndexedDb> 
 
 afterEach(() => { vi.unstubAllGlobals(); });
 
-const actor = { id: "USR-RUMESH", name: "Rumesh" };
+// Use an actor authorized by the existing Gemba Admin/Auditor UI rule.
+const actor = { id: "USR-LAKSHMAN", name: "Lakshman" };
 
 describe("Gemba photo persistence — localStorage payload protection", () => {
   it("never persists a data: URL for newly created photo evidence, even if the caller passes one by mistake", async () => {

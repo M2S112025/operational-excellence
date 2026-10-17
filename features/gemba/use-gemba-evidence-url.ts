@@ -19,7 +19,7 @@ import type { GembaEvidence } from "./types";
 export function useGembaEvidenceUrl(evidence: GembaEvidence | null | undefined): string | undefined {
   const directUrl = evidence?.url;
   const storageKey = evidence?.storageKey;
-  const [asyncUrl, setAsyncUrl] = useState<string | undefined>(undefined);
+  const [asyncUrl, setAsyncUrl] = useState<{ key: string; url: string }>();
 
   useEffect(() => {
     if (directUrl || !storageKey) return;
@@ -31,7 +31,7 @@ export function useGembaEvidenceUrl(evidence: GembaEvidence | null | undefined):
       .then((blob) => {
         if (cancelled || !blob) return;
         objectUrl = URL.createObjectURL(blob);
-        setAsyncUrl(objectUrl);
+        setAsyncUrl({ key: storageKey, url: objectUrl });
       })
       .catch((error) => {
         console.error(`[gemba] unable to load photo evidence ${storageKey}`, error);
@@ -43,5 +43,5 @@ export function useGembaEvidenceUrl(evidence: GembaEvidence | null | undefined):
     };
   }, [directUrl, storageKey]);
 
-  return directUrl ?? asyncUrl;
+  return directUrl ?? (asyncUrl && asyncUrl.key === storageKey ? asyncUrl.url : undefined);
 }

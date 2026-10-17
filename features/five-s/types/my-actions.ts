@@ -24,6 +24,7 @@ export type MyActionActivityType =
   | "reminder_generated"
   | "escalated"
   | "escalation_acknowledged"
+  | "due_date_changed"
   | "reassigned"
   | "closed";
 
@@ -91,10 +92,14 @@ export interface MyActionEvidence {
   mimeType?: string;
 
   url?: string;
+  /** Source-owned binary reference, currently used by Gemba IndexedDB photos. */
+  storageKey?: string;
 }
 
 export interface VisualManagementActionSource {
   boardId: string;
+  /** Exact meeting origin for new records; absent on historical Actions. */
+  meetingId?: string;
   configuredKpiId: string;
   actualEntryId: string;
   deviationId: string;
@@ -171,7 +176,12 @@ export interface MyAction {
   status: MyActionStatus;
   priority: MyActionPriority;
 
+  /** Effective date retained for existing filters and integrations. */
   dueDate: string;
+  priorityDueDate?: string;
+  dueDateOverride?: string;
+  dueDateHistory?: Array<{ previousDate: string; newDate: string; reason: string; actorId: string; actorName: string; changedAt: string }>;
+
   createdAt: string;
 
   /**

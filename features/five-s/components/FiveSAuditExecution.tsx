@@ -1,4 +1,9 @@
 "use client";
+import { getAuditScoringValues, calculateAuditSectionTotals, complianceResponseForScore, questionComplianceResponse, DEFAULT_AUDIT_SCORING, type AuditScoringValues, type ComplianceResponse } from "@/lib/five-s/scoring-policy";
+import { useAuditScrollFocus } from "@/components/ops/use-audit-scroll-focus";
+import { useAuditNavigationFocus } from "@/components/ops/use-audit-navigation-focus";
+import { ActionLink } from "@/components/ops/ops-return-link";
+import { OpsFeedback } from "@/components/ops/ops-feedback";
 
 import {
   useEffect,
@@ -75,10 +80,11 @@ import FiveSReferenceGuide from "./FiveSReferenceGuide";
 import { useI18n } from "@/components/preferences/use-i18n";
 import { auditQuestionText, auditSectionDescription, auditSectionName } from "@/lib/audit-question-translations";
 import { referenceFields } from "@/lib/five-s/reference-guides";
-import { optimizeEvidenceImage, MAX_EVIDENCE_IMAGES } from "@/lib/evidence-images";
+import { readEvidenceFile } from "@/lib/evidence-files";
+import { MAX_EVIDENCE_IMAGES } from "@/lib/evidence-images";
 
-import { createAction, getActionById, updateAction } from "@/lib/actions/action-store";
-import { updateFiveSAudit } from "@/lib/five-s/audit-store";
+import { createAction, getActionById, updateAction, changeActionPriority, useActionStore } from "@/lib/actions/action-store";
+import { canCompleteFiveSAudit, completeFiveSAudit, getLinkedActionsForAudit, updateFiveSAudit } from "@/lib/five-s/audit-store";
 import { AUDIT_EXECUTION_LIFECYCLE_STAGES } from "@/lib/five-s/lifecycle-status";
 import { useCurrentUser } from "@/lib/current-user";
 import {
@@ -98,7 +104,6 @@ import type {
   FiveSQuestionStatus,
   FiveSSection,
 } from "../types/five-s";
-import type { MyAction } from "../types/my-actions";
 import { isAuditQuestionComplete } from "@/features/settings/custom-audit-questions/checklist";
 
 interface FiveSAuditExecutionProps {
@@ -108,6 +113,7 @@ interface FiveSAuditExecutionProps {
 }
 
 interface QuestionState {
+  complianceResponse?: ComplianceResponse | null;
   status: FiveSQuestionStatus;
   score: number | null;
   observation: string;
@@ -148,7 +154,7 @@ function isFiveSCategory(category: FiveSAuditStage): category is FiveSCategory {
   return category !== "General";
 }
 
-const SCORE_OPTIONS = [0, 1, 2];
+
 
 const SCORE_LABELS: Record<
   number,
@@ -197,7 +203,7 @@ const SCORE_INDICATOR_STYLES: Record<number, string> = {
 
 function AuditLifecycleTimeline({ currentIndex }: { currentIndex: number }) {
   return (
-    <div className="flex min-w-[360px] flex-1 items-center" aria-label="Audit lifecycle">
+    <div className="flex min-w-0 flex-1 items-center" aria-label="Audit lifecycle">
       {AUDIT_EXECUTION_LIFECYCLE_STAGES.map((label, index) => {
         const complete = index < currentIndex;
         const current = index === currentIndex;
@@ -245,6 +251,7 @@ function createInitialQuestionState(
   return {
     status: question.status,
     score: question.score,
+    complianceResponse: questionComplianceResponse(question),
 
     observation:
       question.observation ?? "",
@@ -284,13 +291,14 @@ function createInitialQuestionState(
  * null  => Not Started
  */
 function getStatusFromScore(
-  score: number | null
+  score: number | null,
+  policy: Readonly<AuditScoringValues> = DEFAULT_AUDIT_SCORING
 ): FiveSQuestionStatus {
   if (score === null) {
     return "Not Started";
   }
 
-  if (score === 2) {
+  if (complianceResponseForScore(score, policy) === 2) {
     return "Pass";
   }
 
@@ -302,6 +310,8 @@ function FiveSAuditExecution({
   onBack,
   onComplete,
 }: FiveSAuditExecutionProps) {
+  const scoringPolicy = getAuditScoringValues(audit);
+  const SCORE_OPTIONS = [scoringPolicy.nonCompliance, scoringPolicy.partialCompliance, scoringPolicy.fullyCompliance];
   const router = useRouter();
   const currentUser = useCurrentUser();
   const { language, t } = useI18n();
@@ -337,6 +347,7 @@ function FiveSAuditExecution({
     [audit]
   );
 
+  const [uiError, setUiError] = useState("");
   const [
     sections,
     setSections,
@@ -402,6 +413,10 @@ function FiveSAuditExecution({
   );
   const [auditorSignature, setAuditorSignature] = useState(audit.auditorSignature);
   const [fullScreen, setFullScreen] = useState(false);
+  useAuditNavigationFocus(audit.status !== "Completed");
+  const executionRootRef = useRef<HTMLDivElement | null>(null);
+  const executionHeaderRef = useRef<HTMLDivElement | null>(null);
+  const scrollFocus = useAuditScrollFocus(executionRootRef, executionHeaderRef, !fullScreen && !showReview && !uiError && audit.status !== "Completed", audit.id);
 
   const [
     showActionDialog,
@@ -409,8 +424,6 @@ function FiveSAuditExecution({
   ] = useState(false);
 
   const [showCompleteConfirmation, setShowCompleteConfirmation] =
-    useState(false);
-  const [showOpenActionsWarning, setShowOpenActionsWarning] =
     useState(false);
 
   const [
@@ -479,8 +492,8 @@ function FiveSAuditExecution({
           ];
 
         return (
-          state?.score === 0 ||
-          state?.score === 1
+          state?.complianceResponse === 0 ||
+          state?.complianceResponse === 1
         );
       }
     ).length;
@@ -504,12 +517,9 @@ function FiveSAuditExecution({
 
   const auditReadyForCompletion =
     allQuestions.length > 0 && answeredQuestions === allQuestions.length;
-  const auditActions = allQuestions
-    .map((question) => questionStates[question.id]?.actionId)
-    .filter((actionId): actionId is string => Boolean(actionId))
-    .map((actionId) => getActionById(actionId))
-    .filter((action): action is MyAction => Boolean(action));
-  const openAuditActions = auditActions.filter((action) => action.status !== "Completed");
+  const canonicalActions = useActionStore();
+  const auditActions = getLinkedActionsForAudit(audit, canonicalActions);
+  const openAuditActions = auditActions.filter(action => action.status !== "Completed");
   const isFinalQuestion = Boolean(
     activeSection &&
     activeSectionIndex === sections.length - 1 &&
@@ -525,26 +535,8 @@ function FiveSAuditExecution({
           ? 1
           : 0;
 
-  const totalMaxScore = allQuestions.reduce((total, question) => {
-    const unansweredOptional = question.questionSource === "custom" && question.mandatory === false && questionStates[question.id]?.score === null;
-    return total + (unansweredOptional ? 0 : question.maxScore);
-  }, 0);
-
-  const totalScore =
-    allQuestions.reduce(
-      (total, question) => {
-        const state =
-          questionStates[
-            question.id
-          ];
-
-        return (
-          total +
-          (state?.score ?? 0)
-        );
-      },
-      0
-    );
+  const totalMaxScore = sections.reduce((total, section) => total + calculateSectionMaxScore(section), 0);
+  const totalScore = sections.reduce((total, section) => total + calculateSectionScore(section), 0);
 
   const scorePercentage =
     totalMaxScore > 0
@@ -587,7 +579,7 @@ function FiveSAuditExecution({
       return false;
     }
 
-    return isAuditQuestionComplete(question, state);
+    return isAuditQuestionComplete(question, state, scoringPolicy);
   }
 
   function isSectionComplete(
@@ -617,7 +609,7 @@ function FiveSAuditExecution({
     const snapshot = Object.fromEntries(
       allQuestions.map((question) => {
         const state = questionStates[question.id];
-        return [question.id, Boolean(state && isAuditQuestionComplete(question, state))];
+        return [question.id, Boolean(state && isAuditQuestionComplete(question, state, scoringPolicy))];
       })
     );
 
@@ -675,7 +667,7 @@ function FiveSAuditExecution({
     }, 210);
 
     return () => window.clearTimeout(timer);
-  }, [activeQuestionIndex, activeSection, activeSectionIndex, allQuestions, fullScreen, questionStates, sections]);
+  }, [activeQuestionIndex, activeSection, activeSectionIndex, allQuestions, fullScreen, questionStates, sections, scoringPolicy]);
 
   /**
    * ---------------------------------------------------------
@@ -687,6 +679,7 @@ function FiveSAuditExecution({
     questionId: string,
     updates: Partial<QuestionState>
   ) {
+    if (updates.score !== undefined) updates = { ...updates, complianceResponse: complianceResponseForScore(updates.score, scoringPolicy) };
     setQuestionStates(
       (current) => ({
         ...current,
@@ -727,11 +720,12 @@ function FiveSAuditExecution({
 
                     score:
                       nextScore,
+                    complianceResponse: updates.score !== undefined ? complianceResponseForScore(nextScore, scoringPolicy) : question.complianceResponse,
 
                     status:
                       updates.status ??
                       getStatusFromScore(
-                        nextScore
+                        nextScore, scoringPolicy
                       ),
 
                     observation:
@@ -772,11 +766,8 @@ function FiveSAuditExecution({
     question: FiveSQuestion,
     score: number
   ) {
-    const safeScore =
-      Math.max(
-        0,
-        Math.min(2, score)
-      );
+    if (!SCORE_OPTIONS.includes(score)) return;
+    const safeScore = score;
 
     const nextScore =
       questionStates[question.id]?.score === safeScore
@@ -784,8 +775,8 @@ function FiveSAuditExecution({
         : safeScore;
 
     const requiresAction =
-      nextScore === 0 ||
-      nextScore === 1;
+      complianceResponseForScore(nextScore, scoringPolicy) === 0 ||
+      complianceResponseForScore(nextScore, scoringPolicy) === 1;
 
     updateQuestionState(
       question.id,
@@ -794,7 +785,7 @@ function FiveSAuditExecution({
 
         status:
           getStatusFromScore(
-            nextScore
+            nextScore, scoringPolicy
           ),
 
         actionRequired:
@@ -835,7 +826,7 @@ function FiveSAuditExecution({
         updateAction(actionId, {
           description: observation,
           originalFinding: observation,
-        });
+        }, currentUser);
       }
     }
   }
@@ -907,7 +898,7 @@ function FiveSAuditExecution({
       !state.actionCategory ||
       !state.dueDate ||
       state.dueDate < today ||
-      ((state.score === 0 || state.score === 1) &&
+      ((state.complianceResponse === 0 || state.complianceResponse === 1) &&
         (question.questionSource !== "custom" || question.requireEvidenceOnNonCompliance) &&
         state.evidence.length === 0)
     ) {
@@ -946,16 +937,16 @@ function FiveSAuditExecution({
         closeActionDialog();
         return;
       }
-      updateAction(state.actionId, {
+      const prioritySaved = changeActionPriority(state.actionId, currentUser, state.priority);
+      const saved = prioritySaved && updateAction(state.actionId, {
         title,
         description,
         actionCategory: state.actionCategory,
-        priority: state.priority,
-        dueDate: state.dueDate,
         originalFinding: state.observation,
         issueEvidence: state.evidence.map((evidence) => ({ id: evidence.id, actionId: state.actionId, evidenceType: "finding" as const, name: evidence.name, type: evidence.type, uploadedAt: evidence.uploadedAt, uploadedBy: evidence.uploadedBy, url: evidence.dataUrl })),
-      });
-      window.setTimeout(() => { setActionSaving(false); setShowActionDialog(false); setActiveActionQuestion(null); }, 220);
+      }, currentUser);
+      if (!saved) { setActionSaving(false); setUiError("Action setup could not be saved. Check your permissions and browser storage, then retry."); return; }
+      window.setTimeout(() => { setUiError(""); setActionSaving(false); setShowActionDialog(false); setActiveActionQuestion(null); }, 220);
       return;
     }
 
@@ -1052,9 +1043,9 @@ function FiveSAuditExecution({
     file: File
   ) {
     const current = questionStates[questionId]?.evidence ?? [];
-    if (current.length >= MAX_EVIDENCE_IMAGES) { window.alert("Maximum 5 evidence images allowed."); return; }
+    if (current.length >= MAX_EVIDENCE_IMAGES) { setUiError("Maximum 5 evidence images allowed."); return; }
     try {
-      const { dataUrl, size } = await optimizeEvidenceImage(file);
+      const { dataUrl, size } = await readEvidenceFile(file);
 
       const evidence:
         FiveSEvidence = {
@@ -1119,10 +1110,11 @@ function FiveSAuditExecution({
                   url: item.dataUrl,
                 })
               ),
-          }
+          },
+          currentUser
         );
       }
-    } catch (error) { window.alert(error instanceof Error ? error.message : "Unable to process this image."); }
+    } catch (error) { setUiError(error instanceof Error ? error.message : "Unable to process this image."); }
   }
 
   function handleEvidenceUpload(
@@ -1192,7 +1184,8 @@ function FiveSAuditExecution({
                 url: item.dataUrl,
               })
             ),
-        }
+        },
+        currentUser
       );
     }
   }
@@ -1203,27 +1196,15 @@ function FiveSAuditExecution({
    * ---------------------------------------------------------
    */
 
-  function calculateSectionScore(
-    section: FiveSSection
-  ) {
-    return section.questions.reduce(
-      (total, question) =>
-        total +
-        (questionStates[
-          question.id
-        ]?.score ?? 0),
-      0
-    );
+  function currentSectionTotals(section: FiveSSection) {
+    return calculateAuditSectionTotals([{ ...section, questions: section.questions.map(question => {
+      const state = questionStates[question.id];
+      return state ? { ...question, score: state.score, status: state.status } : question;
+    }) }]);
   }
 
-  function calculateSectionMaxScore(
-    section: FiveSSection
-  ) {
-    return section.questions.reduce((total, question) => {
-      const unansweredOptional = question.questionSource === "custom" && question.mandatory === false && questionStates[question.id]?.score === null;
-      return total + (unansweredOptional ? 0 : question.maxScore);
-    }, 0);
-  }
+  function calculateSectionScore(section: FiveSSection) { return currentSectionTotals(section).score; }
+  function calculateSectionMaxScore(section: FiveSSection) { return currentSectionTotals(section).maxScore; }
 
   /**
    * ---------------------------------------------------------
@@ -1377,6 +1358,7 @@ function FiveSAuditExecution({
                       state
                         ? state.score
                         : question.score,
+                    complianceResponse: state ? state.complianceResponse : question.complianceResponse,
 
                     observation:
                       state?.observation ??
@@ -1434,30 +1416,17 @@ function FiveSAuditExecution({
   }
 
   function handleCompleteAudit() {
-    if (!auditReadyForCompletion || !auditorSignature) return;
-
-    const completedAudit = buildCurrentAudit({
-      status: "Completed",
-      completionPercentage: 100,
-      completedAt: new Date().toISOString(),
-      auditorSignature,
-    });
-
-    updateFiveSAudit(audit.id, completedAudit);
-
-    onComplete?.(
-      completedAudit
-    );
-
+    if (!auditReadyForCompletion || !auditorSignature || !canCompleteFiveSAudit(audit, currentUser)) return;
+    const snapshot = buildCurrentAudit();
+    const completedAudit = completeFiveSAudit(audit.id, snapshot.sections, currentUser);
+    if (!completedAudit) { setUiError("The Audit could not be completed. Check required answers, evidence, signature and your completion access."); return; }
+    onComplete?.(completedAudit);
     setShowCompleteConfirmation(false);
     router.push("/5s/audits");
   }
 
   function requestAuditCompletion() {
-    if (openAuditActions.length > 0) {
-      setShowOpenActionsWarning(true);
-      return;
-    }
+    if (!auditReadyForCompletion || !canCompleteFiveSAudit(audit, currentUser)) return;
     setShowCompleteConfirmation(true);
   }
 
@@ -1481,6 +1450,7 @@ function FiveSAuditExecution({
   if (showReview) {
     return (
       <div className="flex min-w-0 flex-col md:min-h-[calc(100dvh-7rem)]">
+        {uiError && <OpsFeedback tone="error" message={uiError} />}
         <div className="sticky top-14 z-30 min-w-0 border-b bg-background/95 px-0 py-3 backdrop-blur md:top-0 md:px-6 lg:px-8">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex min-w-0 items-center gap-3">
@@ -1719,7 +1689,7 @@ function FiveSAuditExecution({
                                       <Badge
                                         className={
                                           SCORE_STYLES[
-                                            state.score
+                                            state.complianceResponse ?? -1
                                           ]
                                         }
                                       >
@@ -1729,7 +1699,7 @@ function FiveSAuditExecution({
                                         ·{" "}
                                         {
                                           SCORE_LABELS[
-                                            state.score
+                                            state.complianceResponse ?? -1
                                           ]
                                         }
                                       </Badge>
@@ -1765,6 +1735,7 @@ function FiveSAuditExecution({
         {showActionDialog &&
           activeActionQuestion && (
             <ActionDialog
+            error={uiError}
               question={
                 activeActionQuestion
               }
@@ -1794,8 +1765,10 @@ function FiveSAuditExecution({
             />
           )}
         <CompleteAuditDialog
+        error={uiError}
           open={showCompleteConfirmation}
           questionCount={allQuestions.length}
+          outstandingActionCount={openAuditActions.length}
           auditor={audit.auditor}
           signature={auditorSignature}
           onOpenChange={setShowCompleteConfirmation}
@@ -1803,7 +1776,6 @@ function FiveSAuditExecution({
           onSignatureClear={handleSignatureClear}
           onConfirm={handleCompleteAudit}
         />
-        <OpenAuditActionsDialog open={showOpenActionsWarning} actions={openAuditActions} onOpenChange={setShowOpenActionsWarning} onOpenAction={(actionId) => router.push(`/5s/actions/${encodeURIComponent(actionId)}`)} />
       </div>
     );
   }
@@ -1815,15 +1787,17 @@ function FiveSAuditExecution({
    */
 
   return (
-    <div className={fullScreen ? "fixed inset-0 z-[60] flex h-[100dvh] w-screen min-w-0 flex-col overflow-hidden bg-background motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-[0.99] motion-safe:duration-200" : "flex w-full min-w-0 max-w-full flex-col md:h-[calc(100dvh-7rem)] md:min-h-0"}>
+    <div ref={executionRootRef} style={{ overflowAnchor: "none" }} data-audit-execution className={fullScreen ? "fixed inset-0 z-[60] flex h-[100dvh] w-screen min-w-0 flex-col overflow-hidden bg-background motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-[0.99] motion-safe:duration-200" : "flex w-full min-w-0 max-w-full flex-col md:h-[calc(100dvh-7rem)] md:min-h-0"}>
+      {uiError && <OpsFeedback tone="error" message={uiError} />}
       {/* FIXED HEADER */}
 
-      {!fullScreen && <div className="w-full min-w-0 max-w-full shrink-0 border-b bg-background px-0 pt-3 md:px-6 lg:px-8">
+      {!fullScreen && <div ref={executionHeaderRef} data-audit-controls data-collapsed={scrollFocus} aria-hidden={scrollFocus} inert={scrollFocus} className="grid w-full min-w-0 max-w-full shrink-0 transition-[grid-template-rows] duration-[180ms] ease-out motion-reduce:transition-none" style={{ gridTemplateRows: scrollFocus ? "0fr" : "1fr" }}>
+        <div className="min-h-0 overflow-hidden"><div className="border-b bg-background px-0 pt-1 md:px-2 lg:px-3">
         <FiveSPageHeader
           eyebrow=""
           title={`5S Audit · ${audit.title}`}
           description={`${audit.plant} · ${audit.area} · ${audit.department} · Auditor: ${audit.auditor}`}
-          className="border-b-0 pb-3"
+          className="border-b-0 pb-2 [&_h1]:text-lg md:[&_h1]:text-xl"
           leading={onBack ? (
             <Button type="button" variant="ghost" size="icon" onClick={onBack} aria-label="Exit audit" className="-ml-2">
               <ArrowLeft className="size-4" />
@@ -1865,15 +1839,17 @@ function FiveSAuditExecution({
           }
         />
 
+        </div></div>
       </div>}
 
       {/* AUDIT SECTION RAIL + QUESTION WORKSPACE */}
 
       <div
         ref={questionScrollRef}
-        className={`w-full min-w-0 max-w-full flex-1 touch-pan-y px-0 [-webkit-overflow-scrolling:touch] md:min-h-0 md:px-6 lg:px-8 ${fullScreen ? "min-h-0 overflow-y-auto overscroll-contain py-2 md:py-3" : "overflow-visible py-4 md:overflow-y-auto lg:overflow-hidden"}`}
+        data-audit-question-scroll
+        className={`w-full min-w-0 max-w-full flex-1 touch-pan-y px-0 [-webkit-overflow-scrolling:touch] md:min-h-0 md:px-2 lg:px-3 ${fullScreen ? "min-h-0 overflow-y-auto overscroll-contain py-2 md:py-3" : "overflow-visible py-2 md:overflow-y-auto lg:overflow-hidden"}`}
       >
-        <div className={`grid w-full min-w-0 max-w-none gap-4 lg:h-full lg:min-h-0 ${fullScreen ? "" : "lg:grid-cols-[210px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)]"}`}>
+        <div className={`grid w-full min-w-0 max-w-none gap-3 lg:h-full lg:min-h-0 ${fullScreen ? "" : "lg:grid-cols-[180px_minmax(0,1fr)] xl:grid-cols-[200px_minmax(0,1fr)]"}`}>
           <aside className={fullScreen ? "hidden" : "hidden min-w-0 lg:block lg:h-full lg:min-h-0"}>
             <div className="flex h-full min-w-0 flex-col rounded-xl border border-border/75 bg-card p-3 shadow-sm">
               <div className="border-b border-border/60 px-2 pb-3">
@@ -1916,7 +1892,7 @@ function FiveSAuditExecution({
 
           <div className={fullScreen ? "hidden" : "min-w-0 lg:hidden"}>
             <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground" htmlFor="audit-section-selector">5S section</label>
-            <Select value={String(activeSectionIndex)} onValueChange={(value) => navigateToSection(Number(value))}>
+            <Select searchLabel={"Checklist section"} value={String(activeSectionIndex)} onValueChange={(value) => navigateToSection(Number(value))}>
               <SelectTrigger id="audit-section-selector" className="w-full">
                 <SelectValue />
               </SelectTrigger>
@@ -1935,10 +1911,10 @@ function FiveSAuditExecution({
             <Card className="gap-0 overflow-hidden lg:h-full lg:min-h-0">
               {/* REDUCED SECTION HEADER */}
 
-              <CardHeader className="shrink-0 border-b border-border/55 py-3">
-                <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <CardHeader data-audit-section-header className={`shrink-0 border-b border-border/55 transition-[padding] duration-[180ms] motion-reduce:transition-none ${scrollFocus ? "py-2" : "py-3"}`}>
+                <div className={`flex min-w-0 flex-col md:flex-row md:items-center md:justify-between transition-[gap] duration-[180ms] motion-reduce:transition-none ${scrollFocus ? "gap-2" : "gap-3"}`}>
                   <div className="flex min-w-0 items-center gap-2">
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-primary/35 bg-primary/[0.035] text-xs font-semibold text-primary">
+                    <div className={`flex shrink-0 items-center justify-center rounded-lg border border-primary/35 bg-primary/[0.035] text-xs font-semibold text-primary transition-[width,height] duration-[180ms] motion-reduce:transition-none ${scrollFocus ? "size-8" : "size-10"}`}>
                       {String(activeSectionIndex + 1).padStart(2, "0")}
                     </div>
 
@@ -1949,15 +1925,15 @@ function FiveSAuditExecution({
                         }
                       </CardTitle>
 
-                      <p className="whitespace-normal break-words text-[11px] leading-4 text-muted-foreground">
+                      <div className="grid transition-[grid-template-rows] duration-[180ms] motion-reduce:transition-none" style={{ gridTemplateRows: scrollFocus ? "0fr" : "1fr" }}><div className="min-h-0 overflow-hidden"><p className="whitespace-normal break-words text-[11px] leading-4 text-muted-foreground">
                         {
                           auditSectionDescription(language, activeSection.category, activeSection.description)
                         }
-                      </p>
+                      </p></div></div>
                     </div>
                   </div>
 
-                  <div className="flex shrink-0 items-center gap-2 pl-12 text-left md:pl-0 md:text-right">
+                  <div className="flex min-w-0 flex-wrap items-center gap-2 text-left md:text-right">
                     <Button type="button" size="sm" variant="outline" onClick={() => setFullScreen((value) => !value)} aria-label={fullScreen ? "Exit full screen" : "Enter full screen"}>
                       {fullScreen ? <Minimize2 className="size-3.5" /> : <Maximize2 className="size-3.5" />}
                       {fullScreen ? "Exit" : "Full Screen"}
@@ -1975,7 +1951,7 @@ function FiveSAuditExecution({
                 </div>
               </CardHeader>
 
-              <CardContent ref={questionListRef} className="min-w-0 p-4 md:p-5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:p-6">
+              <CardContent ref={questionListRef} data-audit-question-list data-audit-question-scroll className="min-w-0 p-3 md:p-4 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:p-4">
                 <div className="space-y-3">
                   {activeSection.questions.map(
                     (
@@ -1992,9 +1968,9 @@ function FiveSAuditExecution({
                       }
 
                       const requiresAction =
-                        state.score ===
+                        state.complianceResponse ===
                           0 ||
-                        state.score ===
+                        state.complianceResponse ===
                           1;
                       const responseType = question.responseType ?? "Compliance";
                       const requiresEvidence = requiresAction && (question.questionSource !== "custom" || Boolean(question.requireEvidenceOnNonCompliance));
@@ -2013,8 +1989,8 @@ function FiveSAuditExecution({
                             ref={(element) => { questionItemRefs.current[question.id] = element; }}
                             className="relative min-w-0 scroll-mt-20 pl-8 before:absolute before:bottom-[-0.75rem] before:left-[11px] before:top-8 before:w-px before:bg-border last:before:hidden"
                           >
-                            <span className={`absolute left-0 top-3.5 z-10 flex size-6 items-center justify-center rounded-full border bg-background ${state.score === 2 ? "border-emerald-500 text-emerald-600" : state.score === 1 ? "border-amber-500 text-amber-600" : state.score === 0 ? "border-red-500 text-red-600" : "border-border text-muted-foreground"}`}>
-                              {complete ? <Check className="size-3.5" /> : state.score === 0 ? <AlertCircle className="size-3.5" /> : <span className="size-1.5 rounded-full bg-current" />}
+                            <span className={`absolute left-0 top-3.5 z-10 flex size-6 items-center justify-center rounded-full border bg-background ${state.complianceResponse === 2 ? "border-emerald-500 text-emerald-600" : state.complianceResponse === 1 ? "border-amber-500 text-amber-600" : state.complianceResponse === 0 ? "border-red-500 text-red-600" : "border-border text-muted-foreground"}`}>
+                              {complete ? <Check className="size-3.5" /> : state.complianceResponse === 0 ? <AlertCircle className="size-3.5" /> : <span className="size-1.5 rounded-full bg-current" />}
                             </span>
                             <div className="flex min-w-0 items-start gap-1">
                             <button
@@ -2034,7 +2010,7 @@ function FiveSAuditExecution({
                                 </span>
                               </span>
                               <span className="flex shrink-0 items-center gap-2">
-                                {responseType === "Compliance" && state.score !== null ? <Badge className={SCORE_STYLES[state.score]}><span className="sm:hidden" aria-hidden="true">{state.score}</span><span className="hidden sm:inline">{state.score} · {state.score === 0 ? t("score.zero") : state.score === 1 ? t("score.one") : t("score.two")}</span><span className="sr-only sm:hidden">{state.score === 0 ? t("score.zero") : state.score === 1 ? t("score.one") : t("score.two")}</span></Badge> : responseType === "Yes / No" && state.yesNoResponse ? <Badge variant="outline">{state.yesNoResponse}</Badge> : responseType === "Text" && state.textResponse.trim() ? <Badge variant="outline">Answered</Badge> : <span className="hidden text-[11px] text-muted-foreground sm:inline">{question.mandatory === false ? "Optional" : t("audit.notAnswered")}</span>}
+                                {responseType === "Compliance" && state.score !== null ? <Badge className={SCORE_STYLES[state.complianceResponse ?? -1]}><span className="sm:hidden" aria-hidden="true">{state.score}</span><span className="hidden sm:inline">{state.score} · {state.complianceResponse === 0 ? t("score.zero") : state.complianceResponse === 1 ? t("score.one") : t("score.two")}</span><span className="sr-only sm:hidden">{state.complianceResponse === 0 ? t("score.zero") : state.complianceResponse === 1 ? t("score.one") : t("score.two")}</span></Badge> : responseType === "Yes / No" && state.yesNoResponse ? <Badge variant="outline">{state.yesNoResponse}</Badge> : responseType === "Text" && state.textResponse.trim() ? <Badge variant="outline">Answered</Badge> : <span className="hidden text-[11px] text-muted-foreground sm:inline">{question.mandatory === false ? "Optional" : t("audit.notAnswered")}</span>}
                                 <ChevronDown className="size-4 text-muted-foreground" />
                               </span>
                             </button>
@@ -2058,7 +2034,7 @@ function FiveSAuditExecution({
                             <span className="size-1.5 rounded-full bg-current" />
                           </span>
 
-                          <div className="min-w-0 rounded-lg border border-primary/35 bg-primary/[0.018] p-4 shadow-sm">
+                          <div className="min-w-0 rounded-lg border border-primary/35 bg-primary/[0.018] p-3 shadow-sm">
                           <div className="flex min-w-0 items-start gap-1">
                           <button
                             type="button"
@@ -2082,7 +2058,7 @@ function FiveSAuditExecution({
 
                                   {question.description && (
                                     <p className="mt-1 max-w-full whitespace-normal break-words text-xs leading-5 text-muted-foreground [overflow-wrap:anywhere]">
-                                      {question.questionSource === "custom" ? question.description : t("audit.assessRequirement")}
+                                      {question.questionSource === "custom" || question.description !== "Assess the workplace against the defined 5S requirement." ? question.description : t("audit.assessRequirement")}
                                     </p>
                                   )}
                                 </div>
@@ -2092,7 +2068,7 @@ function FiveSAuditExecution({
                                   <Badge
                                     className={
                                       SCORE_STYLES[
-                                        state.score
+                                        state.complianceResponse ?? -1
                                       ]
                                     }
                                   >
@@ -2101,7 +2077,7 @@ function FiveSAuditExecution({
                                     }{" "}
                                     ·{" "}
                                     {
-                                      state.score === 0 ? t("score.zero") : state.score === 1 ? t("score.one") : t("score.two")
+                                      state.complianceResponse === 0 ? t("score.zero") : state.complianceResponse === 1 ? t("score.one") : t("score.two")
                                     }
                                   </Badge>
                                 )}
@@ -2124,7 +2100,7 @@ function FiveSAuditExecution({
                                 <div className="grid min-w-0 gap-2 md:grid-cols-3">
                                   {SCORE_OPTIONS.map(
                                     (
-                                      score
+                                      score, response
                                     ) => {
                                       const selected =
                                         state.score ===
@@ -2149,10 +2125,10 @@ function FiveSAuditExecution({
 
                                             selected
                                               ? SCORE_SELECTED_STYLES[
-                                                  score
+                                                  response
                                                 ]
                                               : SCORE_OPTION_STYLES[
-                                                  score
+                                                  response
                                                 ],
 
                                           ].join(
@@ -2164,7 +2140,7 @@ function FiveSAuditExecution({
                                               "flex size-6 items-center justify-center rounded-full border text-xs font-bold",
 
                                               SCORE_INDICATOR_STYLES[
-                                                score
+                                                response
                                               ],
                                             ].join(
                                               " "
@@ -2177,7 +2153,7 @@ function FiveSAuditExecution({
 
                                           <span className="text-xs font-medium">
                                             {
-                                              score === 0 ? t("score.zero") : score === 1 ? t("score.one") : t("score.two")
+                                              response === 0 ? t("score.zero") : response === 1 ? t("score.one") : t("score.two")
                                             }
                                           </span>
 
@@ -2473,6 +2449,7 @@ function FiveSAuditExecution({
       {showActionDialog &&
         activeActionQuestion && (
           <ActionDialog
+            error={uiError}
             question={
               activeActionQuestion
             }
@@ -2651,8 +2628,10 @@ function FiveSAuditExecution({
       </Dialog>
 
       <CompleteAuditDialog
+        error={uiError}
         open={showCompleteConfirmation}
         questionCount={allQuestions.length}
+          outstandingActionCount={openAuditActions.length}
         auditor={audit.auditor}
         signature={auditorSignature}
         onOpenChange={setShowCompleteConfirmation}
@@ -2660,19 +2639,16 @@ function FiveSAuditExecution({
         onSignatureClear={handleSignatureClear}
         onConfirm={handleCompleteAudit}
       />
-      <OpenAuditActionsDialog open={showOpenActionsWarning} actions={openAuditActions} onOpenChange={setShowOpenActionsWarning} onOpenAction={(actionId) => router.push(`/5s/actions/${encodeURIComponent(actionId)}`)} />
 
     </div>
   );
 }
 
-function OpenAuditActionsDialog({open,actions,onOpenChange,onOpenAction}:{open:boolean;actions:MyAction[];onOpenChange:(open:boolean)=>void;onOpenAction:(actionId:string)=>void}) {
-  return <AlertDialog open={open} onOpenChange={onOpenChange}><AlertDialogContent className="max-h-[calc(100dvh-1.5rem)] sm:max-w-xl"><AlertDialogHeader><AlertDialogTitle>Open actions must be completed</AlertDialogTitle><AlertDialogDescription>This audit cannot be completed while corrective actions from this audit are still open. Review and complete the actions below, then return to complete the audit.</AlertDialogDescription></AlertDialogHeader><div className="grid max-h-[50dvh] gap-2 overflow-y-auto pr-1">{actions.map(action=><div key={action.id} className="flex min-w-0 flex-col gap-3 rounded-lg border p-3 sm:flex-row sm:items-center"><div className="min-w-0 flex-1"><div className="flex min-w-0 flex-wrap items-center gap-2"><span className="font-mono text-xs font-semibold text-primary">{action.id}</span><Badge size="sm" variant={action.status==="Overdue"||action.status==="Rework Required"?"danger":action.status==="In Progress"||action.status==="Pending Review"||action.status==="Pending Auditor Review"||action.status==="Awaiting Review"?"warning":"info"}>{action.status}</Badge></div><p className="mt-1 truncate text-sm font-semibold" title={action.title}>{action.title}</p><p className="mt-1 text-xs text-muted-foreground">{action.sectionId??action.category??"Audit finding"} · Responsible: {action.responsiblePersonName||action.assignedTo||action.zoneLeaderName||"Unassigned"}</p></div><Button type="button" size="sm" variant="outline" className="shrink-0" onClick={()=>onOpenAction(action.id)}><Eye className="size-4"/>Open Action</Button></div>)}</div><AlertDialogFooter><AlertDialogCancel>Return to Audit</AlertDialogCancel></AlertDialogFooter></AlertDialogContent></AlertDialog>
-}
-
-function CompleteAuditDialog({
+export function CompleteAuditDialog({
+  error,
   open,
   questionCount,
+  outstandingActionCount = 0,
   auditor,
   signature,
   onOpenChange,
@@ -2681,7 +2657,9 @@ function CompleteAuditDialog({
   onConfirm,
 }: {
   open: boolean;
+  error?: string;
   questionCount: number;
+  outstandingActionCount?: number;
   auditor: string;
   signature?: FiveSAudit["auditorSignature"];
   onOpenChange: (open: boolean) => void;
@@ -2693,12 +2671,14 @@ function CompleteAuditDialog({
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="max-h-[calc(100dvh-1.5rem)] max-w-3xl overflow-y-auto overscroll-contain">
+        {error && <OpsFeedback tone="error" message={error} />}
         <AlertDialogHeader>
           <AlertDialogTitle>{t("signature.title")}</AlertDialogTitle>
           <AlertDialogDescription>
             All {questionCount} questions are complete. Sign below to approve the audit, then select Complete Audit.
           </AlertDialogDescription>
         </AlertDialogHeader>
+        {outstandingActionCount > 0 && <p role="status" className="rounded-lg border bg-muted/30 p-3 text-sm">This Audit has {outstandingActionCount} outstanding {outstandingActionCount === 1 ? "Action" : "Actions"}. You can complete the Audit now; {outstandingActionCount === 1 ? "this Action will remain open" : "these Actions will remain open"} in Action Center.</p>}
         <AuditorSignaturePad auditor={auditor} signature={signature} onConfirm={onSignatureConfirm} onClear={onSignatureClear} />
         <AlertDialogFooter>
           <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
@@ -2716,6 +2696,7 @@ function CompleteAuditDialog({
  */
 
 interface ActionDialogProps {
+  error?: string;
   question: FiveSQuestion;
   zone: string;
   state: QuestionState;
@@ -2732,6 +2713,7 @@ interface ActionDialogProps {
 }
 
 function ActionDialog({
+  error,
   question,
   zone,
   state,
@@ -2749,8 +2731,8 @@ function ActionDialog({
   const actionPriorities = useActiveActionPriorities();
   const evidenceInputRef = useRef<HTMLInputElement | null>(null);
   const requiresAction =
-    state.score === 0 ||
-    state.score === 1;
+    state.complianceResponse === 0 ||
+    state.complianceResponse === 1;
   const requiresEvidence = requiresAction && (question.questionSource !== "custom" || Boolean(question.requireEvidenceOnNonCompliance));
 
   const today = toLocalInputDate(new Date());
@@ -2768,6 +2750,7 @@ function ActionDialog({
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
       <div className="motion-success-in w-full max-w-2xl overflow-hidden rounded-xl border bg-background shadow-2xl">
+        {error && <OpsFeedback tone="error" message={error} />}
         {/* DIALOG HEADER */}
 
         <div className="flex items-start justify-between border-b px-5 py-4">
@@ -2797,14 +2780,14 @@ function ActionDialog({
               <Badge
                 className={`mt-2 ${
                   SCORE_STYLES[
-                    state.score
+                    state.complianceResponse ?? -1
                   ]
                 }`}
               >
                 {t("audit.score")}{" "}
                 {state.score} ·{" "}
                 {
-                  state.score === 0 ? t("score.zero") : state.score === 1 ? t("score.one") : t("score.two")
+                  state.complianceResponse === 0 ? t("score.zero") : state.complianceResponse === 1 ? t("score.one") : t("score.two")
                 }
               </Badge>
             )}
@@ -2896,7 +2879,7 @@ function ActionDialog({
                   {t("action.category")} <span className="text-destructive">*</span>
                 </label>
 
-                <Select
+                <Select searchLabel={"Action Category"}
                   value={state.actionCategory}
                   onValueChange={(value) => {
                     onUpdate({ actionCategory: value ?? "" });
@@ -2925,7 +2908,7 @@ function ActionDialog({
                     const priority = value as FiveSActionPriority;
                     onUpdate({
                       priority,
-                      dueDate: getPriorityDueDate(priority),
+                      dueDate: existingAction?.dueDateOverride ?? getPriorityDueDate(priority),
                     });
                   }}
                   disabled={!canEditCreatedAction}
@@ -2953,8 +2936,9 @@ function ActionDialog({
                     onUpdate({ dueDate: event.target.value })
                   }
                   className="mt-1.5"
-                  disabled={!canEditCreatedAction}
+                  disabled={!canEditCreatedAction || Boolean(existingAction)}
                 />
+                {existingAction && <ActionLink className="mt-1.5 inline-block text-xs text-primary underline" href={`/actions/${encodeURIComponent(existingAction.id)}`}>Edit due date in Action details (reason required)</ActionLink>}
                 <p className={`mt-1.5 text-[11px] ${dueDateInvalid ? "text-destructive" : "text-muted-foreground"}`}>
                   {dueDateInvalid ? "Due Date cannot be in the past." : `Defaulted to ${selectedPriority?.dueOffsetDays ?? 0} day${selectedPriority?.dueOffsetDays === 1 ? "" : "s"} from today based on ${selectedPriority?.label ?? state.priority} priority`}
                 </p>
@@ -2963,8 +2947,8 @@ function ActionDialog({
 
             {requiresAction && (
               <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-800 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-300">
-                Corrective action is
-                mandatory because this
+                An Action is
+                required because this
                 question received a
                 score of{" "}
                 {state.score}.

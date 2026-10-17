@@ -19,9 +19,10 @@ describe("canonical Action report route wiring", () => {
     const report = source("features/reports/canonical-action-report-page.tsx");
     expect(report).toContain("getActionReportTitle(action)");
     expect(report).toContain("Action ID:");
-    expect(report).toContain("Before Evidence");
-    expect(report).toContain("After Evidence");
+    expect(report).toContain("NOT GOOD (BEFORE)");
+    expect(report).toContain("GOOD (AFTER)");
     expect(report).toContain("getActionSourceRecordLabel(action)");
+    expect(report).not.toContain('Section title="Timeline"');
     for (const legacy of ["5S Improvement Report", "Improvement No", "Not Good (Before)", "Good (After)", "No original evidence captured"]) expect(report).not.toContain(legacy);
   });
 

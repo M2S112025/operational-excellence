@@ -1,4 +1,6 @@
 "use client";
+import { OpsPersonSelect } from "@/components/ops/ops-person-select";
+import { getCurrentDemoUser } from "@/lib/current-user";
 
 import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -9,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { PageContainer } from "@/components/layout/page-container";
 import FiveSPageHeader from "@/features/five-s/components/FiveSPageHeader";
@@ -19,6 +20,7 @@ import { useCurrentUser } from "@/lib/current-user";
 import { toLocalInputDate, useFiveSZoneConfiguration } from "@/lib/five-s/configuration";
 import { cn } from "@/lib/utils";
 import { formatGembaZoneLabel } from "./gemba-zone-labels";
+import { canConductGembaWalk } from "./gemba-access";
 import { createGembaWalk } from "./gemba-store";
 import type { GembaParticipant } from "./types";
 
@@ -32,7 +34,7 @@ export default function GembaNewPage() {
   const zoneConfiguration = useFiveSZoneConfiguration();
   const adminUser = adminUsers.find((user) => user.id === currentUser.id);
   const currentPlant = adminUser?.plant ?? currentUser.plant;
-  const allowed = !currentUser.isSuperAdmin && Boolean(adminUser?.roles.some((role) => role === "Admin" || role === "Auditor"));
+  const allowed = canConductGembaWalk(adminUser?.roles, currentUser);
   const meetingReference = searchParams.get("meetingId");
   const initialZone = zoneConfiguration.find((zone) => zone.name === searchParams.get("zone")) ?? zoneConfiguration.find((zone) => zone.name === currentUser.primaryZone) ?? zoneConfiguration[0];
   const [zoneName, setZoneName] = useState(initialZone?.name ?? "");
@@ -91,7 +93,7 @@ export default function GembaNewPage() {
     const walk = createGembaWalk({ plant: currentPlant, zone: zone.name, leadId: currentUser.id, leadName: currentUser.name, participants, purpose: purpose.trim(), notes: notes.trim() || undefined, scheduledDate: startNow ? toLocalInputDate(new Date()) : scheduledDate, scheduledTime: startNow ? undefined : scheduledTime }, currentUser, startNow);
     if (!walk) { setError("The walk could not be saved. Browser storage may be full."); return; }
     const sourceTopicId = searchParams.get("topicId");
-    if (meetingReference && sourceTopicId) linkTopicFollowUp(sourceTopicId, "Gemba", walk.id);
+    if (meetingReference && sourceTopicId) linkTopicFollowUp(sourceTopicId, "Gemba", walk.id, getCurrentDemoUser());
     router.push(startNow ? `/gemba/${walk.id}/walk` : `/gemba/${walk.id}`);
   }
 
@@ -102,7 +104,7 @@ export default function GembaNewPage() {
       <CardContent className="grid gap-5 p-4 sm:p-6">
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Plant"><Input value={currentPlant} disabled /></Field>
-          <Field label="Zone *"><Select value={zoneName} onValueChange={(value) => changeZone(value ?? initialZone?.name ?? "")}><SelectTrigger className="w-full"><SelectValue /></SelectTrigger><SelectContent>{zoneConfiguration.map((item) => <SelectItem key={item.name} value={item.name}>{formatGembaZoneLabel(item.name)}</SelectItem>)}</SelectContent></Select></Field>
+          <Field label="Zone *"><OpsPersonSelect label="Zone" clearable={false} entityLabel="Zone" entityPlural="Zones" people={zoneConfiguration.map(item => ({ id: item.name, name: formatGembaZoneLabel(item.name) }))} value={zoneName} onValueChange={changeZone} /></Field>
           <Field label="Walk Lead"><Input value={`${currentUser.name} · Logged in user`} disabled /></Field>
           <div className="grid content-start gap-2">
             <p className="text-sm font-medium">When *</p>

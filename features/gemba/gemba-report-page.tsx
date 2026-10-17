@@ -1,4 +1,5 @@
 "use client";
+import { ActionLink } from "@/components/ops/ops-return-link";
 /* eslint-disable @next/next/no-img-element -- report evidence is resolved from IndexedDB/object URLs and legacy static URLs. */
 
 import Link from "next/link";
@@ -71,7 +72,7 @@ export default function GembaReportPage({ walkId }: { walkId: string }) {
             {observation.evidence.length > 0 && <div className="gemba-evidence-grid mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">{observation.evidence.map((item) => <ReportEvidence key={item.id} evidence={item} />)}</div>}
             {observation.voiceNote && <div className="mt-4 flex items-center gap-2 rounded-md border bg-muted/15 px-3 py-2 text-xs"><FileAudio className="size-4 text-primary" /><span><strong>Voice note attached</strong> · {observation.voiceNote.durationSeconds}s{observation.voiceNote.transcript ? " · Structured observation text shown above" : ""}</span></div>}
             {(correctiveActionNeeded !== undefined || observation.redTagId || observation.improvementId) && <div className="mt-4 border-t pt-3"><p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Operational follow-up</p><div className="mt-2 grid gap-2 sm:grid-cols-2">
-              {observation.type !== "Positive" && <div className="rounded-md border px-3 py-2 text-xs"><p className="font-semibold">Corrective Action</p><p className="mt-1 text-muted-foreground">{correctiveActionNeeded ? "Required" : "Not required"}</p></div>}
+              {observation.type !== "Positive" && <div className="rounded-md border px-3 py-2 text-xs"><p className="font-semibold">Action</p><p className="mt-1 text-muted-foreground">{correctiveActionNeeded ? "Required" : "Not required"}</p></div>}
               {observation.actionId && <LinkedRecord icon={FileCheck2} label="Action" id={observation.actionId} href={`/actions/${encodeURIComponent(observation.actionId)}`} available={Boolean(action)} detail={action ? `${action.status} · ${action.responsiblePersonName ?? action.assignedTo ?? "Owner not assigned"} · Due ${formatShortDate(action.dueDate)}` : "Linked record unavailable"} />}
               {observation.redTagId && <LinkedRecord icon={Tag} label="Red Tag" id={observation.redTagId} href={`/5s/red/${encodeURIComponent(observation.redTagId)}`} available={Boolean(redTag)} detail={redTag ? `${redTag.status} · ${redTag.itemName}${redTag.decisionRecord ? ` · ${redTag.decisionRecord.type.replaceAll("_", " ")}` : ""}` : "Linked record unavailable"} />}
               {observation.improvementId && <LinkedRecord icon={Lightbulb} label="Continual Improvement" id={observation.improvementId} href={`/continuous-improvement/${encodeURIComponent(observation.improvementId)}`} available={Boolean(improvement)} detail={improvement ? `${improvement.status.replaceAll("_", " ")} · ${improvement.title}` : "Linked record unavailable"} />}
@@ -93,7 +94,8 @@ function ReportEvidence({ evidence }: { evidence: GembaEvidence }) {
 
 function LinkedRecord({ icon: Icon, label, id, href, available, detail }: { icon: typeof FileCheck2; label: string; id: string; href: string; available: boolean; detail: string }) {
   const content = <><Icon className="mt-0.5 size-3.5 shrink-0 text-primary" /><span className="min-w-0"><span className="block font-semibold">{label} · {id}</span><span className="mt-0.5 block text-muted-foreground capitalize">{detail}</span></span></>;
-  return available ? <Link href={href} className="flex gap-2 rounded-md border px-3 py-2 text-xs outline-none hover:bg-muted/20 focus-visible:ring-2 focus-visible:ring-ring print:text-black">{content}</Link> : <div className="flex gap-2 rounded-md border px-3 py-2 text-xs">{content}</div>;
+  const RecordLink = href.startsWith("/actions/") ? ActionLink : Link;
+  return available ? <RecordLink href={href} className="flex gap-2 rounded-md border px-3 py-2 text-xs outline-none hover:bg-muted/20 focus-visible:ring-2 focus-visible:ring-ring print:text-black">{content}</RecordLink> : <div className="flex gap-2 rounded-md border px-3 py-2 text-xs">{content}</div>;
 }
 
 function ReportMeta({ label, value }: { label: string; value: string }) { return <div><p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">{label}</p><p className="mt-1 text-sm leading-5">{value}</p></div>; }

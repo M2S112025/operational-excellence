@@ -49,6 +49,12 @@ describe("centralized organization configuration", () => {
     expect(administration.getAdminUser("USR-RITIKA")?.zoneMemberships).toEqual([{ zone: "Zone C", responsibility: "Member" }]);
     expect(configuration.getMembersForZone("Zone A").some((member) => member.id === "USR-RITIKA")).toBe(false);
     expect(configuration.getMembersForZone("Zone C").some((member) => member.id === "USR-RITIKA")).toBe(true);
+    // This selector test isolates membership from outstanding-work transfer rules.
+    const actions = await import("@/lib/actions/action-store");
+    actions.getActions();
+    actions.setActions([]);
+    const ci = await import("@/features/five-s/continuous-improvement/store");
+    ci.setImprovements([]);
     expect(administration.setAdminUserActive("USR-RITIKA", false, "USR-LAKSHMAN")).toBe(true);
     expect(administration.getAdminUser("USR-RITIKA")?.status).toBe("Inactive");
     expect(configuration.getMembersForZone("Zone C").some((member) => member.id === "USR-RITIKA")).toBe(false);

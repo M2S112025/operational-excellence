@@ -1,3 +1,2 @@
 import { redirect } from "next/navigation";
-
-export default function Page() { redirect("/5s/red/create"); }
+export default function Page() { redirect("/red-flag"); }
