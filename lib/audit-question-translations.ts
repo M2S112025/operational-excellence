@@ -1,3 +1,4 @@
+import { FIVE_S_QUESTIONS } from "@/features/settings/standard-audit-checklist/defaults"
 import type { AppLanguage } from "@/lib/ui-preferences"
 import type { FiveSAuditStage, FiveSCategory } from "@/features/five-s/types/five-s"
 
@@ -47,6 +48,6 @@ const descriptions: Partial<Record<AppLanguage, Record<FiveSCategory, string>>> 
 }
 
 const questions: Partial<Record<AppLanguage, Record<FiveSCategory, string[]>>> = { hi, ta, bn, ja }
-export function auditQuestionText(language: AppLanguage, category: FiveSAuditStage, index: number, fallback: string) { return category === "General" ? fallback : questions[language]?.[category]?.[index] ?? fallback }
+export function auditQuestionText(language: AppLanguage, category: FiveSAuditStage, index: number, fallback: string) { return category === "General" || fallback !== FIVE_S_QUESTIONS[category]?.[index] ? fallback : questions[language]?.[category]?.[index] ?? fallback }
 export function auditSectionName(language: AppLanguage, category: FiveSAuditStage) { return category === "General" ? "Custom Questions" : sectionNames[language]?.[category] ?? category }
 export function auditSectionDescription(language: AppLanguage, category: FiveSAuditStage, fallback: string) { return category === "General" ? fallback : descriptions[language]?.[category] ?? fallback }

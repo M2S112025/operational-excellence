@@ -1,4 +1,6 @@
+import { questionComplianceResponse, hasConsistentComplianceScore, type AuditScoringValues, type ComplianceResponse } from "@/lib/five-s/scoring-policy";
 import type { FiveSAuditStage, FiveSQuestion, FiveSSection } from "@/features/five-s/types/five-s";
+import { applyStandardQuestionEdit } from "../standard-audit-checklist/store";
 import { getActiveCustomAuditQuestions } from "./store";
 import type { CustomAuditQuestion } from "./types";
 
@@ -37,7 +39,7 @@ export function createAuditChecklistSnapshot(
       .sort((a, b) => a.order - b.order)
       .map(toSnapshot);
     const standard = section.questions.map((question) => ({
-      ...question,
+      ...applyStandardQuestionEdit(question),
       evidence: [...(question.evidence ?? [])],
       questionSource: question.questionSource ?? "standard" as const,
       responseType: question.responseType ?? "Compliance" as const,
@@ -75,6 +77,7 @@ export function isAuditQuestionAnswered(question: FiveSQuestion) {
 }
 
 export interface AuditQuestionAnswerState {
+  complianceResponse?: ComplianceResponse | null;
   score: number | null;
   observation?: string;
   actionId?: string;
@@ -83,15 +86,17 @@ export interface AuditQuestionAnswerState {
   yesNoResponse?: "Yes" | "No";
 }
 
-export function isAuditQuestionComplete(question: FiveSQuestion, answer: AuditQuestionAnswerState) {
+export function isAuditQuestionComplete(question: FiveSQuestion, answer: AuditQuestionAnswerState, policy?: Readonly<AuditScoringValues>) {
   const responseType = question.responseType ?? "Compliance";
   const optionalCustom = question.questionSource === "custom" && question.mandatory === false;
   if (responseType === "Text") return optionalCustom || Boolean(answer.textResponse?.trim());
   if (responseType === "Yes / No") return optionalCustom || Boolean(answer.yesNoResponse);
   if (answer.score === null) return optionalCustom;
-  if ((answer.score === 0 || answer.score === 1) && !answer.observation?.trim()) return false;
-  if ((answer.score === 0 || answer.score === 1) && !answer.actionId) return false;
+  if (policy && !hasConsistentComplianceScore(answer, policy)) return false;
+  const response = questionComplianceResponse(answer);
+  if ((response === 0 || response === 1) && !answer.observation?.trim()) return false;
+  if ((response === 0 || response === 1) && !answer.actionId) return false;
   const requiresEvidence = question.questionSource !== "custom" || Boolean(question.requireEvidenceOnNonCompliance);
-  if ((answer.score === 0 || answer.score === 1) && requiresEvidence && !answer.evidence?.length) return false;
+  if ((response === 0 || response === 1) && requiresEvidence && !answer.evidence?.length) return false;
   return true;
 }

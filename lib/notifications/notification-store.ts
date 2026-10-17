@@ -11,6 +11,8 @@ export interface AppNotification {
   href: string;
   createdAt: string;
   read: boolean;
+  deduplicationKey?: string;
+  context?: { sourceModule: "gemba"; observationId: string; actorId: string; zoneIds: string[] };
 }
 
 const STORAGE_KEY = "standalone-5s-notifications";
@@ -88,4 +90,18 @@ export function useNotifications(recipientUserId: string) {
     () => EMPTY_NOTIFICATIONS
   );
   return snapshot.filter((item) => item.recipientUserId === recipientUserId);
+}
+
+/** Publish only after durable local persistence; retries reuse the same personal notification. */
+export function tryCreateNotification(input: Omit<AppNotification, "id" | "createdAt" | "read"> & { deduplicationKey: string }) {
+  load();
+  const existing = notifications.find(item => item.deduplicationKey === input.deduplicationKey && item.recipientUserId === input.recipientUserId);
+  if (existing) return { success: true as const, notification: existing };
+  const notification: AppNotification = { ...input, id: `NOT-${crypto.randomUUID()}`, createdAt: new Date().toISOString(), read: false };
+  const next = [notification, ...notifications];
+  const result = safeSetStorage(STORAGE_KEY, next);
+  if (!result.success) return result;
+  notifications = next;
+  listeners.forEach(listener => listener());
+  return { success: true as const, notification };
 }

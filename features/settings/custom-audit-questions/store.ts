@@ -2,6 +2,9 @@
 
 import { useSyncExternalStore } from "react";
 
+import { getAdminUser } from "@/features/five-s/administration/store";
+import { getCurrentDemoUser } from "@/lib/current-user";
+import { canManageAuditConfiguration } from "../audit-configuration-permissions";
 import { safeSetStorage } from "@/lib/browser-storage";
 import { DEMO_ORGANIZATION } from "@/lib/module-entitlements";
 import type { FiveSAuditStage } from "@/features/five-s/types/five-s";
@@ -115,58 +118,85 @@ export function getActiveCustomAuditQuestions(organizationId = ORGANIZATION_ID) 
     .sort((a, b) => a.stage.localeCompare(b.stage) || a.order - b.order);
 }
 
-export function createCustomAuditQuestion(input: CustomAuditQuestionInput, actor: string) {
+function requireConfigurationActor(organizationId: string) {
+  const identity = getCurrentDemoUser();
+  const actor = getAdminUser(identity.id);
+  if (!canManageAuditConfiguration(identity, actor, organizationId)) {
+    throw new Error("Active configuration permission for this organization is required.");
+  }
+  return actor!;
+}
+
+function requireTarget(id: string) {
+  load();
+  const matches = questions.filter(question => question.id === id);
+  const current = matches[0];
+  requireConfigurationActor(current?.organizationId ?? ORGANIZATION_ID);
+  if (matches.length !== 1 || current.source !== "custom") throw new Error("Custom question not found or ambiguous.");
+  return current;
+}
+
+function validatedFields(input: CustomAuditQuestionInput) {
+  if (typeof input.question !== "string" || !input.question.trim()) throw new Error("Question is required.");
+  if (input.question.length > 500) throw new Error("Question must be 500 characters or fewer.");
+  if (!["Sort", "Set in Order", "Shine", "Standardize", "Sustain", "General"].includes(input.stage)) throw new Error("Select a valid 5S Stage.");
+  if (!["Compliance", "Yes / No", "Text"].includes(input.responseType)) throw new Error("Select a valid Response Type.");
+  if (!Number.isInteger(input.order) || input.order < 1) throw new Error("Question order must be a positive integer.");
+  if ([input.mandatory, input.requireEvidenceOnNonCompliance, input.active].some(value => typeof value !== "boolean")) throw new Error("Question options must be boolean values.");
+  if ([input.instruction, input.referenceImage].some(value => value !== undefined && typeof value !== "string")) throw new Error("Question guidance and image must be text.");
+  // Explicitly copy editable fields; runtime callers cannot overwrite IDs, source or creation history.
+  return {
+    question: input.question.trim(), stage: input.stage, responseType: input.responseType,
+    mandatory: input.mandatory, requireEvidenceOnNonCompliance: input.requireEvidenceOnNonCompliance,
+    instruction: input.instruction?.trim() || undefined, referenceImage: input.referenceImage,
+    active: input.active, order: input.order,
+  };
+}
+
+export function createCustomAuditQuestion(input: CustomAuditQuestionInput) {
+  const organizationId = input.organizationId ?? ORGANIZATION_ID;
+  const actor = requireConfigurationActor(organizationId);
+  const fields = validatedFields(input);
   load();
   const now = new Date().toISOString();
   const item: CustomAuditQuestion = {
-    ...input,
-    id: `CUSTOM-AUDIT-${crypto.randomUUID()}`,
-    organizationId: input.organizationId ?? ORGANIZATION_ID,
-    question: input.question.trim(),
-    instruction: input.instruction?.trim() || undefined,
-    source: "custom",
-    createdBy: actor,
-    createdAt: now,
-    updatedAt: now,
+    ...fields, id: `CUSTOM-AUDIT-${crypto.randomUUID()}`, organizationId,
+    source: "custom", createdBy: actor.name, createdAt: now, updatedAt: now,
   };
   return persist([item, ...questions]) ? item : null;
 }
 
 export function updateCustomAuditQuestion(id: string, input: CustomAuditQuestionInput) {
-  load();
-  const current = questions.find((question) => question.id === id);
-  if (!current) throw new Error("Custom question not found.");
-  const next = questions.map((question) => question.id === id ? {
-    ...current,
-    ...input,
-    question: input.question.trim(),
-    instruction: input.instruction?.trim() || undefined,
-    updatedAt: new Date().toISOString(),
+  const current = requireTarget(id);
+  if (input.organizationId !== undefined && input.organizationId !== (current.organizationId ?? ORGANIZATION_ID)) {
+    throw new Error("A custom question cannot be reassigned to another organization.");
+  }
+  const fields = validatedFields(input);
+  const next = questions.map(question => question.id === id ? {
+    ...current, ...fields, updatedAt: new Date().toISOString(),
   } : question);
-  return persist(next) ? next.find((question) => question.id === id) ?? null : null;
+  return persist(next) ? next.find(question => question.id === id) ?? null : null;
 }
 
 export function setCustomAuditQuestionActive(id: string, active: boolean) {
-  load();
-  if (!questions.some((question) => question.id === id)) throw new Error("Custom question not found.");
-  return persist(questions.map((question) => question.id === id ? {
-    ...question,
-    active,
-    updatedAt: new Date().toISOString(),
+  requireTarget(id);
+  if (typeof active !== "boolean") throw new Error("Question active status must be a boolean.");
+  return persist(questions.map(question => question.id === id ? {
+    ...question, active, updatedAt: new Date().toISOString(),
   } : question));
 }
 
 export function moveCustomAuditQuestion(id: string, direction: -1 | 1) {
-  load();
-  const current = questions.find((question) => question.id === id);
-  if (!current) throw new Error("Custom question not found.");
+  const current = requireTarget(id);
+  if (direction !== -1 && direction !== 1) throw new Error("Select a valid reorder direction.");
   const stageQuestions = questions
-    .filter((question) => question.stage === current.stage && (question.organizationId ?? ORGANIZATION_ID) === (current.organizationId ?? ORGANIZATION_ID))
+    .filter(question => question.stage === current.stage && (question.organizationId ?? ORGANIZATION_ID) === (current.organizationId ?? ORGANIZATION_ID))
     .sort((a, b) => a.order - b.order);
-  const index = stageQuestions.findIndex((question) => question.id === id);
+  const index = stageQuestions.findIndex(question => question.id === id);
   const target = stageQuestions[index + direction];
   if (!target) return true;
-  return persist(questions.map((question) => {
+  requireTarget(target.id);
+  return persist(questions.map(question => {
     if (question.id === current.id) return { ...question, order: target.order, updatedAt: new Date().toISOString() };
     if (question.id === target.id) return { ...question, order: current.order, updatedAt: new Date().toISOString() };
     return question;

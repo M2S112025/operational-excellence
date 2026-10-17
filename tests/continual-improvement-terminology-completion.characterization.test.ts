@@ -37,7 +37,7 @@ describe("Batch A — Continual Improvement terminology", () => {
     expect(source("lib/modules.ts")).toContain('label: "Continual Improvement"');
     expect(source("lib/navigation.ts")).toContain('"/continuous-improvement": "Continual Improvement"');
     expect(source("features/five-s/continuous-improvement/landing-page.tsx")).toContain('title="Continual Improvement"');
-    expect(source("app/(app)/continuous-improvement/settings/page.tsx")).toContain('title="Continual Improvement"');
+    expect(source("app/(app)/continuous-improvement/settings/page.tsx")).toContain('redirect("/continuous-improvement")');
     expect(source("features/five-s/continuous-improvement/report-page.tsx")).toContain("Continual Improvement Report");
     expect(source("features/reports/report-registry.ts")).toContain('label: "Continual Improvement"');
   });

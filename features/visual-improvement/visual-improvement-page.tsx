@@ -120,7 +120,7 @@ function ImprovementLibrary({ records, initialStatus, mayCreate, compactFilters 
 }
 
 function CompactSelect({ value, onChange, all, allValue = all, options }: { value: string; onChange: (value: string) => void; all: string; allValue?: string; options: readonly string[] }) {
-  return <Select value={value} onValueChange={(next) => onChange(next ?? allValue)}><SelectTrigger className="w-full"><SelectValue /></SelectTrigger><SelectContent><SelectItem value={allValue}>{all}</SelectItem>{options.filter((option) => option !== allValue).map((option) => <SelectItem key={option} value={option}>{option}</SelectItem>)}</SelectContent></Select>;
+  return <Select searchLabel={all} value={value} onValueChange={(next) => onChange(next ?? allValue)}><SelectTrigger className="w-full"><SelectValue /></SelectTrigger><SelectContent><SelectItem value={allValue}>{all}</SelectItem>{options.filter((option) => option !== allValue).map((option) => <SelectItem key={option} value={option}>{option}</SelectItem>)}</SelectContent></Select>;
 }
 
 function unique(values: string[]) { return [...new Set(values)].sort(); }

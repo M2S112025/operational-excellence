@@ -1,4 +1,5 @@
 "use client";
+import { OpsPersonSelect } from "@/components/ops/ops-person-select";
 
 import { useMemo, useState } from "react";
 import { ArrowLeft, Check, Info, LoaderCircle, LockKeyhole } from "lucide-react";
@@ -20,13 +21,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useI18n } from "@/components/preferences/use-i18n";
 import { useAdminUsers } from "@/features/five-s/administration/store";
 
@@ -195,16 +189,7 @@ export default function FiveSAuditCreate({ onBack, onStart }: FiveSAuditCreatePr
 
                   <div className="grid gap-2">
                     <Label>{t("audit.zone")}</Label>
-                    <Select value={zone} onValueChange={(value) => setZone(value ?? "")}>
-                      <SelectTrigger className="h-11 min-h-11 w-full px-3">
-                        <SelectValue placeholder={t("audit.selectZone")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {zoneConfiguration.map((item) => (
-                          <SelectItem key={item.code} value={item.name} disabled={item.name === currentZone}>{item.name}{item.name === currentZone ? ` — ${t("audit.ownZone")}` : ""}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <OpsPersonSelect label={t("audit.zone")} clearable={false} entityLabel="Zone" entityPlural="Zones" showEligibleCount={false} value={zone} onValueChange={setZone} placeholder={t("audit.selectZone")} triggerClassName="h-11 min-h-11 w-full px-3" people={zoneConfiguration.map(item => ({ id: item.name, name: item.name, disabled: item.name === currentZone, description: item.name === currentZone ? t("audit.ownZone") : undefined }))} />
                   </div>
 
                   <div key={`leader-${zone}`} className="motion-success-in"><ReadOnlyField label={t("audit.zoneLeader")} value={selectedZone?.leader} placeholder={t("audit.selectZoneFirst")} /></div>

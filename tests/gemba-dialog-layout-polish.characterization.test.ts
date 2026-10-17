@@ -87,7 +87,8 @@ describe("Gemba dialog layout polish — Create Action from Gemba", () => {
 });
 
 describe("Gemba dialog layout polish — no change to underlying observation/action behavior", () => {
-  const actor = { id: "USR-RUMESH", name: "Rumesh" };
+  // Use an actor authorized by the existing Gemba Admin/Auditor UI rule.
+const actor = { id: "USR-LAKSHMAN", name: "Lakshman" };
 
   it("saveGembaObservation() still works exactly as before for a manual observation", async () => {
     const store = await gembaStore();

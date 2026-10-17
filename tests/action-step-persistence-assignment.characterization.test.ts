@@ -42,9 +42,9 @@ describe("canonical Action step persistence", () => {
     store.updateAction(action.id, {
       actionTakenDescription: "Replace damaged fixture", resolutionObservation: "Replace damaged fixture",
       correctiveActionCategory: "Design / Equipment Modification", costSaving: 5000, currency: "INR",
-    });
+    }, owner);
     store.addActionEvidence(action.id, { id: "AFTER-1", name: "after.jpg", type: "image", uploadedAt: "2026-10-05", uploadedBy: owner.name, url: "data:image/jpeg;base64,after" }, owner);
-    store.updateAction(action.id, { costSaving: 5500 });
+    store.updateAction(action.id, { costSaving: 5500 }, owner);
 
     const afterEvidence = store.getActionById(action.id)!;
     expect(afterEvidence).toMatchObject({ resolutionObservation: "Replace damaged fixture", correctiveActionCategory: "Design / Equipment Modification", costSaving: 5500, sourceId: "GEM-001", responsiblePersonId: owner.id });

@@ -60,8 +60,8 @@ describe("Action Center source traceability and queues", () => {
     expect(getActionsForTab([review], "awaiting-review", member, memberAdmin).map((item) => item.id)).toEqual(["EXPLICIT"]);
   });
 
-  it("deep-links Audit actions to the specific report when an Audit ID is available", () => {
-    expect(getActionSourceHref(action({ auditId: "AUD / 14", sourceId: undefined }))).toBe("/5s/audits/AUD%20%2F%2014/report");
+  it("deep-links Audit actions to the canonical Audit workspace", () => {
+    expect(getActionSourceHref(action({ auditId: "AUD / 14", sourceId: undefined }))).toBe("/audits?audit=AUD%20%2F%2014");
     expect(getActionSourceHref(action({ auditId: undefined, sourceId: undefined, sourceTitle: "" }))).toBe("/audits");
   });
 
@@ -75,6 +75,12 @@ describe("Action Center source traceability and queues", () => {
     expect(getActionSourceRecordLabel(vmAction)).toBe("First Pass Yield · Zone A Daily Management · November 2026");
     expect(getActionSourceHref(vmAction)).toBe("/visual-management/boards/VM-ZA-T1");
     expect(vmAction.visualManagementSource).toMatchObject({ boardId: "VM-ZA-T1", configuredKpiId: "VMK-U-1", actualEntryId: "VMKAE-1", deviationId: "VMKD-1" });
+  });
+
+  it("deep-links new VM Actions to the exact meeting and falls back to the board for historical records", () => {
+    const historical = action({ source: "Visual Management", sourceModule: "visualManagement", sourceId: "VM-ZA-T1", visualManagementSource: { boardId: "VM-ZA-T1", configuredKpiId: "VMK-U-1", actualEntryId: "VMKAE-1", deviationId: "VMKD-1", reportingPeriod: { type: "daily", key: "2026-10-07", label: "7 October 2026" }, boardNameSnapshot: "Zone A Daily Management", kpiNameSnapshot: "Safety Accidents", actualValueSnapshot: 1, targetSnapshot: 0, measurementSnapshot: "count", statusSnapshot: "red", deviationSnapshot: "One accident" } });
+    expect(getActionSourceHref(historical)).toBe("/visual-management/boards/VM-ZA-T1");
+    expect(getActionSourceHref({ ...historical, visualManagementSource: { ...historical.visualManagementSource!, meetingId: "VMM / 22" } })).toBe("/visual-management/meetings/VMM%20%2F%2022");
   });
 
   it("applies dashboard-compatible overdue and source filters", () => {

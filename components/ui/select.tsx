@@ -10,7 +10,39 @@ import {
 
 import { cn } from "@/lib/utils"
 
-const Select = SelectPrimitive.Root
+import { OpsSearchableSelect, searchableSelectPolicy, type OpsSelectOption } from "@/components/ops/ops-searchable-select"
+
+function selectionText(node: React.ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") return String(node)
+  if (React.isValidElement<{ children?: React.ReactNode }>(node)) return selectionText(node.props.children)
+  return React.Children.toArray(node).map(child => typeof child === "string" || typeof child === "number" ? String(child) : React.isValidElement<{ children?: React.ReactNode }>(child) ? selectionText(child.props.children) : "").join(" ")
+}
+
+/** Existing Select composition, using one combobox for explicit entity fields or long lists. */
+function Select({ children, searchable, searchLabel, ...props }: SelectPrimitive.Root.Props<string> & { searchable?: boolean; searchLabel?: string }) {
+  const options: OpsSelectOption[] = []
+  let trigger: React.ReactElement<SelectPrimitive.Trigger.Props> | undefined
+  let selectedDisplay: React.ReactNode | ((value: string | null) => React.ReactNode)
+  let placeholder: React.ReactNode
+  function visit(nodes: React.ReactNode, group?: string) {
+    React.Children.forEach(nodes, node => {
+      if (!React.isValidElement<{ children?: React.ReactNode; value?: string; disabled?: boolean; placeholder?: React.ReactNode }>(node)) return
+      if (node.type === SelectTrigger) trigger = node as React.ReactElement<SelectPrimitive.Trigger.Props>
+      if (node.type === SelectValue) { selectedDisplay = node.props.children; placeholder = node.props.placeholder }
+      if (node.type === SelectItem && typeof node.props.value === "string") options.push({ value: node.props.value, label: selectionText(node.props.children), disabled: node.props.disabled, group })
+      else {
+        let nextGroup = group
+        if (node.type === SelectGroup) React.Children.forEach(node.props.children, child => { if (React.isValidElement<{children?: React.ReactNode}>(child) && child.type === SelectLabel) nextGroup = selectionText(child.props.children) })
+        visit(node.props.children, nextGroup)
+      }
+    })
+  }
+  visit(children)
+  const triggerProps = trigger?.props
+  const label = searchLabel ?? triggerProps?.["aria-label"] ?? (selectionText(placeholder) || "options")
+  if (!(searchable ?? searchableSelectPolicy(label, options.length)) || !trigger || props.multiple || props.open !== undefined || props.onOpenChange || props.items) return <SelectPrimitive.Root {...props}>{children}</SelectPrimitive.Root>
+  return <OpsSearchableSelect options={options} value={props.value ?? undefined} defaultValue={props.defaultValue ?? undefined} onValueChange={(next, details) => props.onValueChange?.(next, details as unknown as SelectPrimitive.Root.ChangeEventDetails)} label={label} placeholder={placeholder} disabled={props.disabled || props.readOnly} required={props.required} name={props.name} id={triggerProps?.id ?? props.id} triggerRef={triggerProps?.ref} triggerClassName={typeof triggerProps?.className === "string" ? triggerProps.className : undefined} invalid={triggerProps?.["aria-invalid"] === true || triggerProps?.["aria-invalid"] === "true"} describedBy={triggerProps?.["aria-describedby"]} displayValue={typeof selectedDisplay === "function" ? selectedDisplay(props.value ?? props.defaultValue ?? null) : selectedDisplay} />
+}
 
 function SelectGroup({
   className,

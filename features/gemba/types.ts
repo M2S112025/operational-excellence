@@ -63,10 +63,15 @@ export interface GembaHorizontalDeploymentRecipient {
   leaderName?: string;
   notificationStatus: GembaHorizontalDeploymentStatus;
   notificationId?: string;
+  notificationError?: string;
+  /** Stable across retries; a new recipient assignment gets a new key. */
+  notificationKey?: string;
 }
 
 export interface GembaHorizontalDeployment {
   enabled: true;
+  /** Absent on legacy selected-Zone records; never inferred on load. */
+  policy?: "same-plant-broadcast";
   targetZoneIds: string[];
   recipients: GembaHorizontalDeploymentRecipient[];
   createdAt: string;
@@ -116,6 +121,8 @@ export interface GembaObservation {
   improvementId?: string;
   noActionReason?: string;
   horizontalDeployment?: GembaHorizontalDeployment;
+  /** Historical snapshots are audit information, never access grants. */
+  horizontalDeploymentHistory?: Array<{ deployment: GembaHorizontalDeployment; at: string; actorId: string }>;
 }
 
 export function resolveGembaCorrectiveActionNeeded(observation: Pick<GembaObservation, "type" | "actionId" | "correctiveActionNeeded" | "noActionReason">): boolean | undefined {

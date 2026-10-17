@@ -5,7 +5,7 @@ import ContinuousImprovementEditPage from "./edit-page";
 import ContinuousImprovementReportPage from "./report-page";
 
 export function ImprovementListPage({ initialTab, initialStage }: { initialTab?: string; initialStage?: string } = {}) {
-  return <ContinuousImprovementLandingPage initialTab={initialTab} initialStage={initialStage} />;
+  return <ContinuousImprovementLandingPage key={`${initialTab ?? "overview"}:${initialStage ?? "All"}`} initialTab={initialTab} initialStage={initialStage} />;
 }
 
 export function ImprovementCreatePage() {

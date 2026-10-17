@@ -1,4 +1,6 @@
 "use client";
+import { getCurrentDemoUser } from "@/lib/current-user";
+import { canOperateVisualManagementBoard, type VisualManagementActor } from "./visual-management-access";
 
 import { useSyncExternalStore } from "react";
 import { safeSetStorage } from "@/lib/browser-storage";
@@ -117,6 +119,8 @@ export function validateMeetingSchedule(input: Pick<MeetingSchedule, "date" | "t
   return "";
 }
 export function createMeetingSchedule(input: Omit<MeetingSchedule, "id" | "createdAt" | "status" | "overrides">) {
+  if (!canOperateVisualManagementBoard(getVisualManagementState().boards.find(board => board.id === input.boardId), { id: input.createdByUserId }, true)) return { success: false as const, error: "Board scheduling permission is required." };
+
   const error = validateMeetingSchedule(input);
   if (error || !getVisualManagementState().boards.some((board) => board.id === input.boardId && board.status === "Active")) return { success: false as const, error: error || "Board is unavailable." };
   const schedule: MeetingSchedule = { ...input, id: `VMS-${globalThis.crypto?.randomUUID?.() ?? Date.now()}`, attendees: input.attendees.map((person) => ({ ...person, attendance: "Absent", expected: true })), createdAt: new Date().toISOString(), status: "Scheduled", overrides: [] };
@@ -161,7 +165,9 @@ export function occurrencesInRange(schedule: MeetingSchedule, from: string, thro
 }
 export function listMeetingOccurrences(from: string, through: string) { return snapshot().flatMap((item) => occurrencesInRange(item, from, through)).sort((a, b) => `${a.date}T${a.time}`.localeCompare(`${b.date}T${b.time}`)); }
 function protectedOccurrence(id: string, occurrenceDate: string) { return getVisualManagementState().meetings.some((meeting) => meeting.scheduleId === id && meeting.occurrenceDate === occurrenceDate); }
-export function changeMeetingSchedule(id: string, occurrenceDate: string, scope: "single" | "future" | "series", patch: Partial<Pick<MeetingSchedule, "date" | "time" | "durationMinutes" | "recurrence" | "attendees">>, cancel = false) {
+export function changeMeetingSchedule(id: string, occurrenceDate: string, scope: "single" | "future" | "series", patch: Partial<Pick<MeetingSchedule, "date" | "time" | "durationMinutes" | "recurrence" | "attendees">>, cancel = false, actor?: VisualManagementActor) {
+  const parent = snapshot().find(item => item.id === id); if (!parent || !canOperateVisualManagementBoard(getVisualManagementState().boards.find(board => board.id === parent.boardId), actor, true)) return false;
+
   const current = snapshot();
   const schedule = current.find((item) => item.id === id);
   if (!schedule || protectedOccurrence(id, occurrenceDate)) return false;
@@ -171,7 +177,7 @@ export function changeMeetingSchedule(id: string, occurrenceDate: string, scope:
     return persist(current.map((item) => item.id === id ? { ...item, overrides: [...item.overrides.filter((entry) => entry.occurrenceDate !== occurrenceDate), override] } : item));
   }
   if (scope === "future") {
-    if (occurrenceDate <= schedule.date) return changeMeetingSchedule(id, occurrenceDate, "series", patch, cancel);
+    if (occurrenceDate <= schedule.date) return changeMeetingSchedule(id, occurrenceDate, "series", patch, cancel, getCurrentDemoUser());
     const previousEnd = { type: "date" as const, date: addDays(occurrenceDate, -1) };
     const truncated = { ...schedule, recurrence: { ...schedule.recurrence, end: previousEnd }, overrides: schedule.overrides.filter((item) => item.occurrenceDate < occurrenceDate) };
     if (cancel) return persist(current.map((item) => item.id === id ? truncated : item));

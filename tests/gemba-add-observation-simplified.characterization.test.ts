@@ -25,7 +25,8 @@ async function gembaStore() {
 
 afterEach(() => { vi.unstubAllGlobals(); });
 
-const actor = { id: "USR-RUMESH", name: "Rumesh" };
+// Use an actor authorized by the existing Gemba Admin/Auditor UI rule.
+const actor = { id: "USR-LAKSHMAN", name: "Lakshman" };
 // Photo binary lives in IndexedDB (lib/gemba/gemba-photo-storage.ts); the observation only
 // ever holds this lightweight metadata/storageKey reference — never a data: URL.
 const photo = { id: "GEM-EV-1", name: "floor.jpg", storageKey: "GEM-EV-1", mimeType: "image/jpeg", size: 12345, uploadedAt: "2026-09-14T10:00:00+05:30", uploadedBy: actor.name };

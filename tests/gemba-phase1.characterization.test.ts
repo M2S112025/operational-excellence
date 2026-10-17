@@ -27,7 +27,8 @@ async function gembaStore() {
 
 afterEach(() => { vi.unstubAllGlobals(); });
 
-const actor = { id: "USR-RUMESH", name: "Rumesh" };
+// Use an actor authorized by the existing Gemba Admin/Auditor UI rule.
+const actor = { id: "USR-LAKSHMAN", name: "Lakshman" };
 
 describe("Gemba Phase 1 — canonical zone labels", () => {
   it("formats Zone A/B/C/D with their canonical area", () => {
@@ -97,14 +98,14 @@ describe("Gemba Phase 1 — outside-zone participants", () => {
     const walk = store.createGembaWalk({
       plant: "Egmore Plant", zone: "Zone A", leadId: actor.id, leadName: actor.name,
       participants: [
-        { id: "USR-ZONE-MEMBER", name: "In-zone Member", role: "Zone Member" },
-        { id: "USR-OUTSIDE", name: "Outside Member", role: "Zone Member", homeZone: "Zone C" },
+        { id: "USR-RITIKA", name: "In-zone Member", role: "Zone Member" },
+        { id: "USR-MADAVAN", name: "Outside Member", role: "Zone Member", homeZone: "Zone C" },
       ],
       purpose: "Observe", scheduledDate: "2026-09-20",
     }, actor, true);
     expect(walk?.participants).toHaveLength(2);
-    expect(walk?.participants.find((person) => person.id === "USR-OUTSIDE")?.homeZone).toBe("Zone C");
-    expect(walk?.participants.find((person) => person.id === "USR-ZONE-MEMBER")?.homeZone).toBeUndefined();
+    expect(walk?.participants.find((person) => person.id === "USR-MADAVAN")?.homeZone).toBe("Zone C");
+    expect(walk?.participants.find((person) => person.id === "USR-RITIKA")?.homeZone).toBeUndefined();
   });
 });
 

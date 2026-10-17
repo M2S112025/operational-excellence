@@ -37,16 +37,16 @@ describe("Visual Management Settings", () => {
   it("applies Board and KPI changes to future meetings while preserving an existing meeting snapshot", async () => {
     const values = installBrowser();
     const config = await import("@/features/visual-management/visual-management-configuration-store");
-    const productivity = config.addVisualManagementKpiSection({ name: "Productivity", shortLabel: "PR", description: "Output performance" })!;
+    const productivity = config.addVisualManagementKpiSection({ name: "Productivity", shortLabel: "PR", description: "Output performance" }, { id: "USR-LAKSHMAN" })!;
     const context = { activeUserIds: ["USR-LAKSHMAN", "USR-RUMESH", "USR-SIVA-KUMAR"], tierOneId: "tier-1", activeKpiIds: ["safety", productivity.id] };
-    const added = config.saveVisualManagementBoard({ id: "VM-TEST-T1", name: "Zone B Productivity", tierId: "tier-1", plantId: "PLANT-EGM", zoneId: "ZONE-B", ownerId: "USR-LAKSHMAN", memberIds: ["USR-LAKSHMAN", "USR-SIVA-KUMAR"], meetingFrequency: "Daily", meetingTime: "11:00", kpiSectionIds: ["safety", productivity.id], status: "Active", createdAt: "", updatedAt: "" }, context);
+    const added = config.saveVisualManagementBoard({ id: "VM-TEST-T1", name: "Zone B Productivity", tierId: "tier-1", plantId: "PLANT-EGM", zoneId: "ZONE-B", ownerId: "USR-LAKSHMAN", memberIds: ["USR-LAKSHMAN", "USR-SIVA-KUMAR"], meetingFrequency: "Daily", meetingTime: "11:00", kpiSectionIds: ["safety", productivity.id], status: "Active", createdAt: "", updatedAt: "" }, context, { id: "USR-LAKSHMAN" });
     expect(added.success).toBe(true);
     const runtime = await import("@/features/visual-management/visual-management-store");
     const meeting = runtime.startVisualManagementMeeting("VM-TEST-T1", { id: "USR-LAKSHMAN", name: "Lakshman" })!;
     expect(meeting).toMatchObject({ boardName: "Zone B Productivity", lead: { id: "USR-LAKSHMAN" } });
     expect(meeting.kpiEntries.map((item) => item.section)).toEqual(["Safety", "Productivity"]);
     const saved = added.success ? added.board : undefined;
-    expect(config.saveVisualManagementBoard({ ...saved!, name: "Renamed Future Board", ownerId: "USR-RUMESH", memberIds: ["USR-RUMESH"], kpiSectionIds: ["safety"] }, context).success).toBe(true);
+    expect(config.saveVisualManagementBoard({ ...saved!, name: "Renamed Future Board", ownerId: "USR-RUMESH", memberIds: ["USR-RUMESH"], kpiSectionIds: ["safety"] }, context, { id: "USR-LAKSHMAN" }).success).toBe(true);
     const historical = runtime.getVisualManagementMeeting(meeting.id)!;
     expect(historical.boardName).toBe("Zone B Productivity");
     expect(historical.lead.id).toBe("USR-LAKSHMAN");
@@ -59,10 +59,10 @@ describe("Visual Management Settings", () => {
     installBrowser();
     const config = await import("@/features/visual-management/visual-management-configuration-store");
     const tiers = config.DEFAULT_VISUAL_MANAGEMENT_TIERS.map((item) => item.id === "tier-1" ? { ...item, nextTierId: "tier-3" } : { ...item });
-    expect(config.saveVisualManagementTiers(tiers).success).toBe(true);
+    expect(config.saveVisualManagementTiers(tiers, { id: "USR-LAKSHMAN" }).success).toBe(true);
     const runtime = await import("@/features/visual-management/visual-management-store");
     expect(runtime.getEscalationTargets("VM-ZD-T1").map((item) => item.id)).toEqual(["VM-LEAD-T3"]);
-    expect(config.setVisualManagementBoardStatus("VM-ZD-T1", "Inactive")).toBe(true);
+    expect(config.setVisualManagementBoardStatus("VM-ZD-T1", "Inactive", { id: "USR-LAKSHMAN" })).toBe(true);
     expect(runtime.startVisualManagementMeeting("VM-ZD-T1", { id: "USR-RITIKA", name: "Ritika" })).toBeNull();
   });
 

@@ -1,4 +1,5 @@
 "use client";
+import { getCurrentDemoUser } from "@/lib/current-user";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -62,7 +63,7 @@ export function ScheduleMeetingDialog({
         durationMinutes,
         attendees,
         ...(scope === "single" ? {} : { recurrence }),
-      });
+      }, undefined, getCurrentDemoUser());
       if (!changed) return setError("The meeting could not be updated.");
     } else {
       const result = createMeetingSchedule({ boardId: board.id, date, time, durationMinutes, recurrence, attendees, createdByUserId: actorId });

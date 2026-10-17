@@ -6,22 +6,24 @@ import { Button } from "@/components/ui/button";
 import { hasPermission } from "@/features/five-s/administration/permissions";
 import { useAdminUsers } from "@/features/five-s/administration/store";
 import { useCurrentUser } from "@/lib/current-user";
+import { canManageAuditConfiguration, isActivePlatformSuperAdmin } from "./audit-configuration-permissions";
 
 export function useCanManageAuditConfiguration() {
   const currentUser = useCurrentUser();
   const user = useAdminUsers().find((item) => item.id === currentUser.id);
-  return currentUser.isSuperAdmin || Boolean(user?.status === "Active" && hasPermission(user, "administration.manage_configuration"));
+  return canManageAuditConfiguration(currentUser, user);
 }
 
 export function useSettingsAccess() {
   const currentUser = useCurrentUser();
   const user = useAdminUsers().find((item) => item.id === currentUser.id);
+  const isSuperAdmin = isActivePlatformSuperAdmin(currentUser, user);
   return {
-    isSuperAdmin: currentUser.isSuperAdmin,
-    canViewUsers: currentUser.isSuperAdmin || Boolean(user?.status === "Active" && hasPermission(user, "administration.view")),
-    canManageUsers: currentUser.isSuperAdmin || Boolean(user?.status === "Active" && hasPermission(user, "administration.manage_users")),
-    canManageRoles: currentUser.isSuperAdmin || Boolean(user?.status === "Active" && hasPermission(user, "administration.manage_roles")),
-    canManageConfiguration: currentUser.isSuperAdmin || Boolean(user?.status === "Active" && hasPermission(user, "administration.manage_configuration")),
+    isSuperAdmin,
+    canViewUsers: isSuperAdmin || Boolean(user?.status === "Active" && hasPermission(user, "administration.view")),
+    canManageUsers: isSuperAdmin || Boolean(user?.status === "Active" && hasPermission(user, "administration.manage_users")),
+    canManageRoles: isSuperAdmin || Boolean(user?.status === "Active" && hasPermission(user, "administration.manage_roles")),
+    canManageConfiguration: canManageAuditConfiguration(currentUser, user),
   };
 }
 

@@ -1,0 +1,2 @@
+import type { ReactNode } from "react";
+export default function ReportHeader({ title, reportId, subtitle, className = "", children }: { title: string; reportId?: string; subtitle?: string; className?: string; children?: ReactNode }) { return <header className={`border-b bg-slate-950 p-5 text-white ${className}`}><p className="text-xs">OPS · Operational Excellence</p><h1 className="mt-2 text-xl font-semibold">{title}</h1><p>{reportId} · {subtitle}</p>{children}</header>; }

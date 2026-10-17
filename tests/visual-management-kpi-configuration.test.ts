@@ -13,27 +13,27 @@ beforeEach(() => { vi.stubGlobal("window", undefined); setVisualManagementKpisFo
 
 describe("Visual Management V2 KPI configuration", () => {
   it("creates stable Unit and Functional levels with multiple children", () => {
-    const unit = saveVisualManagementKpi({ ...base, level: "unit" }); expect(unit.success).toBe(true); if (!unit.success) return;
-    const child = (name: string) => saveVisualManagementKpi({ ...base, level: "functional" as const, name, parentKpiId: unit.record.id, functionName: "Quality", ownerUserId: "USR-RUMESH", reviewFrequency: "daily", indicatorType: "leading", measurementType: "percentage", direction: "higher_is_better", baseline: 94.5, target: 98, performanceThreshold: { direction: "higher_is_better" as const, amberBoundary: 95 } });
+    const unit = saveVisualManagementKpi({ ...base, level: "unit" }, { id: "USR-LAKSHMAN" }); expect(unit.success).toBe(true); if (!unit.success) return;
+    const child = (name: string) => saveVisualManagementKpi({ ...base, level: "functional" as const, name, parentKpiId: unit.record.id, functionName: "Quality", ownerUserId: "USR-RUMESH", reviewFrequency: "daily", indicatorType: "leading", measurementType: "percentage", direction: "higher_is_better", baseline: 94.5, target: 98, performanceThreshold: { direction: "higher_is_better" as const, amberBoundary: 95 } }, { id: "USR-LAKSHMAN" });
     expect(child("First Pass Yield").success).toBe(true); expect(child("Process Compliance").success).toBe(true);
     expect(getVisualManagementKpis().filter((item) => item.parentKpiId === unit.record.id)).toHaveLength(2);
-    const originalId = unit.record.id; const edited = saveVisualManagementKpi({ ...unit.record, name: "Complaint Rate" });
+    const originalId = unit.record.id; const edited = saveVisualManagementKpi({ ...unit.record, name: "Complaint Rate" }, { id: "USR-LAKSHMAN" });
     expect(edited.success && edited.record.id).toBe(originalId);
   });
 
   it("rejects orphan Functional KPIs, unsupported measurements, and invalid percentages", () => {
-    const orphan = saveVisualManagementKpi({ ...base, level: "functional", parentKpiId: "missing", functionName: "Quality", ownerUserId: "USR-RUMESH", reviewFrequency: "weekly" });
+    const orphan = saveVisualManagementKpi({ ...base, level: "functional", parentKpiId: "missing", functionName: "Quality", ownerUserId: "USR-RUMESH", reviewFrequency: "weekly" }, { id: "USR-LAKSHMAN" });
     expect(orphan.success).toBe(false); if (!orphan.success) expect(orphan.errors.parentKpiId).toBeTruthy();
-    const unsupported = saveVisualManagementKpi({ ...base, level: "unit", measurementType: "currency" as VisualManagementKpiDefinition["measurementType"] });
+    const unsupported = saveVisualManagementKpi({ ...base, level: "unit", measurementType: "currency" as VisualManagementKpiDefinition["measurementType"] }, { id: "USR-LAKSHMAN" });
     expect(unsupported.success).toBe(false);
-    const percentage = saveVisualManagementKpi({ ...base, level: "unit", measurementType: "percentage", baseline: 101 }); expect(percentage.success).toBe(false);
+    const percentage = saveVisualManagementKpi({ ...base, level: "unit", measurementType: "percentage", baseline: 101 }, { id: "USR-LAKSHMAN" }); expect(percentage.success).toBe(false);
   });
 
   it("prevents parent changes and blocks archiving a Unit KPI with active children", () => {
-    const first = saveVisualManagementKpi({ ...base, level: "unit" }); const second = saveVisualManagementKpi({ ...base, level: "unit", name: "Second" }); if (!first.success || !second.success) return;
-    const child = saveVisualManagementKpi({ ...base, level: "functional", name: "FPY", parentKpiId: first.record.id, functionName: "Quality", ownerUserId: "USR-RUMESH", reviewFrequency: "monthly" }); if (!child.success) return;
-    expect(saveVisualManagementKpi({ ...child.record, parentKpiId: second.record.id }).success).toBe(false);
-    expect(archiveVisualManagementKpi(first.record.id)).toMatchObject({ success: false, error: "This Unit KPI has Functional KPIs connected." });
+    const first = saveVisualManagementKpi({ ...base, level: "unit" }, { id: "USR-LAKSHMAN" }); const second = saveVisualManagementKpi({ ...base, level: "unit", name: "Second" }, { id: "USR-LAKSHMAN" }); if (!first.success || !second.success) return;
+    const child = saveVisualManagementKpi({ ...base, level: "functional", name: "FPY", parentKpiId: first.record.id, functionName: "Quality", ownerUserId: "USR-RUMESH", reviewFrequency: "monthly" }, { id: "USR-LAKSHMAN" }); if (!child.success) return;
+    expect(saveVisualManagementKpi({ ...child.record, parentKpiId: second.record.id }, { id: "USR-LAKSHMAN" }).success).toBe(false);
+    expect(archiveVisualManagementKpi(first.record.id, { id: "USR-LAKSHMAN" })).toMatchObject({ success: false, error: "This Unit KPI has Functional KPIs connected." });
   });
 
   it("strictly validates structured SMART output and driver suggestions", () => {

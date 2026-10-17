@@ -21,6 +21,7 @@ const ACTIVITY_LABELS: Record<MyActionActivity["type"], string> = {
   created: "Action created", awaiting_assignment: "Awaiting assignment",
   assigned: "Assigned", started: "Work started", submitted: "Submitted for review",
   evidence_uploaded: "Evidence uploaded",
+  due_date_changed: "Due date changed",
   resubmitted: "Resubmitted for review", reviewed: "Reviewed", verified: "Verified", sent_back: "Sent back for rework", closed: "Approved & closed",
   reminder_generated: "Reminder generated", escalated: "Action escalated", escalation_acknowledged: "Escalation acknowledged", reassigned: "Action reassigned",
 };

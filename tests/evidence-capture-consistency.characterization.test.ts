@@ -17,14 +17,14 @@ const sharedCamera = source("components/ops/ops-camera-capture.tsx");
 
 describe("Team Feedback #15/#33/#35 — evidence capture consistency", () => {
   it.each([
-    ["Gemba", gemba], ["Audit", audit], ["Actions", action], ["Red Flag", redFlag], ["Red Tag", redTag], ["CI", ci], ["Visual Improvement compatibility", visual],
+    ["Gemba", gemba], ["Audit", audit], ["Actions", action], ["Red Flag", redFlag], ["CI", ci], ["Visual Improvement compatibility", visual],
   ])("%s has distinct Take Photo and Upload Photo controls", (_name, moduleSource) => {
     expect(moduleSource).toContain("Take Photo");
     expect(moduleSource).toContain("Upload Photo");
   });
 
   it.each([
-    ["Gemba", gemba], ["Audit", audit], ["Actions", action], ["Red Flag", redFlag], ["Red Tag", redTag], ["CI", ci], ["Visual Improvement compatibility", visual],
+    ["Gemba", gemba], ["Audit", audit], ["Actions", action], ["Red Flag", redFlag], ["CI", ci], ["Visual Improvement compatibility", visual],
   ])("%s Take Photo uses the shared live camera flow", (_name, moduleSource) => {
     expect(moduleSource).toContain("OpsCameraCapture");
   });
@@ -35,7 +35,7 @@ describe("Team Feedback #15/#33/#35 — evidence capture consistency", () => {
   });
 
   it("keeps Upload Photo inputs free of a forced capture hint", () => {
-    for (const moduleSource of [gemba, audit, action, redFlag, redTag, ci, visual]) {
+    for (const moduleSource of [gemba, audit, action, redFlag, ci, visual]) {
       expect(moduleSource).toMatch(/type="file"[^>]*accept="image\/\*[^>]*"/);
     }
     expect(gemba).toContain('ref={uploadRef} hidden type="file" accept="image/*" multiple');
@@ -46,7 +46,7 @@ describe("Team Feedback #15/#33/#35 — evidence capture consistency", () => {
     expect(gemba).toContain('accept="image/*" multiple');
     expect(redFlag).toContain('accept="image/*" multiple');
     expect(ci).toContain('accept="image/*" multiple');
-    expect(redTag).toContain('ref={uploadRef} hidden type="file" accept="image/*" onChange={imageChanged}');
+    expect(redTag).toContain("IssuePhotoCaptureDialog"); expect(redTag).toContain("AfterPhotoCaptureDialog");
   });
 
   it("provides immediate preview plus View, Replace, and Remove where editing permits", () => {
@@ -55,8 +55,8 @@ describe("Team Feedback #15/#33/#35 — evidence capture consistency", () => {
       expect(moduleSource).toContain("Replace");
       expect(moduleSource).toContain("Remove");
     }
-    expect(redTag).toContain("Before item preview");
-    expect(redTag).toContain(">Replace</Button>");
+    expect(redTag).toContain("Issue preview");
+    expect(redTag).toContain('aria-label="Remove issue photo"');
     expect(action).toContain("onPreview={setPreview}");
   });
 
@@ -74,7 +74,7 @@ describe("Team Feedback #15/#33/#35 — evidence capture consistency", () => {
   it("keeps established evidence requirements and module lifecycle code in place", () => {
     expect(audit).toContain("requiresEvidence");
     expect(action).toContain("ACTION_LIFECYCLE_STAGES");
-    expect(redTag).toContain("Awaiting Verification");
+    expect(redTag).toContain("Awaiting Review");
     expect(ci).toContain("ImprovementStatusBadge");
     expect(source("features/red-flag/types.ts")).toContain('"Awaiting Closure"');
   });
@@ -90,7 +90,7 @@ describe("Team Feedback #15/#33/#35 — evidence capture consistency", () => {
     expect(redFlag).toContain('aria-label={`View ${item.name}`}');
     expect(redFlag).toContain('aria-label={`Replace ${item.name}`}');
     expect(ci).toContain('aria-label={`Remove ${item.name}`}');
-    expect(redTag).toContain("grid-cols-2 gap-2 sm:flex");
+    expect(redTag).toContain("flex flex-wrap items-center gap-2");
     expect(action).toContain("grid grid-cols-2 gap-2");
   });
 

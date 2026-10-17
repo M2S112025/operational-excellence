@@ -16,10 +16,10 @@ describe("OPS product information architecture", () => {
     ]);
     expect(OPERATIONAL_MODULES.map(({ id, navigationGroup, stageLabel, order }) => ({ id, navigationGroup, stageLabel, order }))).toEqual([
       { id: "gemba", navigationGroup: "operationalExcellence", stageLabel: "Observe", order: 10 },
-      { id: "redTag", navigationGroup: "operationalExcellence", stageLabel: "Item Disposition", order: 25 },
+      { id: "redTag", navigationGroup: "operationalExcellence", stageLabel: "Plan & Execute", order: 25 },
       { id: "continuousImprovement", navigationGroup: "operationalExcellence", stageLabel: "Improve", order: 30 },
       { id: "audit", navigationGroup: "operationalExcellence", stageLabel: "Sustain", order: 40 },
-      { id: "visualManagement", navigationGroup: "visualize", stageLabel: undefined, order: 60 },
+      { id: "visualManagement", navigationGroup: "operationalExcellence", stageLabel: "Visualize", order: 45 },
     ]);
     expect(SHARED_CAPABILITIES.map(({ id, navigationGroup, order }) => ({ id, navigationGroup, order }))).toEqual([
       { id: "actions", navigationGroup: "execution", order: 50 },
@@ -36,13 +36,13 @@ describe("OPS product information architecture", () => {
     expect(mobile).toContain("<SidebarNav onNavigate=");
   });
 
-  it("hides only disabled active operational items and removes the family when all four are disabled", async () => {
+  it("hides only disabled active operational items and removes the family when all five are disabled", async () => {
     const { DEFAULT_MODULE_ENTITLEMENTS, getEnabledNavigationGroups } = await import("@/lib/modules");
-    for (const id of ["gemba", "redTag", "continuousImprovement", "audit"] as const) {
+    for (const id of ["gemba", "redTag", "continuousImprovement", "audit", "visualManagement"] as const) {
       const groups = getEnabledNavigationGroups({ ...DEFAULT_MODULE_ENTITLEMENTS, [id]: false });
       const operational = groups.find((group) => group.id === "operationalExcellence");
       expect(operational?.items.map((item) => item.id)).not.toContain(id);
-      expect(operational?.items).toHaveLength(3);
+      expect(operational?.items).toHaveLength(4);
     }
     const noOperationalModules = getEnabledNavigationGroups({
       ...DEFAULT_MODULE_ENTITLEMENTS,
@@ -51,6 +51,7 @@ describe("OPS product information architecture", () => {
       redTag: false,
       continuousImprovement: false,
       audit: false,
+      visualManagement: false,
     });
     expect(noOperationalModules.map((group) => group.id)).not.toContain("operationalExcellence");
   });
@@ -59,7 +60,7 @@ describe("OPS product information architecture", () => {
     expect(crumbsForPath("/continuous-improvement").map((crumb) => crumb.label)).toEqual(["Improve", "Continual Improvement"]);
     expect(crumbsForPath("/gemba").map((crumb) => crumb.label)).toEqual(["Observe", "Gemba"]);
     expect(crumbsForPath("/red-flag").map((crumb) => crumb.label)).toEqual(["Red Flag"]);
-    expect(crumbsForPath("/5s/red/RT-EGM-ZA-001").map((crumb) => crumb.label)).toEqual(["Item Disposition", "Red Tag", "RT-EGM-ZA-001"]);
+    expect(crumbsForPath("/5s/red/RT-EGM-ZA-001").map((crumb) => crumb.label)).toEqual(["Plan & Execute", "Red Tag", "RT-EGM-ZA-001"]);
     expect(crumbsForPath("/audits").map((crumb) => crumb.label)).toEqual(["Sustain", "Audit"]);
     expect(crumbsForPath("/actions").map((crumb) => crumb.label)).toEqual(["Execution", "Actions"]);
     expect(crumbsForPath("/visual-management").map((crumb) => crumb.label)).toEqual(["Visualize", "Visual Management"]);

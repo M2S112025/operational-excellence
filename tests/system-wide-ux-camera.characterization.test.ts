@@ -37,7 +37,6 @@ describe("system-wide OPS live camera", () => {
     ["Audit", "features/five-s/components/FiveSAuditExecution.tsx"],
     ["Actions", "features/five-s/action-detail-page.tsx"],
     ["Red Flag", "features/red-flag/red-flag-components.tsx"],
-    ["Red Tag", "features/five-s/red-tag/red-tag-module.tsx"],
     ["Continuous Improvement", "features/five-s/continuous-improvement/components.tsx"],
     ["Visual Improvement", "features/visual-improvement/visual-improvement-components.tsx"],
   ])("integrates %s with the shared camera without replacing its upload pipeline", (_module, path) => {
@@ -61,7 +60,7 @@ describe("system-wide workspace and Gemba observation detail", () => {
     const detail = source("features/gemba/gemba-components.tsx");
     expect(detail).toContain("sm:max-w-[860px]");
     expect(detail).toContain("aspect-[16/10]");
-    for (const label of ["Observation", "Evidence ·", "Follow-up", "Corrective Action", "Why no Action", "Horizontal Deployment", "LinkedRecord"]) expect(detail).toContain(label);
+    for (const label of ["Observation", "Evidence ·", "Follow-up", 'DetailValue label="Action"', "Why no Action", "Horizontal Deployment", "LinkedRecord"]) expect(detail).toContain(label);
     expect(detail).toContain("observation.evidence.length > 0");
     expect(detail).toContain('observation.type !== "Positive"');
   });

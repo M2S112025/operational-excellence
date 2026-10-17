@@ -1,0 +1,8 @@
+import { describe, expect, it } from 'vitest';
+import { validateReturnTo, withActionReturn } from '@/lib/navigation/return-to';
+describe('Shared validated Action return context', () => {
+ it.each(['/5s/red/RT-EGM-ZB-001','/gemba/GEM-2026-015?tab=observations#OBS-1','/audits?audit=5S-AUD-1','/continuous-improvement/CI-1','/visual-management/meetings/VMM-1','/actions?tab=team-actions&search=Fixture%20A&status=Overdue'])('retains record/filter/tab origin %s', value => expect(validateReturnTo(value)).toBe(value));
+ it.each(['https://evil.example','//evil.example','javascript:alert(1)','/\\evil.example','/actions/%2f%2fevil','/actions/%5cevil','/actions/%00bad','/actions/%252f%252fevil','/settings','/red-flag/RF-1','/actions/../../evil','/actions?returnTo=https%3A%2F%2Fevil.example'])('rejects unsafe or unsupported destination %s', value => expect(validateReturnTo(value)).toBeUndefined());
+ it('preserves a validated source-to-list return chain and rejects recursive chains', () => {const origin='/5s/red/RT-1?'+new URLSearchParams({returnTo:'/5s/red?queue=mine&search=fixture'});expect(validateReturnTo(origin)).toBe(origin);expect(validateReturnTo('/actions?'+new URLSearchParams({returnTo:origin}))).toBeUndefined();});
+ it('encodes the action ID and leaves direct links normal when return context is absent or invalid', () => {expect(withActionReturn('ACT /1')).toBe('/actions/ACT%20%2F1');expect(withActionReturn('ACT-1','https://evil.example')).toBe('/actions/ACT-1');const link=new URL(withActionReturn('ACT-1','/gemba/GEM-1?tab=actions'),'https://ops.example');expect(link.searchParams.get('returnTo')).toBe('/gemba/GEM-1?tab=actions');});
+});

@@ -23,7 +23,8 @@ async function gembaStore() {
 
 afterEach(() => { vi.unstubAllGlobals(); });
 
-const actor = { id: "USR-RUMESH", name: "Rumesh" };
+// Use an actor authorized by the existing Gemba Admin/Auditor UI rule.
+const actor = { id: "USR-LAKSHMAN", name: "Lakshman" };
 
 describe("Gemba Voice Capture — observation model integration", () => {
   it("saves a manual observation with no voice note exactly as before (voiceNote stays optional)", async () => {

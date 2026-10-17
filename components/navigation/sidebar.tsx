@@ -71,7 +71,7 @@ function Sidebar({
                   <ClipboardCheck className="size-[18px]" />
                 </span>
                 <span className="min-w-0 leading-tight">
-                  <span className="block truncate font-heading text-[15px] font-semibold">OPS</span>
+                  <span className="block truncate font-heading text-[15px] font-semibold">OE</span>
                   <span className="mt-0.5 block whitespace-nowrap text-[10.5px] font-medium text-slate-400">
                     {context === "super-admin" ? "Platform Administration" : "Operational Excellence Platform"}
                   </span>

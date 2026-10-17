@@ -43,6 +43,14 @@ function action(overrides: Partial<MyAction> = {}): MyAction {
   };
 }
 
+const submittedCompletion = {
+  submittedForReviewAt: "2026-09-01T10:00:00.000Z",
+  resolutionObservation: "Corrected and verified",
+  correctiveActionCategory: "Communication",
+  costSaving: 0,
+  evidence: [{ id: "AFTER", name: "after.jpg", type: "image" as const, uploadedAt: "2026-09-01", uploadedBy: responsible.name }],
+};
+
 function validResolution() {
   return { observation: "Corrected", correctiveActionCategory: "Communication", costSaving: 0 };
 }
@@ -61,7 +69,7 @@ describe("authoritative action-store transitions", () => {
   it("does not allow the generic updater to bypass lifecycle transitions", () => {
     expect(updateAction("ACT-TEST", { status: "Completed" })).toBeUndefined();
     expect(getActionById("ACT-TEST")?.status).toBe("Awaiting Assignment");
-    expect(updateAction("ACT-TEST", { title: "Updated safely" })?.title).toBe("Updated safely");
+    expect(updateAction("ACT-TEST", { title: "Updated safely" }, { id: "USR-LAKSHMAN", name: "Lakshman" })?.title).toBe("Updated safely");
   });
 
   it("allows the responsible member, but not another actor, to start", () => {
@@ -107,6 +115,7 @@ describe("authoritative action-store transitions", () => {
   it("allows only the creator to close a reviewed action", () => {
     const creator = { id: "USR-LAKSHMAN", name: "Lakshman" };
     setActions([action({
+      ...submittedCompletion,
       status: "Pending Auditor Review",
       assignedTo: responsible.name,
       responsiblePersonId: responsible.id,
@@ -135,12 +144,12 @@ describe("authoritative action-store transitions", () => {
   it("prefers an explicit reviewer and preserves an authorized Admin fallback for identity-free legacy records", () => {
     const explicitReviewer = { id: leader.id, name: leader.name };
     const creator = { id: "USR-LAKSHMAN", name: "Lakshman" };
-    setActions([action({ status: "Pending Review", reviewerId: leader.id, reviewerName: leader.name })]);
+    setActions([action({ ...submittedCompletion, status: "Pending Review", reviewerId: leader.id, reviewerName: leader.name })]);
     expect(closeReviewedAction("ACT-TEST", creator)).toBeUndefined();
     expect(closeReviewedAction("ACT-TEST", explicitReviewer)?.closedBy).toBe(leader.name);
 
-    const admin = { id: "USR-ADMIN", name: "Admin", roles: ["Admin"], permissions: ["actions.review", "actions.close"] };
-    setActions([action({ status: "Pending Review", reviewerId: undefined, reviewerName: undefined, createdByUserId: undefined, createdByName: undefined, auditor: undefined })]);
+    const admin = { id: "USR-OPS-SUPER-ADMIN", name: "OPS Super Admin", roles: ["Admin"], permissions: ["actions.review", "actions.close"] };
+    setActions([action({ ...submittedCompletion, status: "Pending Review", reviewerId: undefined, reviewerName: undefined, createdByUserId: undefined, createdByName: undefined, auditor: undefined })]);
     expect(closeReviewedAction("ACT-TEST", admin)?.closedBy).toBe(admin.name);
   });
 

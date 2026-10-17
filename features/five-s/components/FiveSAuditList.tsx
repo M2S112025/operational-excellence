@@ -1,4 +1,6 @@
 "use client";
+import { auditScorePercentage } from "@/lib/five-s/scoring-policy";
+import { OpsConfirmDialog } from "@/components/ops/ops-confirm-dialog";
 
 import {
   type MouseEvent,
@@ -70,6 +72,8 @@ interface FiveSAuditListProps {
   onDeleteAudit?: (
     audit: FiveSAudit
   ) => void;
+
+  canDeleteAudit?: (audit: FiveSAudit) => boolean;
 
   /** Optional navigation bar rendered between the page header and content. */
   nav?: React.ReactNode;
@@ -262,9 +266,11 @@ export default function FiveSAuditList({
   onViewAudit,
   onStartScheduledAudit,
   onDeleteAudit,
+  canDeleteAudit,
   nav,
 }: FiveSAuditListProps) {
   const router = useRouter();
+  const [restoreOpen, setRestoreOpen] = useState(false);
   const { locale, t } = useI18n();
   const [
     search,
@@ -485,16 +491,7 @@ export default function FiveSAuditList({
   ) {
     event.stopPropagation();
 
-    const confirmed =
-      window.confirm(
-        "Restore the original 5S demo audits? This will replace the current 5S audit list."
-      );
-
-    if (!confirmed) {
-      return;
-    }
-
-    resetFiveSAudits();
+    setRestoreOpen(true);
   }
 
   /* =========================================================
@@ -503,6 +500,7 @@ export default function FiveSAuditList({
 
   return (
     <div className="grid gap-4">
+      <OpsConfirmDialog open={restoreOpen} onOpenChange={setRestoreOpen} title="Restore demo audits?" description="This will replace the current 5S audit list with original demo audits." confirmLabel="Restore demo audits" destructive onConfirm={() => { resetFiveSAudits(); setRestoreOpen(false); }} />
       {/* =====================================================
           PAGE HEADER
           ===================================================== */}
@@ -549,7 +547,7 @@ export default function FiveSAuditList({
           SEARCH
           ===================================================== */}
 
-      <div className="contents">
+      <div className="flex w-full min-w-0 flex-col gap-2 xl:flex-row xl:items-center">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <InputGroup className="w-full sm:w-[360px] lg:w-[420px]">
             <InputGroupAddon>
@@ -588,7 +586,7 @@ export default function FiveSAuditList({
           FILTER BAR
           ===================================================== */}
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="grid min-w-0 flex-1 grid-cols-2 items-center gap-2 sm:grid-cols-4">
         {/* STATUS */}
 
         <Select
@@ -606,6 +604,7 @@ export default function FiveSAuditList({
         >
           <SelectTrigger
             size="sm"
+            className="h-10 w-full min-w-0"
             aria-label="Filter by status"
           >
             <SelectValue>
@@ -636,7 +635,7 @@ export default function FiveSAuditList({
 
         {/* PLANT */}
 
-        <Select
+        <Select searchLabel={"Plant"}
           value={plant}
           onValueChange={(
             value
@@ -648,6 +647,7 @@ export default function FiveSAuditList({
         >
           <SelectTrigger
             size="sm"
+            className="h-10 w-full min-w-0"
             aria-label="Filter by plant"
           >
             <SelectValue>
@@ -687,7 +687,7 @@ export default function FiveSAuditList({
 
         {/* DEPARTMENT */}
 
-        <Select
+        <Select searchLabel={"Department"}
           value={department}
           onValueChange={(
             value
@@ -699,6 +699,7 @@ export default function FiveSAuditList({
         >
           <SelectTrigger
             size="sm"
+            className="h-10 w-full min-w-0"
             aria-label="Filter by department"
           >
             <SelectValue>
@@ -751,6 +752,7 @@ export default function FiveSAuditList({
         >
           <SelectTrigger
             size="sm"
+            className="h-10 w-full min-w-0"
             aria-label="Filter by date range"
           >
             <SelectValue>
@@ -802,7 +804,7 @@ export default function FiveSAuditList({
 
       <div className="grid gap-3 md:hidden">
         {filteredAudits.map((audit) => {
-          const score = audit.maxScore > 0 ? Math.round((audit.score / audit.maxScore) * 100) : 0;
+          const score = auditScorePercentage(audit);
           return <article key={audit.id} onClick={() => handleRowClick(audit)} className="min-w-0 rounded-xl border bg-card p-4 shadow-sm active:bg-muted/40">
             <div className="flex min-w-0 items-start justify-between gap-3"><div className="min-w-0 flex-1"><h2 className="break-words text-base font-semibold leading-6">{audit.title}</h2><p className="mt-1 break-words text-sm text-muted-foreground">{audit.area} · {audit.plant}</p></div><Badge variant={getLifecycleStatusVariant(getAuditLifecycleStage(audit))}>{getAuditLifecycleStage(audit)}</Badge></div>
             <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-y py-3 text-sm"><div className="min-w-0"><dt className="text-xs text-muted-foreground">{t("audit.auditor")}</dt><dd className="mt-1 break-words font-medium">{audit.auditor}</dd></div><div><dt className="text-xs text-muted-foreground">{t("audit.score")}</dt><dd className="mt-1 font-semibold">{score}%</dd></div><div><dt className="text-xs text-muted-foreground">{t("common.progress")}</dt><dd className="mt-1 font-medium">{audit.completionPercentage}%</dd></div><div><dt className="text-xs text-muted-foreground">{audit.status === "Scheduled" ? "Scheduled" : t("common.created")}</dt><dd className="mt-1 font-medium">{formatAuditTiming(audit, locale)}</dd></div></dl>
@@ -812,7 +814,7 @@ export default function FiveSAuditList({
       </div>
 
       <Card className="hidden overflow-hidden md:block">
-        <CardContent className="p-0">
+        <CardContent className="p-0 sm:p-0">
           <div className="w-full overflow-x-auto overscroll-x-contain">
             <table className="w-full min-w-[900px] table-fixed border-collapse">
               <colgroup>
@@ -845,7 +847,7 @@ export default function FiveSAuditList({
                   </th>
 
                   <th className="h-11 px-4 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
-                    Timing
+                    Date
                   </th>
 
                   <th className="h-11 px-4 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground">
@@ -873,15 +875,7 @@ export default function FiveSAuditList({
               <tbody>
                 {filteredAudits.map(
                   (audit) => {
-                    const score =
-                      audit.maxScore >
-                      0
-                        ? Math.round(
-                            (audit.score /
-                              audit.maxScore) *
-                              100
-                          )
-                        : 0;
+                    const score = auditScorePercentage(audit);
 
                     const progress =
                       Math.min(
@@ -1057,7 +1051,7 @@ export default function FiveSAuditList({
                               </Button>
                             )}
 
-                            {onDeleteAudit && (
+                            {onDeleteAudit && (!canDeleteAudit || canDeleteAudit(audit)) && (
                               <Button
                                 type="button"
                                 variant="ghost"

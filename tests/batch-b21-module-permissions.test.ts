@@ -1,0 +1,101 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { DEMO_USERS } from "@/lib/current-user";
+const admin = DEMO_USERS.auditor;
+const leader = DEMO_USERS.leader;
+const member = DEMO_USERS.responsible;
+beforeEach(() => {
+  vi.resetModules(); const values = new Map<string, string>();
+  const localStorage = { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => { values.set(key, value); }, removeItem: (key: string) => { values.delete(key); } };
+  vi.stubGlobal("window", { localStorage }); vi.stubGlobal("localStorage", localStorage);
+});
+afterEach(() => vi.unstubAllGlobals());
+const tagInput = { plant: "Egmore Plant", zone: "Zone A", section: "Office", department: "Administration", category: "Equipment" as const, itemName: "Unused printer", quantity: 1, reason: "Undefined Items" as const, remarks: "Remove unused equipment", requiredAction: "Remove printer", createdById: admin.id, createdByName: admin.name, imageUrl: "data:image/png;base64,test" };
+
+describe("B2.1 Red Tag command authorization", () => {
+  it("rejects unauthorized decisions and closure without changing history or identity", async () => {
+    const s = await import("@/features/five-s/red-tag/store");
+    const tag = s.createRedTag(tagInput, admin)!;
+    const plan = {actionPlan:"Remove printer",memberId:member.id,dueDate:"2030-10-20",priority:"Medium" as const};
+    expect(s.assignRedTagAction(tag.id, member, plan)).toBeUndefined();
+    expect(s.assignRedTagAction(tag.id, leader, plan)).toBeUndefined();
+    expect(s.approveAndCloseRedTag(tag.id, member)).toBeUndefined();
+    expect(s.approveAndCloseRedTag(tag.id, leader)).toBeUndefined();
+    expect(s.getRedTag(tag.id)).toEqual(tag);
+
+  });
+  it("rejects inactive actors even when their record contains management permissions", async () => {
+    const access = await import("@/features/five-s/red-tag/access");
+    const users = await import("@/features/five-s/administration/store");
+    const tag = { plant: "Egmore Plant", zone: "Zone A", workflowVersion: "5s-v2" as const };
+    expect(access.canManageRedTag({ ...users.getAdminUser(admin.id)!, status: "Inactive" }, tag)).toBe(false);
+    expect(access.canManageRedTag(users.getAdminUser(leader.id), tag)).toBe(false);
+    expect(access.canManageRedTag(users.getAdminUser(admin.id), tag)).toBe(true);
+  });
+});
+describe("B2.1 Gemba command authorization", () => {
+  it("protects observations, source links and IndexedDB references from unauthorized edits", async () => {
+    const s = await import("@/features/gemba/gemba-store");
+    const walk = s.createGembaWalk({ plant: "Egmore Plant", zone: "Zone A", leadId: admin.id, leadName: admin.name, participants: [], purpose: "Permission check", scheduledDate: "2026-10-16" }, admin, true)!;
+    const input = { type: "Positive" as const, title: "Organized storage", description: "Clear labels", location: "Office", peopleInvolved: [], evidence: [{ id: "PHOTO-REF", name: "Original photo", storageKey: "gemba-original-photo", uploadedBy: admin.name, uploadedAt: "2026-10-16T10:00:00Z" }] };
+    const observation = s.saveGembaObservation(walk.id, input, admin)!;
+    expect(s.saveGembaObservation(walk.id, { ...input, title: "Unauthorized" }, member, observation.id)).toBeNull();
+    expect(s.linkGembaAction(walk.id, observation.id, "ACTION-UNAUTHORIZED", leader)).toBe(false);
+    expect(s.getGembaObservations(walk.id)[0]).toEqual(observation);
+    expect(s.completeGembaWalk(walk.id, admin)).toBe(true);
+    expect(s.saveGembaObservation(walk.id, input, admin, observation.id)).toBeNull();
+  });
+  it("rejects cross-plant creation and inactive or missing actors", async () => {
+    const { canMutateGembaWalk } = await import("@/features/gemba/gemba-access");
+    expect(canMutateGembaWalk({ plant: "Other Plant" }, admin)).toBe(false);
+    expect(canMutateGembaWalk({ plant: "Egmore Plant" }, undefined)).toBe(false);
+    expect(canMutateGembaWalk({ plant: "Egmore Plant" }, { id: "UNKNOWN" })).toBe(false);
+  });
+});
+describe("B2.1 Visual Management command authorization", () => {
+  it("rejects omitted and cross-zone actors before meeting mutations and freezes completed snapshots", async () => {
+    const s = await import("@/features/visual-management/visual-management-store");
+    expect(s.startVisualManagementMeeting("VM-ZA-T1", leader)).toBeNull();
+    const meeting = s.startVisualManagementMeeting("VM-ZA-T1", admin)!;
+    expect(s.addMeetingGuest(meeting.id, "Unauthorized")).toBeNull();
+    expect(s.addMeetingGuest(meeting.id, "Cross-zone", undefined, leader)).toBeNull();
+    expect(s.addMeetingGuest(meeting.id, "Authorized", undefined, admin)).not.toBeNull();
+    const completed = s.completeVisualManagementMeeting(meeting.id, admin)!;
+    expect(s.addMeetingGuest(meeting.id, "Too late", undefined, admin)).toBeNull();
+    expect(s.completeVisualManagementMeeting(meeting.id, admin)).toEqual(completed);
+    expect(s.getVisualManagementMeeting(meeting.id)).toEqual(completed);
+  });
+  it("denies configuration and KPI assignment without an active configuration authority", async () => {
+    const s = await import("@/features/visual-management/visual-management-configuration-store");
+    const board = s.getVisualManagementConfiguration().boards[0];
+    expect(s.setVisualManagementBoardStatus(board.id, "Inactive")).toBe(false);
+    expect(s.setVisualManagementBoardStatus(board.id, "Inactive", leader)).toBe(false);
+    expect(s.getVisualManagementConfiguration().boards[0]).toEqual(board);
+    expect(s.setVisualManagementBoardStatus(board.id, "Inactive", admin)).toBe(true);
+    const k = await import("@/features/visual-management/kpi-execution-store");
+    expect(k.submitKpiActual({ boardId: "VM-ZA-T1", kpiId: "anything", value: 1, reportingPeriod: { type: "daily", key: "2026-10-16", label: "Today" }, reportedByUserId: leader.id }).success).toBe(false);
+  });
+});
+
+ describe("B2.1 inactive directory identity", () => {
+  it("rejects a known inactive administrator across all three modules", async () => {
+    const users = await import("@/features/five-s/administration/store");
+    const original = users.getAdminUser(admin.id)!;
+    const inactive = users.createAdminUser({ ...original, employeeId: "B21-INACTIVE", email: "b21-inactive@example.test", name: "Inactive fixture", status: "Inactive" }, admin.id)!;
+    const gemba = await import("@/features/gemba/gemba-access");
+    const vm = await import("@/features/visual-management/visual-management-store");
+    const red = await import("@/features/five-s/red-tag/access");
+    expect(gemba.canMutateGembaWalk({ plant: "Egmore Plant" }, inactive)).toBe(false);
+    expect(vm.startVisualManagementMeeting("VM-ZA-T1", inactive)).toBeNull();
+    expect(red.canManageRedTag(inactive, { plant: "Egmore Plant", zone: "Zone A" })).toBe(false);
+    const configuration = await import("@/features/visual-management/visual-management-access");
+    expect(configuration.canManageVisualManagementConfiguration(inactive)).toBe(false);
+  });
+});
+
+it("does not accept caller-supplied snapshots to close source Red Tags", async () => {
+ const tags = await import("@/features/five-s/red-tag/store");
+ const tag = tags.createRedTag(tagInput,admin)!;
+ expect(tags.approveAndCloseRedTag(tag.id,admin)).toBeUndefined();
+ expect(tags.getRedTag(tag.id)?.status).toBe("Open");
+ expect("reconcileRedTagActions" in tags).toBe(false);
+});

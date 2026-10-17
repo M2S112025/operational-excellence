@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- action evidence may use captured data URLs. */
 
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, FileText, ImageIcon, Printer } from "lucide-react";
+import { ArrowLeft, ExternalLink, FileText, Printer } from "lucide-react";
 
 import { PageContainer } from "@/components/layout/page-container";
 import { Badge } from "@/components/ui/badge";
@@ -12,10 +12,16 @@ import { useAdminUsers } from "@/features/five-s/administration/store";
 import type { MyActionEvidence } from "@/features/five-s/types/my-actions";
 import { getActionSourceDefinition, getActionSourceHref } from "@/lib/actions/action-config";
 import { useActionStore } from "@/lib/actions/action-store";
+import { useRedTags } from "@/features/five-s/red-tag/store";
+import { useGembaStore } from "@/features/gemba/gemba-store";
+import { resolveActionSourceBeforeEvidence } from "@/lib/actions/action-evidence";
+import { useActionEvidenceUrl } from "@/lib/actions/use-action-evidence-url";
 import { useCurrentUser } from "@/lib/current-user";
 
 export default function ActionProgressReportPage({ actionId }: { actionId: string }) {
   const currentUser = useCurrentUser();
+  const redTags = useRedTags();
+  const gemba = useGembaStore();
   const adminUser = useAdminUsers().find((user) => user.id === currentUser.id);
   const action = getRoleVisibleActions(useActionStore(), currentUser, adminUser).find((record) => record.id === actionId);
   if (!action) return <Unavailable title="Action report unavailable" description="This Action does not exist or is outside your permitted scope." />;
@@ -32,7 +38,7 @@ export default function ActionProgressReportPage({ actionId }: { actionId: strin
       <section className="ops-action-report-block grid gap-px border-b bg-slate-200 dark:bg-slate-700 sm:grid-cols-3 lg:grid-cols-4"><Meta label="Plant" value={action.plant} /><Meta label="Zone" value={action.area} /><Meta label="Department" value={action.department} /><Meta label="Priority" value={action.priority} /><Meta label="Action Owner" value={action.responsiblePersonName ?? action.assignedTo} /><Meta label="Zone Leader" value={action.zoneLeaderName ?? "—"} /><Meta label="Assigned By" value={action.assignedByName ?? action.createdByName ?? action.auditor ?? "—"} /><Meta label="Created Date" value={formatDate(action.createdAt)} /><Meta label="Due Date" value={formatDate(action.dueDate)} /><Meta label="Closed Date" value={formatDate(action.closedAt ?? action.completedAt)} /><Meta label="Closed By" value={action.closedBy ?? action.reviewedBy ?? "Awaiting closure"} /><Meta label="Completed Person" value={action.completedByName ?? "Awaiting completion"} /><Meta label="Source Module" value={source.label} /><Meta label="Source Record" value={action.sourceId ?? action.sourceTitle} /></section>
       <div className="grid gap-6 p-5 sm:p-7">
         <section className="ops-action-report-block grid gap-4 md:grid-cols-2"><ReportText title="Original Issue" text={action.originalFinding ?? action.sourceObservation ?? action.description} /><ReportText title="Current Work / Completion Notes" text={action.actionTakenDescription ?? action.resolutionObservation ?? "No completion notes recorded yet."} /></section>
-        <section className="ops-action-report-block grid gap-4 md:grid-cols-2"><EvidencePanel label="Before Evidence" evidence={action.issueEvidence ?? []} /><EvidencePanel label="Progress / Completion Evidence" evidence={[...(action.progressEvidence ?? []), ...action.evidence]} /></section>
+        <section className="ops-action-report-block grid gap-4 md:grid-cols-2"><EvidencePanel label="Before Evidence" evidence={resolveActionSourceBeforeEvidence(action, redTags, gemba).evidence} /><EvidencePanel label="Progress / Completion Evidence" evidence={[...(action.progressEvidence ?? []), ...action.evidence]} /></section>
         <section className="ops-action-report-block grid gap-4 md:grid-cols-3"><Summary label="Status" value={action.status} /><Summary label="Cost Saving" value={action.costSaving === undefined ? "Not recorded" : `${action.currency ?? "INR"} ${action.costSaving.toLocaleString("en-IN")}`} /><Summary label="Review" value={action.reviewedBy ? `Reviewed by ${action.reviewedBy}` : "Not reviewed"} /></section>
         <section className="ops-action-report-block"><div className="flex items-center justify-between gap-3"><h3 className="text-sm font-semibold">Review & Activity History</h3><Badge variant="secondary">{history.length}</Badge></div><div className="mt-3 overflow-hidden rounded-lg border"><div className="divide-y">{history.map((entry) => <div key={entry.id} className="grid gap-1 px-4 py-3 sm:grid-cols-[170px_1fr_170px]"><p className="text-xs font-semibold">{humanStatus(entry.type)}</p><p className="text-xs">{entry.remark ?? "Status updated"}</p><p className="text-[11px] text-slate-500">{entry.actorName} · {formatDate(entry.createdAt, true)}</p></div>)}{!history.length && <p className="p-5 text-center text-xs text-slate-500">No activity history recorded.</p>}</div></div></section>
         {sourceHref && <section className="ops-action-report-block border-t pt-4 text-xs"><span className="text-slate-500">Operational source: </span><Link href={sourceHref} className="font-semibold text-blue-700 hover:underline dark:text-blue-300">{action.sourceId ?? action.sourceTitle}</Link></section>}
@@ -42,10 +48,12 @@ export default function ActionProgressReportPage({ actionId }: { actionId: strin
   </PageContainer>;
 }
 
-function EvidencePanel({ label, evidence }: { label: string; evidence: MyActionEvidence[] }) { return <section className="overflow-hidden rounded-lg border"><h3 className="border-b bg-slate-50 px-4 py-3 text-xs font-semibold dark:bg-slate-800">{label}</h3><div className="grid grid-cols-2 gap-2 p-3">{evidence.map((item) => <figure key={item.id} className="overflow-hidden rounded border">{item.type === "image" && item.url ? <img src={item.url} alt={item.name} className="aspect-[4/3] w-full object-cover" /> : <div className="grid aspect-[4/3] place-items-center bg-slate-50 text-slate-400 dark:bg-slate-800"><ImageIcon className="size-5" /></div>}<figcaption className="truncate px-2 py-1.5 text-[10px] text-slate-500">{item.name}</figcaption></figure>)}{!evidence.length && <p className="col-span-2 py-8 text-center text-xs text-slate-500">No evidence captured.</p>}</div></section>; }
+function EvidencePanel({ label, evidence }: { label: string; evidence: MyActionEvidence[] }) { return <section className="overflow-hidden rounded-lg border"><h3 className="border-b bg-slate-50 px-4 py-3 text-xs font-semibold dark:bg-slate-800">{label}</h3><div className="grid grid-cols-2 gap-2 p-3">{evidence.map((item) => <ReportEvidence key={item.id} item={item} />)}{!evidence.length && <p className="col-span-2 py-8 text-center text-xs text-slate-500">No evidence captured.</p>}</div></section>; }
 function Meta({ label, value }: { label: string; value: string }) { return <div className="bg-white p-4 dark:bg-slate-900"><p className="text-[9px] font-semibold uppercase tracking-wide text-slate-500">{label}</p><p className="mt-1 text-xs font-semibold leading-5">{value}</p></div>; }
 function ReportText({ title, text }: { title: string; text: string }) { return <div className="rounded-lg border p-4"><p className="text-[10px] font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{title}</p><p className="mt-2 text-sm leading-6">{text}</p></div>; }
 function Summary({ label, value }: { label: string; value: string }) { return <div className="rounded-lg border bg-slate-50/60 p-4 text-center dark:bg-slate-800/30"><p className="text-base font-semibold">{value}</p><p className="mt-1 text-[9px] font-semibold uppercase tracking-wide text-slate-500">{label}</p></div>; }
 function Unavailable({ title, description }: { title: string; description: string }) { return <PageContainer><div className="grid min-h-[50vh] place-items-center text-center"><div><FileText className="mx-auto size-8 text-muted-foreground" /><h1 className="mt-4 text-lg font-semibold">{title}</h1><p className="mt-1 text-sm text-muted-foreground">{description}</p><Button className="mt-5" variant="outline" nativeButton={false} render={<Link href="/reports?tab=actions" />}>Back to Reports</Button></div></div></PageContainer>; }
 function formatDate(value?: string, withTime = false) { if (!value) return "—"; const date = new Date(value.includes("T") ? value : `${value}T00:00:00`); return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat("en-IN", withTime ? { dateStyle: "medium", timeStyle: "short" } : { day: "2-digit", month: "short", year: "numeric" }).format(date); }
 function humanStatus(value: string) { return value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()); }
+
+function ReportEvidence({ item }: { item: MyActionEvidence }) { const url = useActionEvidenceUrl(item); return <figure className="overflow-hidden rounded border">{item.type === "image" && url ? <img src={url} alt={item.name} className="aspect-[4/3] w-full object-contain" /> : <div className="grid aspect-[4/3] place-items-center bg-slate-50 text-xs text-slate-400 dark:bg-slate-800">{url ? <a href={url} target="_blank" rel="noreferrer">Open {item.name}</a> : "Evidence unavailable"}</div>}<figcaption className="truncate px-2 py-1.5 text-[10px] text-slate-500">{item.name}</figcaption></figure>; }

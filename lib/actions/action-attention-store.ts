@@ -7,7 +7,7 @@ import type { MyAction, MyActionActivity } from "@/features/five-s/types/my-acti
 import { safeSetStorage } from "@/lib/browser-storage";
 import { createNotification } from "@/lib/notifications/notification-store";
 import { actionDueDays } from "@/lib/actions/action-config";
-import { getActionById, updateAction, type ActionActor } from "@/lib/actions/action-store";
+import { getActionById, appendActionAttentionActivity, type ActionActor } from "@/lib/actions/action-store";
 import { getActionConfiguration } from "@/lib/actions/action-configuration-store";
 
 export type ActionReminderType = "Due Soon" | "Due Today" | "Overdue" | "Repeated Overdue";
@@ -101,7 +101,7 @@ function reviewerUser(action: MyAction, users: readonly AdminUser[]) {
 function appendAttentionActivity(actionId: string, activity: MyActionActivity) {
   const action = getActionById(actionId);
   if (!action || action.activityHistory?.some((item) => item.id === activity.id)) return;
-  updateAction(actionId, { activityHistory: [...(action.activityHistory ?? []), activity] });
+  appendActionAttentionActivity(actionId, activity);
 }
 
 function activity(id: string, type: MyActionActivity["type"], actorId: string, actorName: string, createdAt: string, remark: string): MyActionActivity {

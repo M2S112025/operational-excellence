@@ -13,7 +13,7 @@ describe("Red Tag first-class OPS module", () => {
   it("registers Red Tag as the sole active item-control module while retaining Red Flag compatibility", () => {
     const redFlag = getOperationalModule("redFlag");
     const redTag = getOperationalModule("redTag");
-    expect(redTag).toMatchObject({ id: "redTag", label: "Red Tag", route: "/5s/red", stageLabel: "Item Disposition", enabled: true, order: 25 });
+    expect(redTag).toMatchObject({ id: "redTag", label: "Red Tag", route: "/5s/red", stageLabel: "Plan & Execute", enabled: true, order: 25 });
     expect(redTag.id).not.toBe(redFlag.id);
     expect(redTag.route).not.toBe(redFlag.route);
     expect(OPERATIONAL_MODULES.map((item) => item.id)).toEqual(["gemba", "redTag", "continuousImprovement", "audit", "visualManagement"]);
@@ -22,12 +22,13 @@ describe("Red Tag first-class OPS module", () => {
 
   it("shows or hides only Red Tag from centralized entitlements", () => {
     const enabled = getEnabledNavigationGroups({ ...DEFAULT_MODULE_ENTITLEMENTS, redTag: true });
-    expect(enabled.find((group) => group.id === "operationalExcellence")?.items.map((item) => item.id)).toEqual(["gemba", "redTag", "continuousImprovement", "audit"]);
+    expect(enabled.find((group) => group.id === "operationalExcellence")?.items.map((item) => item.id)).toEqual(["gemba", "redTag", "continuousImprovement", "audit", "visualManagement"]);
 
     const disabled = getEnabledNavigationGroups({ ...DEFAULT_MODULE_ENTITLEMENTS, redTag: false });
     const ids = disabled.find((group) => group.id === "operationalExcellence")?.items.map((item) => item.id);
     expect(ids).not.toContain("redTag");
     expect(ids).not.toContain("redFlag");
+    expect(ids).toEqual(["gemba", "continuousImprovement", "audit", "visualManagement"]);
   });
 
   it("keeps Red Tag active across landing, detail, print, and settings routes", () => {

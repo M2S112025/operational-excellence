@@ -104,7 +104,7 @@ describe("Gemba → canonical Action traceability", () => {
     const { actions, gemba } = await stores();
     const action = createGembaAction(actions, "MISSING-OBSERVATION", "High");
     expect(gemba.linkGembaAction("GEM-2026-015", "MISSING-OBSERVATION", action.id, actor)).toBe(false);
-    expect(actions.rollbackCreatedAction(action.id)).toBe(true);
+    expect(actions.rollbackCreatedAction(action.id, actor)).toBe(true);
     expect(actions.getActionById(action.id)).toBeUndefined();
     expect(gemba.getGembaWalk("GEM-2026-015")?.actionIds).not.toContain(action.id);
   });

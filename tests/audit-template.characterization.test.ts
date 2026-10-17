@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-const source = readFileSync(resolve("features/five-s/audit-list-page.tsx"), "utf8");
+const source = readFileSync(resolve("features/settings/standard-audit-checklist/defaults.ts"), "utf8");
 const templateSource = source.match(
   /const FIVE_S_QUESTIONS:[\s\S]*?= \{([\s\S]*?)\n\};/,
 )?.[1];
@@ -113,6 +113,6 @@ describe("active audit-list 5S template", () => {
 
   it("characterizes the live two-point maximum without treating fixtures as canonical", () => {
     expect(39 * 2).toBe(78);
-    expect(source).toContain("maxScore: 2");
+    expect(readFileSync(resolve("features/five-s/audit-list-page.tsx"), "utf8")).toContain("maxScore: 2");
   });
 });

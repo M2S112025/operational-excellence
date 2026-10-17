@@ -88,15 +88,24 @@ function loadRelationships(): void {
 /**
  * Persist relationships to localStorage
  */
-function persistRelationships(): void {
+let lastSaveError = "";
+export function getRelationshipSaveError() { return lastSaveError; }
+function persistRelationships(): boolean {
+  lastSaveError = "";
+  // Preserve the existing non-browser in-memory API used by server-safe readers/tests.
+  if (typeof window === "undefined") return true;
   try {
     const snapshot: RelationshipStoreSnapshot = {
       relationships,
       version: STORAGE_VERSION,
     };
-    safeSetStorage(getStorageKey(STORAGE_KEY), snapshot);
+    const result = safeSetStorage(getStorageKey(STORAGE_KEY), snapshot);
+    if (!result.success) lastSaveError = result.message;
+    return result.success;
   } catch (error) {
     console.error("Failed to persist relationships:", error);
+    lastSaveError = error instanceof Error ? error.message : "Relationship storage is unavailable.";
+    return false;
   }
 }
 
@@ -173,8 +182,9 @@ export function createRelationship(
     metadata,
   };
 
+  const previous = relationships;
   relationships = [...relationships, relationship];
-  persistRelationships();
+  if (!persistRelationships()) { relationships = previous; return null; }
   notifyListeners();
 
   return relationship;

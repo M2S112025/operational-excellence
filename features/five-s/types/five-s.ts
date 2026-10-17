@@ -1,3 +1,5 @@
+import type { AuditScoringPolicy, ComplianceResponse } from "@/lib/five-s/scoring-policy";
+
 export type FiveSCategory =
   | "Sort"
   | "Set in Order"
@@ -73,6 +75,9 @@ export interface FiveSQuestion {
 
   score: number | null;
 
+  /** Compliance identity independent of numeric policy score; absent on legacy records. */
+  complianceResponse?: ComplianceResponse | null;
+
   status: FiveSQuestionStatus;
 
   observation?: string;
@@ -114,6 +119,8 @@ export interface FiveSSection {
    ========================================================= */
 
 export interface FiveSAudit {
+  /** Immutable creation-time policy. Absent on legacy records. */
+  scoringPolicy?: Readonly<AuditScoringPolicy>;
   id: string;
 
   title: string;

@@ -56,8 +56,8 @@ describe("Team Feedback #7 — Gemba horizontal deployment", () => {
     const before = JSON.parse(localStorage.getItem("ops-gemba-v1") ?? "null");
     expect(before).toBeNull();
     const saved = gemba.saveGembaObservation("GEM-2026-015", { ...input, horizontalDeployment: { enabled: true, targetZoneIds: ["ZONE-B", "ZONE-C"] } }, actor)!;
-    expect(saved.horizontalDeployment?.targetZoneIds).toEqual(["ZONE-B", "ZONE-C"]);
-    expect(saved.horizontalDeployment?.recipients.map((item) => item.zoneId)).toEqual(["ZONE-B", "ZONE-C"]);
+    expect(saved.horizontalDeployment?.targetZoneIds).toEqual(["ZONE-A", "ZONE-B", "ZONE-C", "ZONE-D"]);
+    expect(saved.horizontalDeployment?.recipients.map((item) => item.zoneId)).toEqual(["ZONE-A", "ZONE-B", "ZONE-C", "ZONE-D"]);
     expect(saved.actionId).toBeUndefined();
     expect(saved.redTagId).toBeUndefined();
     expect(saved.improvementId).toBeUndefined();
@@ -68,8 +68,8 @@ describe("Team Feedback #7 — Gemba horizontal deployment", () => {
   it("resolves active zone leaders through canonical users and creates honest in-app notifications", async () => {
     const { gemba, localStorage } = await setup();
     const saved = gemba.saveGembaObservation("GEM-2026-015", { ...input, horizontalDeployment: { enabled: true, targetZoneIds: ["ZONE-B"] } }, actor)!;
-    expect(saved.horizontalDeployment?.recipients[0]).toMatchObject({ zoneId: "ZONE-B", leaderUserId: "USR-RUMESH", leaderName: "Rumesh", notificationStatus: "shared" });
-    expect(saved.horizontalDeployment?.recipients[0].notificationId).toBeTruthy();
+    expect(saved.horizontalDeployment?.recipients[1]).toMatchObject({ zoneId: "ZONE-B", leaderUserId: "USR-RUMESH", leaderName: "Rumesh", notificationStatus: "shared" });
+    expect(saved.horizontalDeployment?.recipients[1].notificationId).toBeTruthy();
     const notifications = JSON.parse(localStorage.getItem("standalone-5s-notifications")!);
     expect(notifications.some((item: { recipientUserId: string; title: string; message: string }) => item.recipientUserId === "USR-RUMESH" && item.title === "Horizontal Deployment Opportunity" && item.message.includes("for review"))).toBe(true);
   });
@@ -81,8 +81,8 @@ describe("Team Feedback #7 — Gemba horizontal deployment", () => {
       zones: organization.ORGANIZATION_ZONE_SEEDS.map((item) => item.id === "ZONE-B" ? { ...item, leaderId: "USR-MISSING", leaderName: "" } : { ...item }),
     });
     const saved = gemba.saveGembaObservation("GEM-2026-015", { ...input, horizontalDeployment: { enabled: true, targetZoneIds: ["ZONE-B"] } }, actor)!;
-    expect(saved.horizontalDeployment?.recipients[0]).toMatchObject({ zoneId: "ZONE-B", notificationStatus: "unavailable" });
-    expect(saved.horizontalDeployment?.recipients[0].leaderUserId).toBeUndefined();
+    expect(saved.horizontalDeployment?.recipients[1]).toMatchObject({ zoneId: "ZONE-B", notificationStatus: "unavailable" });
+    expect(saved.horizontalDeployment?.recipients[1].leaderUserId).toBeUndefined();
   });
 
   it("supports editing target zones and turning deployment off on the same observation", async () => {
@@ -90,7 +90,7 @@ describe("Team Feedback #7 — Gemba horizontal deployment", () => {
     const created = gemba.saveGembaObservation("GEM-2026-015", { ...input, horizontalDeployment: { enabled: true, targetZoneIds: ["ZONE-B"] } }, actor)!;
     const edited = gemba.saveGembaObservation("GEM-2026-015", { ...input, title: "Updated opportunity", horizontalDeployment: { enabled: true, targetZoneIds: ["ZONE-C", "ZONE-D"] } }, actor, created.id)!;
     expect(edited.id).toBe(created.id);
-    expect(edited.horizontalDeployment?.targetZoneIds).toEqual(["ZONE-C", "ZONE-D"]);
+    expect(edited.horizontalDeployment?.targetZoneIds).toEqual(["ZONE-A", "ZONE-B", "ZONE-C", "ZONE-D"]);
     const disabled = gemba.saveGembaObservation("GEM-2026-015", { ...input, horizontalDeployment: { enabled: false, targetZoneIds: [] } }, actor, created.id)!;
     expect(disabled.horizontalDeployment).toBeUndefined();
     const state = JSON.parse(localStorage.getItem("ops-gemba-v1")!);
@@ -102,15 +102,15 @@ describe("Team Feedback #7 — Gemba horizontal deployment", () => {
     const first = await setup();
     const saved = first.gemba.saveGembaObservation("GEM-2026-015", { ...input, horizontalDeployment: { enabled: true, targetZoneIds: ["ZONE-D"] } }, actor)!;
     const reloaded = await setup(first.localStorage);
-    expect(reloaded.gemba.getGembaState().observations.find((item) => item.id === saved.id)?.horizontalDeployment?.targetZoneIds).toEqual(["ZONE-D"]);
+    expect(reloaded.gemba.getGembaState().observations.find((item) => item.id === saved.id)?.horizontalDeployment?.targetZoneIds).toEqual(["ZONE-A", "ZONE-B", "ZONE-C", "ZONE-D"]);
     expect(reloaded.gemba.getGembaState().observations.find((item) => item.id === "GEM-2026-015-OBS-01")?.horizontalDeployment).toBeUndefined();
   });
 
-  it("keeps current-zone exclusion and required target validation in the canonical add/edit dialog", () => {
-    expect(walkSource).toContain('item.name !== zone && item.id !== zone');
+  it("uses approved automatic broadcast without manual target selection", () => {
     expect(walkSource).toContain("Deployment Opportunity at other Zones");
-    expect(walkSource).toContain("Target Zones *");
-    expect(walkSource).toContain("Select at least one other target zone.");
+    expect(walkSource).toContain("Horizontal Deployment will be shared with all active Zone Leaders in this Plant.");
+    expect(walkSource).not.toContain("Target Zones *");
+    expect(walkSource).not.toContain("Select at least one other target zone.");
     expect(walkSource).toContain("No duplicate observation or follow-up record is created.");
   });
 

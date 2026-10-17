@@ -216,3 +216,7 @@ export function InlineLinkedRecord({
     </Link>
   );
 }
+/** Presentation shell only; callers provide links to records already in their authorized scope. */
+export function LinkedRecordsPanel({ children, title = "Linked Records" }: { children: React.ReactNode; title?: string }) {
+  return <section aria-label={title} className="rounded-xl border bg-card p-4"><h2 className="mb-3 text-sm font-semibold">{title}</h2><div className="flex flex-wrap items-center gap-3">{children}</div></section>;
+}

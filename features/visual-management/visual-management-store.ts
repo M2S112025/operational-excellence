@@ -1,9 +1,10 @@
 "use client";
+import { canOperateVisualManagementBoard, type VisualManagementActor } from "./visual-management-access";
 
 import { useMemo, useSyncExternalStore } from "react";
 import type { MyAction } from "@/features/five-s/types/my-actions";
 import { getActionById } from "@/lib/actions/action-store";
-import { getAdminUsers, useAdminUsers } from "@/features/five-s/administration/store";
+import { getAdminUser, getAdminUsers, useAdminUsers } from "@/features/five-s/administration/store";
 import { safeSetStorage } from "@/lib/browser-storage";
 import { getOrganizationPlants, getOrganizationZones, useOrganizationConfiguration } from "@/lib/organization-store";
 import { createDefaultKpiEntries, nextTier } from "./visual-management-config";
@@ -149,13 +150,16 @@ function uid(prefix: string) {
   return `${prefix}-${suffix}`;
 }
 
-export function startVisualManagementMeeting(boardId: string, actor: VisualManagementPerson, scheduled?: { scheduleId: string; occurrenceDate: string; scheduledTime: string; durationMinutes: number; attendees: VisualManagementParticipant[] }) {
+export function startVisualManagementMeeting(boardId: string, actor: VisualManagementPerson, scheduled?: { scheduleId: string; occurrenceDate: string; scheduledTime: string; durationMinutes: number; attendees: VisualManagementParticipant[] }, lead?: VisualManagementPerson) {
+  if (!canOperateVisualManagementBoard(getVisualManagementBoard(boardId), actor)) return null;
+
   const current = getVisualManagementState();
   const active = current.meetings.find((item) => item.boardId === boardId && item.status === "In Progress");
   if (active) return active;
   if (scheduled && current.meetings.some((item) => item.scheduleId === scheduled.scheduleId && item.occurrenceDate === scheduled.occurrenceDate)) return null;
   const selected = current.boards.find((item) => item.id === boardId);
   if (!selected || selected.status !== "Active") return null;
+  if (lead && (getAdminUser(lead.id)?.status !== "Active" || ![selected.owner.id, ...selected.members.map(member => member.id)].includes(lead.id))) return null;
   const year = new Date().getFullYear();
   const number = Math.max(0, ...current.meetings.map((item) => Number(item.id.match(/(\d+)$/)?.[1]) || 0)) + 1;
   const meeting: VisualManagementMeeting = {
@@ -165,7 +169,7 @@ export function startVisualManagementMeeting(boardId: string, actor: VisualManag
     plant: selected.plant,
     zone: selected.zone,
     tier: selected.tier,
-    lead: actor.id ? actor : selected.owner,
+    lead: { id: lead?.id ?? actor.id, name: getAdminUser(lead?.id ?? actor.id)?.name ?? actor.name },
     participants: scheduled ? scheduled.attendees.map((person) => ({ ...person, attendance: "Absent", expected: true })) : attendance(selected.members).map((person) => ({ ...person, expected: true })),
     scheduleId: scheduled?.scheduleId,
     occurrenceDate: scheduled?.occurrenceDate,
@@ -180,6 +184,8 @@ export function startVisualManagementMeeting(boardId: string, actor: VisualManag
   return persist({ ...current, meetings: [meeting, ...current.meetings] }) ? meeting : null;
 }
 
+function canMutateMeeting(id: string, actor: VisualManagementActor | undefined) { const meeting = getVisualManagementMeeting(id); return Boolean(meeting?.status === "In Progress" && canOperateVisualManagementBoard(getVisualManagementBoard(meeting.boardId), actor)); }
+
 function updateMeeting(id: string, updater: (meeting: VisualManagementMeeting) => VisualManagementMeeting) {
   const current = getVisualManagementState();
   const meeting = current.meetings.find((item) => item.id === id);
@@ -188,29 +194,39 @@ function updateMeeting(id: string, updater: (meeting: VisualManagementMeeting) =
   return persist({ ...current, meetings: current.meetings.map((item) => item.id === id ? updated : item) }) ? updated : null;
 }
 
-export function setMeetingAttendance(meetingId: string, personId: string, attendanceValue: VisualManagementParticipant["attendance"]) {
+export function setMeetingAttendance(meetingId: string, personId: string, attendanceValue: VisualManagementParticipant["attendance"], actor?: VisualManagementActor) {
+  if (!canMutateMeeting(meetingId, actor)) return null;
+
   if (getVisualManagementMeeting(meetingId)?.status !== "In Progress") return null;
   return updateMeeting(meetingId, (meeting) => ({ ...meeting, participants: meeting.participants.map((person) => person.id === personId ? { ...person, attendance: attendanceValue } : person) }));
 }
 
-export function addMeetingAttendee(meetingId: string, person: VisualManagementPerson) {
+export function addMeetingAttendee(meetingId: string, person: VisualManagementPerson, actor?: VisualManagementActor) {
+  if (!canMutateMeeting(meetingId, actor) || getAdminUser(person.id)?.status !== "Active") return null;
+
   const meeting = getVisualManagementMeeting(meetingId);
   if (meeting?.status !== "In Progress" || !person.id || !person.name.trim() || meeting.participants.some((entry) => entry.id === person.id)) return null;
   return updateMeeting(meetingId, (current) => ({ ...current, participants: [...current.participants, { ...person, attendance: "Present", expected: false, manuallyAdded: true }] }));
 }
 
-export function addMeetingGuest(meetingId: string, name: string, companyOrRole?: string) {
+export function addMeetingGuest(meetingId: string, name: string, companyOrRole?: string, actor?: VisualManagementActor) {
+  if (!canMutateMeeting(meetingId, actor)) return null;
+
   if (!name.trim() || getVisualManagementMeeting(meetingId)?.status !== "In Progress") return null;
   return updateMeeting(meetingId, (meeting) => ({ ...meeting, participants: [...meeting.participants, { id: uid("GUEST"), name: name.trim(), companyOrRole: companyOrRole?.trim() || undefined, attendance: "Present", guest: true, expected: false, manuallyAdded: true }] }));
 }
 
-export function removeMeetingAttendee(meetingId: string, personId: string) {
+export function removeMeetingAttendee(meetingId: string, personId: string, actor?: VisualManagementActor) {
+  if (!canMutateMeeting(meetingId, actor)) return null;
+
   const meeting = getVisualManagementMeeting(meetingId);
   if (meeting?.status !== "In Progress" || !meeting.participants.some((person) => person.id === personId && (person.manuallyAdded || person.guest))) return null;
   return updateMeeting(meetingId, (current) => ({ ...current, participants: current.participants.filter((person) => person.id !== personId) }));
 }
 
-export function updateMeetingKpi(meetingId: string, section: VisualManagementKpiSection, values: Partial<VisualManagementKpiEntry>) {
+export function updateMeetingKpi(meetingId: string, section: VisualManagementKpiSection, values: Partial<VisualManagementKpiEntry>, actor?: VisualManagementActor) {
+  if (!canMutateMeeting(meetingId, actor)) return null;
+
   const current = getVisualManagementState();
   const meeting = current.meetings.find((item) => item.id === meetingId);
   if (!meeting) return null;
@@ -224,6 +240,8 @@ export function updateMeetingKpi(meetingId: string, section: VisualManagementKpi
 }
 
 export function addMeetingTopic(meetingId: string, input: Pick<VisualManagementTopic, "section" | "title" | "description" | "owner" | "decision" | "followUpRequired">, actor: VisualManagementPerson) {
+  if (!canMutateMeeting(meetingId, actor)) return null;
+
   if (!input.title.trim()) return null;
   const current = getVisualManagementState();
   const meeting = current.meetings.find((item) => item.id === meetingId);
@@ -232,18 +250,23 @@ export function addMeetingTopic(meetingId: string, input: Pick<VisualManagementT
   return persist({ ...current, topics: [...current.topics, topic], meetings: current.meetings.map((item) => item.id === meetingId ? { ...item, topicIds: [...item.topicIds, topic.id] } : item) }) ? topic : null;
 }
 
-export function linkTopicFollowUp(topicId: string, type: VisualManagementFollowUpType, linkedId?: string) {
+export function linkTopicFollowUp(topicId: string, type: VisualManagementFollowUpType, linkedId?: string, actor?: VisualManagementActor) {
+  const parent = getVisualManagementState().topics.find(item => item.id === topicId); if (!parent || !canMutateMeeting(parent.meetingId, actor)) return null;
+
   const current = getVisualManagementState();
   const topic = current.topics.find((item) => item.id === topicId);
   if (!topic) return null;
   const key = type === "Action" ? "linkedActionId" : type === "Red Flag" ? "linkedRedFlagId" : type === "Continuous Improvement" ? "linkedCIId" : type === "Gemba" ? "linkedGembaId" : undefined;
+  if (key && topic[key] && topic[key] !== linkedId) return null;
   const updated = { ...topic, followUpRequired: type !== "Information Only", followUpType: type, ...(key && linkedId ? { [key]: linkedId } : {}) };
   const referenceKey = type === "Action" ? "actionIds" : type === "Red Flag" ? "redFlagIds" : type === "Continuous Improvement" ? "continuousImprovementIds" : type === "Gemba" ? "gembaIds" : undefined;
   const meetings = referenceKey && linkedId ? current.meetings.map((meeting) => meeting.id === topic.meetingId ? { ...meeting, [referenceKey]: Array.from(new Set([...meeting[referenceKey], linkedId])) } : meeting) : current.meetings;
   return persist({ ...current, topics: current.topics.map((item) => item.id === topicId ? updated : item), meetings }) ? updated : null;
 }
 
-export function addMeetingDecision(meetingId: string, decisionText: string, owner?: VisualManagementPerson, relatedTopicId?: string, linkedActionId?: string) {
+export function addMeetingDecision(meetingId: string, decisionText: string, owner?: VisualManagementPerson, relatedTopicId?: string, linkedActionId?: string, actor?: VisualManagementActor) {
+  if (!canMutateMeeting(meetingId, actor)) return null;
+
   if (!decisionText.trim()) return null;
   const current = getVisualManagementState();
   const decision: VisualManagementDecision = { id: uid("VMD"), meetingId, decision: decisionText.trim(), owner, relatedTopicId, linkedActionId, createdAt: new Date().toISOString() };
@@ -261,6 +284,8 @@ export function getEscalationTargets(sourceBoardId: string) {
 }
 
 export function createMeetingEscalation(topicId: string, targetBoardId: string, reason: string, actor: VisualManagementPerson) {
+  const parent = getVisualManagementState().topics.find(item => item.id === topicId); if (!parent || !canMutateMeeting(parent.meetingId, actor)) return null;
+
   const current = getVisualManagementState();
   const topic = current.topics.find((item) => item.id === topicId);
   const meeting = topic ? current.meetings.find((item) => item.id === topic.meetingId) : undefined;
@@ -272,6 +297,8 @@ export function createMeetingEscalation(topicId: string, targetBoardId: string, 
 }
 
 export function escalateExistingEscalation(escalationId: string, targetBoardId: string, actor: VisualManagementPerson) {
+  const parent = getVisualManagementState().escalations.find(item => item.id === escalationId); if (!parent || !canOperateVisualManagementBoard(getVisualManagementBoard(parent.targetBoardId), actor)) return null;
+
   const current = getVisualManagementState();
   const existing = current.escalations.find((item) => item.id === escalationId);
   if (!existing || !getEscalationTargets(existing.targetBoardId).some((item) => item.id === targetBoardId)) return null;
@@ -293,7 +320,9 @@ export function escalateExistingEscalation(escalationId: string, targetBoardId: 
   return persist({ ...current, escalations: [escalation, ...escalations] }) ? escalation : null;
 }
 
-export function updateEscalationStatus(id: string, status: VisualManagementEscalationStatus) {
+export function updateEscalationStatus(id: string, status: VisualManagementEscalationStatus, actor?: VisualManagementActor) {
+  const parent = getVisualManagementState().escalations.find(item => item.id === id); if (!parent || !canOperateVisualManagementBoard(getVisualManagementBoard(parent.targetBoardId), actor)) return null;
+
   const current = getVisualManagementState();
   const item = current.escalations.find((entry) => entry.id === id);
   if (!item) return null;
@@ -304,7 +333,9 @@ export function updateEscalationStatus(id: string, status: VisualManagementEscal
   return persist({ ...current, escalations: current.escalations.map((entry) => entry.id === id ? updated : entry) }) ? updated : null;
 }
 
-export function linkEscalationAction(escalationId: string, actionId: string) {
+export function linkEscalationAction(escalationId: string, actionId: string, actor?: VisualManagementActor) {
+  const parent = getVisualManagementState().escalations.find(item => item.id === escalationId); if (!parent || !canOperateVisualManagementBoard(getVisualManagementBoard(parent.targetBoardId), actor)) return null;
+
   const current = getVisualManagementState();
   const escalation = current.escalations.find((item) => item.id === escalationId);
   if (!escalation || !actionId) return null;
@@ -324,8 +355,19 @@ export function linkEscalationAction(escalationId: string, actionId: string) {
   }) ? updated : null;
 }
 
-export function completeVisualManagementMeeting(meetingId: string) {
-  return updateMeeting(meetingId, (meeting) => ({ ...meeting, configuredKpiReviews: createMeetingKpiReviewSnapshots(meeting.id, meeting.boardId, meeting.lead.id), status: "Completed", completedAt: new Date().toISOString() }));
+export function completeVisualManagementMeeting(meetingId: string, actor?: VisualManagementActor) {
+  const completed = getVisualManagementMeeting(meetingId);
+  if (completed?.status === "Completed" && canOperateVisualManagementBoard(getVisualManagementBoard(completed.boardId), actor)) return completed;
+  if (!canMutateMeeting(meetingId, actor)) return null;
+
+  const existing = getVisualManagementMeeting(meetingId);
+  if (!existing) return null;
+  if (existing.status === "Completed") return existing;
+  return updateMeeting(meetingId, (meeting) => {
+    const configuredKpiReviews = createMeetingKpiReviewSnapshots(meeting.id, meeting.boardId, meeting.lead.id);
+    const actionIds = Array.from(new Set([...meeting.actionIds, ...configuredKpiReviews.flatMap((review) => review.actionId ? [review.actionId] : [])]));
+    return { ...meeting, configuredKpiReviews, actionIds, status: "Completed", completedAt: new Date().toISOString() };
+  });
 }
 
 export function meetingDurationMinutes(meeting: VisualManagementMeeting, now = new Date()) {
