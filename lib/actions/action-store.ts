@@ -1,5 +1,7 @@
 "use client";
 
+import { resetImportedRedTagData } from "@/lib/five-s/red-tag-reset";
+
 import { useSyncExternalStore } from "react";
 import { getAdminUser } from "@/features/five-s/administration/store";
 
@@ -57,6 +59,7 @@ function loadFromStorage() {
     return;
   }
 
+  resetImportedRedTagData();
   hasLoadedFromStorage = true;
 
   try {

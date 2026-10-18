@@ -292,6 +292,7 @@ describe("Gemba photo persistence — legacy data-URL migration", () => {
       walks: [{ id: "GEM-2026-015", plant: "Egmore Plant", zone: "Zone A", leadId: "L", leadName: "Lakshman", participants: [], purpose: "P", scheduledDate: "2026-09-14", status: "In Progress", createdAt: "t", updatedAt: "t", observationIds: ["OBS-1"], actionIds: [], activity: [] }],
       observations: [{ id: "OBS-1", gembaId: "GEM-2026-015", type: "Issue", title: "Legacy issue", description: "d", location: "Zone A", peopleInvolved: [], evidence: [{ id: "GEM-EV-LEGACY", name: "legacy.jpg", url: dataUrl, mimeType: "image/jpeg", uploadedAt: "t", uploadedBy: "Rumesh" }], createdById: "u", createdByName: "Rumesh", createdAt: "t", updatedAt: "t" }],
     }));
+    localStorage.setItem("ops-red-tag-original-reset-v1", "done");
     localStorage.setItem("standalone-5s-actions", "unrelated-actions-payload");
     localStorage.setItem("ops-red-flags-v1", "unrelated-red-flag-payload");
 

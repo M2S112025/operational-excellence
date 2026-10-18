@@ -16,13 +16,13 @@ describe("Action guided execution navigation", () => {
     expect(source).toContain('type DetailSection = "overview" | "evidence" | "review"');
     expect(source).not.toContain('{ id: "activity", label: "Activity" }');
     expect(source).not.toContain("ActivityTimeline");
-    expect(source).toContain('primaryLabel={completionTag ? "Save & Return to Red Tag" : "Next: Evidence"}');
+    expect(source).toContain('primaryLabel={"Next: Evidence"}');
     expect(source).toContain('secondaryLabel="Save Progress" secondaryAction={saveProgress}');
     expect(source).toContain('secondaryLabel="Back: Overview"');
     expect(source).toContain('secondaryLabel="Back: Evidence"');
     expect(source).toContain('primaryLabel="Next: Review"');
     expect(source).not.toContain('primaryLabel="Next: Complete"');
-    expect(source).toContain('primaryAction={completionTag ? saveAndReturnToRedTag : () => navigateToStep("evidence")}');
+    expect(source).toContain('primaryAction={() => navigateToStep("evidence")}');
     expect(source).toContain('onChange={(id) => navigateToStep(id as DetailSection)}');
   });
 

@@ -95,6 +95,6 @@ describe("Team Feedback #27 — Gemba corrective-action decision", () => {
     expect(storeSource).not.toContain("CorrectiveActionV2");
     expect(source("lib/actions/action-store.ts")).toContain("export function createAction");
     expect(source("features/five-s/components/FiveSAuditExecution.tsx")).toContain("You can complete the Audit now");
-    expect(source("features/five-s/red-tag/red-tag-module.tsx")).toContain("Canonical Action");
+    expect(source("features/five-s/red-tag/red-tag-module.tsx")).toContain("linkRedTagAction");
   });
 });

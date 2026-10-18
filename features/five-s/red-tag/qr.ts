@@ -21,7 +21,3 @@ export function getRedTagQrTarget(tagId: string, origin?: string) {
   if (!origin) return path;
   try { return new URL(path, origin).toString(); } catch { return path; }
 }
-
-/** Recovered OPS limits: whole label counts 1–100; invalid print URLs fall back to one. */
-export function isValidBulkQrQuantity(value: string | number) { const quantity = Number(value); return Number.isInteger(quantity) && quantity >= 1 && quantity <= 100; }
-export function parseBulkQrQuantity(value?: string | number) { return value !== undefined && isValidBulkQrQuantity(value) ? Number(value) : 1; }

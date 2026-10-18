@@ -1,5 +1,10 @@
 import { afterEach, expect, it, vi } from 'vitest';
-import { setup } from './helpers/red-tag-replacement';
+async function setup() {
+ vi.resetModules();
+ const values = new Map<string,string>([["ops-red-tag-original-reset-v1", "done"]]);
+ const localStorage = { getItem:(key:string)=>values.get(key)??null, setItem:vi.fn((key:string,value:string)=>{values.set(key,value);}), removeItem:(key:string)=>values.delete(key) };
+ vi.stubGlobal("window",{localStorage}); return {localStorage};
+}
 afterEach(()=>{vi.unstubAllGlobals();vi.resetModules();});
 it('does not publish or cache a relationship when real browser storage fails, and retries once',async()=>{
  const {localStorage}=await setup(); const store=await import('@/lib/relationships/relationship-store');

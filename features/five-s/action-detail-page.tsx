@@ -37,7 +37,7 @@ import { cn } from "@/lib/utils";
 import { OpsPersonSelect } from "@/components/ops/ops-person-select";
 
 import { validateReturnTo } from "@/lib/navigation/return-to";
-import { BackLink } from "@/components/ops/ops-return-link";
+
 import { OpsFeedback } from "@/components/ops/ops-feedback";
 
 type DetailSection = "overview" | "evidence" | "review";
@@ -45,7 +45,7 @@ const DETAIL_SECTIONS: Array<{ id: DetailSection; label: string }> = [
   { id: "overview", label: "Overview" }, { id: "evidence", label: "Evidence" }, { id: "review", label: "Review" },
 ];
 
-export default function FiveSActionDetailPage({ actionId, initialSection, returnRedTagId, returnTo }: { actionId: string; initialSection?: string; returnRedTagId?: string; returnTo?: string }) {
+export default function FiveSActionDetailPage({ actionId, initialSection, returnTo }: { actionId: string; initialSection?: string; returnTo?: string }) {
   const router = useRouter();
   const actions = useActionStore();
   const redTags = useRedTags();
@@ -55,10 +55,7 @@ export default function FiveSActionDetailPage({ actionId, initialSection, return
   const actorWithAuthority = { id: actor.id, name: actor.name, roles: adminUser?.roles, permissions: adminUser?.permissions };
   const storedAction = actions.find((item) => item.id === actionId);
   const action = getRoleVisibleActions(actions, actor, adminUser).find((item) => item.id === actionId);
-  const completionTag = redTags.find(tag => tag.id === returnRedTagId && tag.workflowVersion === "5s-v2" && tag.actionId === actionId && action?.sourceModule === "redTag" && action.sourceId === tag.id && tag.responsiblePersonId === actor.id && ["In Progress", "Rework Required"].includes(tag.status));
-  const safeReturn = validateReturnTo(returnTo);
-  const completionSourcePath = completionTag ? `/5s/red/${encodeURIComponent(completionTag.id)}` : undefined;
-  const backTo = completionTag ? (safeReturn?.split(/[?#]/)[0] === completionSourcePath ? safeReturn : completionSourcePath) : safeReturn;
+  const backTo = validateReturnTo(returnTo);
   const [feedback, setFeedback] = useState<{tone: "success" | "error"; message: string}>();
   const attention = useActionAttention(actionId);
   const [section, setSection] = useState<DetailSection>(() => DETAIL_SECTIONS.some((item) => item.id === initialSection) ? initialSection as DetailSection : "overview");
@@ -98,10 +95,10 @@ export default function FiveSActionDetailPage({ actionId, initialSection, return
       if (cancelled) return;
       setObservation(action.resolutionObservation ?? action.actionTakenDescription ?? "");
       setCategory(action.correctiveActionCategory ?? "");
-      setCostSaving(String(action.costSaving ?? (completionTag ? "" : 0)));
+      setCostSaving(String(action.costSaving ?? 0));
     });
     return () => { cancelled = true; };
-  }, [action, completionTag]);
+  }, [action]);
 
   const latestRework = [...(action?.reviewHistory ?? [])].reverse().find((item) => item.type === "sent_back");
 
@@ -119,7 +116,7 @@ export default function FiveSActionDetailPage({ actionId, initialSection, return
   const overviewErrors = {
     observation: !observation.trim() ? "Corrective measure / responsible notes are required." : "",
     category: !category ? "Corrective action category is required." : "",
-    costSaving: (Boolean(completionTag) && !costSaving.trim()) || !Number.isFinite(Number(costSaving)) || Number(costSaving) < 0 ? "Enter a valid non-negative cost saving amount." : "",
+    costSaving: !Number.isFinite(Number(costSaving)) || Number(costSaving) < 0 ? "Enter a valid non-negative cost saving amount." : "",
   };
   const source = getActionSourceDefinition(action);
   const SourceIcon = source.icon;
@@ -138,15 +135,11 @@ export default function FiveSActionDetailPage({ actionId, initialSection, return
   function setErrorFeedback(message: string) { setFeedback({ tone: "error", message }); }
   function persistOverview() {
     if (!canEdit) return undefined;
-    const updated = updateAction(actionId, { actionTakenDescription: observation.trim(), resolutionObservation: observation.trim(), correctiveActionCategory: category, costSaving: (completionTag && !costSaving.trim()) ? undefined : Number.isFinite(Number(costSaving)) ? Number(costSaving) : undefined, currency: "INR" }, actor);
+    const updated = updateAction(actionId, { actionTakenDescription: observation.trim(), resolutionObservation: observation.trim(), correctiveActionCategory: category, costSaving: Number.isFinite(Number(costSaving)) ? Number(costSaving) : undefined, currency: "INR" }, actor);
     if (!updated) setErrorFeedback("Action changes could not be saved. Check your permissions and browser storage, then retry.");
     syncFields(updated);
     if (updated) setFeedback({tone: "success", message: "Action details saved."});
     return updated;
-  }
-  function saveAndReturnToRedTag() {
-   if (!completionTag || !validateOverview()) return;
-   if (persistOverview()) { const target = new URL(backTo ?? `/5s/red/${encodeURIComponent(completionTag.id)}`, "https://ops.invalid"); target.searchParams.set("completion", "saved"); target.hash = "submit-review"; router.push(target.pathname + target.search + target.hash); }
   }
   function saveProgress() {
     persistOverview();
@@ -211,7 +204,6 @@ export default function FiveSActionDetailPage({ actionId, initialSection, return
 
   return <PageContainer className="max-w-none">
     {feedback && <OpsFeedback {...feedback} />}
-    {completionTag && backTo && <BackLink href={backTo} label="Back to Red Tag" />}
     {canEditActionDueDate(action, actorWithAuthority) && <div className="flex flex-wrap items-center gap-3"><Button variant="outline" onClick={() => { setNewDueDate(action.dueDate); setDueDateReason(""); setDueDateError(""); setDueDateOpen(true); }}>Edit Due Date</Button>{action.dueDateOverride && <span className="text-xs text-muted-foreground">Approved override · Priority baseline {formatShortDate(action.priorityDueDate ?? action.dueDate)}</span>}</div>}
     {ownershipError && <p role="alert" className="text-sm text-destructive">{ownershipError}</p>}
     <FiveSPageHeader eyebrow="OPS Workspace / Actions" title={action.title} description={action.id} leading={<Button variant="ghost" size="icon-sm" onClick={() => router.push(backTo ?? "/actions")} aria-label={backTo ? "Back to Source" : "Back to Actions"}><ArrowLeft className="size-4" /></Button>} actions={action.status === "Completed" ? <Button variant="outline" onClick={() => router.push(`/actions/${encodeURIComponent(action.id)}/report`)}><FileText className="size-4" />View Report</Button> : undefined} toolbar={<div className="flex w-full min-w-0 items-center overflow-x-auto pb-0.5"><LifecycleTimeline action={action} /></div>} />
@@ -233,8 +225,7 @@ export default function FiveSActionDetailPage({ actionId, initialSection, return
         <div className={cn("grid gap-4", canStart && "pointer-events-none opacity-45")}><Field label="Action Taken / Responsible Notes *" error={overviewAttempted ? overviewErrors.observation : undefined}>{canEdit ? <Textarea ref={notesRef} className={cn("min-h-28", overviewAttempted && overviewErrors.observation && "border-destructive ring-2 ring-destructive/20")} value={observation} onChange={(event) => setObservation(event.target.value)} placeholder="Describe the corrective work completed..." aria-invalid={overviewAttempted && Boolean(overviewErrors.observation)} /> : <ReadOnlyValue value={action.resolutionObservation ?? action.actionTakenDescription ?? "No responsible-person notes submitted."} />}</Field><div className="grid gap-4 sm:grid-cols-2"><Field label="Corrective Action Category *" error={overviewAttempted ? overviewErrors.category : undefined}>{canEdit ? <Select searchLabel={"Corrective Action Category"} value={category} onValueChange={(value) => setCategory(value ?? "")}><SelectTrigger ref={categoryRef} className={cn("w-full", overviewAttempted && overviewErrors.category && "border-destructive ring-2 ring-destructive/20")} aria-invalid={overviewAttempted && Boolean(overviewErrors.category)}><SelectValue placeholder="Select category" /></SelectTrigger><SelectContent>{FIVE_S_CORRECTIVE_ACTION_CATEGORIES.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</SelectContent></Select> : <ReadOnlyValue value={action.correctiveActionCategory ?? "—"} />}</Field><Field label="Actual Cost Saving *" error={overviewAttempted ? overviewErrors.costSaving : undefined}>{canEdit ? <div className="relative"><IndianRupee className="absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" /><Input ref={costSavingRef} className={cn("pl-8", overviewAttempted && overviewErrors.costSaving && "border-destructive ring-2 ring-destructive/20")} type="number" min="0" step="0.01" value={costSaving} onChange={(event) => setCostSaving(event.target.value)} aria-invalid={overviewAttempted && Boolean(overviewErrors.costSaving)} /></div> : <ReadOnlyValue value={action.costSaving === undefined ? "Not recorded" : `₹${action.costSaving.toLocaleString("en-IN")}`} />}</Field></div></div>
       </Panel>
     </main><ActionSummary action={action} /></div>}
-    {completionTag && <div className="rounded-lg border p-3 text-sm"><p>Complete the required Action information, then return to Red Tag {completionTag.tagNumber} to submit. Your photo and completion comment are saved.</p><Button variant="ghost" onClick={() => router.push(backTo ?? `/5s/red/${encodeURIComponent(completionTag.id)}`)}>Cancel & Return to Red Tag</Button></div>}
-    {section === "overview" && (canEdit ? <PageFormActionBar primaryLabel={completionTag ? "Save & Return to Red Tag" : "Next: Evidence"} primaryAction={completionTag ? saveAndReturnToRedTag : () => navigateToStep("evidence")} secondaryLabel="Save Progress" secondaryAction={saveProgress} validationSummary={overviewAttempted && Object.values(overviewErrors).some(Boolean) ? "Complete the required Overview information before continuing." : undefined} /> : <div className="sticky bottom-3 z-40 mt-8 flex justify-end rounded-xl border bg-card/95 p-3 shadow-lg backdrop-blur"><Button onClick={() => navigateToStep("evidence")}>Next: Evidence</Button></div>)}
+    {section === "overview" && (canEdit ? <PageFormActionBar primaryLabel={"Next: Evidence"} primaryAction={() => navigateToStep("evidence")} secondaryLabel="Save Progress" secondaryAction={saveProgress} validationSummary={overviewAttempted && Object.values(overviewErrors).some(Boolean) ? "Complete the required Overview information before continuing." : undefined} /> : <div className="sticky bottom-3 z-40 mt-8 flex justify-end rounded-xl border bg-card/95 p-3 shadow-lg backdrop-blur"><Button onClick={() => navigateToStep("evidence")}>Next: Evidence</Button></div>)}
 
     {section === "evidence" && <div className="grid min-w-0 gap-5 xl:grid-cols-3"><EvidencePanel tone="before" title="Observation Evidence" description={beforeEvidenceDescription} evidence={sourceBeforeEvidence} onPreview={setPreview} /><OpsCameraCapture fileNamePrefix="action-progress" onCapture={(file) => addEvidenceFile(file, "progress")} trigger={(openCamera) => <EvidencePanel tone="progress" title="Progress Evidence" description="Optional evidence captured while corrective work is underway." evidence={action.progressEvidence ?? []} editable={canEdit && !canStart} onUpload={() => progressInputRef.current?.click()} onTakePhoto={openCamera} onPreview={setPreview} onRemove={(id) => removeActionProgressEvidence(action.id, id, actor)} />} /><div ref={completionSectionRef} tabIndex={-1} className={cn("rounded-xl outline-none", evidenceAttempted && !action.evidence.length && "ring-2 ring-destructive/30")}><OpsCameraCapture fileNamePrefix="action-completion" onCapture={(file) => addEvidenceFile(file, "completion")} trigger={(openCamera) => <EvidencePanel tone="completion" title="Completion Evidence" description="Evidence supporting completion and reviewer verification." evidence={action.evidence} editable={canEdit && !canStart} required error={evidenceAttempted && !action.evidence.length ? "Add completion evidence before continuing to Review." : undefined} onUpload={() => completionInputRef.current?.click()} onTakePhoto={openCamera} onPreview={setPreview} onRemove={(id) => removeActionEvidence(action.id, id, actor)} />} /></div><input ref={progressInputRef} hidden type="file" accept="image/*,.pdf,.doc,.docx" onChange={(event) => void addEvidence(event, "progress")} /><input ref={completionInputRef} hidden type="file" accept="image/*,.pdf,.doc,.docx" onChange={(event) => void addEvidence(event, "completion")} /></div>}
     {section === "evidence" && <PageFormActionBar primaryLabel="Next: Review" primaryAction={() => navigateToStep("review")} secondaryLabel="Back: Overview" secondaryAction={() => navigateToStep("overview")} validationSummary={evidenceAttempted && !action.evidence.length ? "Completion evidence is required before Review." : undefined} />}

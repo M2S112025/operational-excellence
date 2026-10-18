@@ -1,3 +1,3 @@
-import { redirect } from "next/navigation";
+import { RedTagOverviewPage } from "@/features/five-s/red-tag/red-tag-module";
 
-export default function Page() { redirect("/5s/red"); }
+export default function Page() { return <RedTagOverviewPage />; }

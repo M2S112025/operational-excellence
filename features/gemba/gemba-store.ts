@@ -1,5 +1,7 @@
 "use client";
 
+import { resetImportedRedTagData } from "@/lib/five-s/red-tag-reset";
+
 import { useSyncExternalStore } from "react";
 import { canMutateGembaWalk } from "./gemba-access";
 
@@ -152,6 +154,7 @@ const listeners = new Set<() => void>();
 
 function load() {
   if (loaded || typeof window === "undefined") return;
+  resetImportedRedTagData();
   loaded = true;
   try {
     const saved = window.localStorage.getItem(STORAGE_KEY);

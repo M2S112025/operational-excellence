@@ -2,12 +2,13 @@
 import { OpsPersonSelect } from "@/components/ops/ops-person-select";
 
 import { useState } from "react";
-import { Link2 } from "lucide-react";
+import { Info, Link2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { MyAction, MyActionEvidence, MyActionPriority, VisualManagementActionSource } from "@/features/five-s/types/my-actions";
 import { createAction, rollbackCreatedAction } from "@/lib/actions/action-store";
@@ -60,6 +61,7 @@ export function CreateLinkedActionDialog({ open, onOpenChange, context, onCreate
   const currentUser = useCurrentUser();
   const actionCategories = useActiveActionCategories();
   const actionPriorities = useActiveActionPriorities();
+  const [assignmentInfoOpen, setAssignmentInfoOpen] = useState(false);
   const [priority, setPriority] = useState<MyActionPriority>(context?.defaultPriority ?? "Medium");
   const [category, setCategory] = useState("");
   const [responsibleId, setResponsibleId] = useState(context?.defaultResponsibleId ?? "");
@@ -114,7 +116,7 @@ export function CreateLinkedActionDialog({ open, onOpenChange, context, onCreate
             {!context.hidePriority && <Field label="Priority *"><Select searchLabel={"Priority"} value={effectivePriority} onValueChange={(value) => setPriority((value ?? actionPriorities[0]?.id ?? "Medium") as MyActionPriority)}><SelectTrigger className="w-full"><SelectValue /></SelectTrigger><SelectContent>{actionPriorities.map((item) => <SelectItem key={item.id} value={item.id}>{item.label}</SelectItem>)}</SelectContent></Select></Field>}
             <Field label="Due Date" derived><Input type="date" value={dueDate} disabled /></Field>
             <Field label="Action Category *"><Select searchLabel={"Action Category"} value={category} onValueChange={(value) => setCategory(value ?? "")}><SelectTrigger className="w-full"><SelectValue placeholder="Select category" /></SelectTrigger><SelectContent>{actionCategories.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</SelectContent></Select></Field>
-            <Field label="Responsible *"><div className="grid gap-1.5"><div className="flex gap-2"><Button type="button" disabled={!currentMember} variant={currentMember && normalizeActionUserId(responsibleId) === normalizeActionUserId(currentMember.id) ? "default" : "outline"} onClick={() => { if (!currentMember) return; setResponsibleId(currentMember.id); setError(""); }}>Assign to me</Button><OpsPersonSelect label="Responsible person" people={zone?.members ?? []} value={responsibleId} onValueChange={value => { setResponsibleId(value); setError(""); }} /></div>{!currentMember && context && <p className="text-xs text-muted-foreground">Assign to me unavailable — you are not a member of {context.zone}.</p>}</div></Field>
+            <Field label="Responsible *"><div className="grid gap-1.5"><div className="flex gap-2"><Button type="button" disabled={!currentMember} variant={currentMember && normalizeActionUserId(responsibleId) === normalizeActionUserId(currentMember.id) ? "default" : "outline"} onClick={() => { if (!currentMember) return; setResponsibleId(currentMember.id); setError(""); }}>Assign to me</Button>{!currentMember && <Tooltip open={assignmentInfoOpen} onOpenChange={setAssignmentInfoOpen}><TooltipTrigger type="button" closeOnClick={false} onClick={() => setAssignmentInfoOpen(value => !value)} aria-label="Why Assign to me is unavailable" className="flex size-9 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><Info className="size-4" /></TooltipTrigger><TooltipContent>Assign to me unavailable — you are not a member of {context.zone}.</TooltipContent></Tooltip>}<OpsPersonSelect label="Responsible person" showEligibleCount={context?.sourceModule !== "redTag"} people={zone?.members ?? []} value={responsibleId} onValueChange={value => { setResponsibleId(value); setError(""); }} /></div></div></Field>
             <Field label="Zone Leader" derived><Input value={zone?.leader ?? "—"} disabled /></Field>
             <Field label="Assigned By" derived><Input value={currentUser.name} disabled /></Field>
           </div>
