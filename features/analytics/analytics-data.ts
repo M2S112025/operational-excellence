@@ -242,6 +242,7 @@ function actionModule(action: MyAction): OperationalModuleId | "redTag" | "visua
   if (action.sourceModule && action.sourceModule !== "manual") return action.sourceModule;
   if (action.source === "Continuous Improvement") return "continuousImprovement";
   if (action.source === "Red Flag") return "redFlag";
+  if (action.source === "Red Tag") return "redTag";
   if (action.source === "Visual Improvement") return "visualImprovement";
   if (action.source === "Gemba") return "gemba";
   if (action.source === "Audit" || action.source === "5S Audit") return "audit";
@@ -251,7 +252,7 @@ function actionModule(action: MyAction): OperationalModuleId | "redTag" | "visua
 function actionIsVisible(action: MyAction, access: Record<AccessCapabilityId, boolean>) {
   const moduleId = actionModule(action);
   if (moduleId === "manual") return true;
-  if (moduleId === "redTag") return access.redFlag;
+  if (moduleId === "redTag") return access.redTag;
   return access[moduleId];
 }
 
@@ -574,7 +575,7 @@ export function getActionMetrics(context: AnalyticsSelectorContext): AnalyticsVi
   const closureTimes = completed.flatMap((item) => item.completedAt ? [closureHours(item.createdAt, item.completedAt)] : []).filter(Boolean);
   const sourceData = groupCount(context.actions, (item) => {
     const source = actionModule(item);
-    return source === "continuousImprovement" ? "Continual Improvement" : source === "redFlag" ? "Red Flag" : source === "visualManagement" ? "Visual Management" : source === "visualImprovement" ? "Legacy Improvement" : source === "gemba" ? "Gemba" : source === "audit" ? "Audit" : "Manual";
+    return source === "continuousImprovement" ? "Continual Improvement" : source === "redFlag" ? "Red Flag" : source === "redTag" ? "Red Tag" : source === "visualManagement" ? "Visual Management" : source === "visualImprovement" ? "Legacy Improvement" : source === "gemba" ? "Gemba" : source === "audit" ? "Audit" : "Manual";
   });
   const statusData = groupCount(context.actions, (item) => item.status);
   const priorityData = groupCount(context.actions, (item) => item.priority);
