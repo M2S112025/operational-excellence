@@ -6,8 +6,8 @@ interface PageFormActionBarProps {
   submittingLabel?: string;
   primaryAction?: () => void;
   primaryType?: "button" | "submit";
-  secondaryLabel: string;
-  secondaryAction: () => void;
+  secondaryLabel?: string;
+  secondaryAction?: () => void;
   isSubmitting?: boolean;
   primaryDisabled?: boolean;
   validationSummary?: string;
@@ -19,7 +19,7 @@ export function PageFormActionBar({ primaryLabel, submittingLabel, primaryAction
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
       {validationSummary && <p role="status" className="text-sm font-medium text-destructive sm:mr-auto">{validationSummary}</p>}
       <div className="grid grid-cols-1 gap-2 sm:flex sm:items-center">
-        <Button type="button" variant="outline" disabled={isSubmitting} onClick={secondaryAction}>{secondaryLabel}</Button>
+        {secondaryLabel && secondaryAction && <Button type="button" variant="outline" disabled={isSubmitting} onClick={secondaryAction}>{secondaryLabel}</Button>}
         <Button type={primaryType} disabled={isSubmitting || primaryDisabled} onClick={primaryAction} className="w-full sm:w-auto">{isSubmitting ? submittingLabel ?? primaryLabel : primaryLabel}</Button>
       </div>
     </div>

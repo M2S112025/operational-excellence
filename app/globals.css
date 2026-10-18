@@ -449,6 +449,7 @@
    ========================================================= */
 
 :root {
+  --app-header-height: 4rem;
   --brand-accent: oklch(0.55 0.22 272);
   --brand-accent-light: oklch(0.72 0.16 272);
   --brand-accent-foreground: white;
