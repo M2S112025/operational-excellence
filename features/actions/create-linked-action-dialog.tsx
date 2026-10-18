@@ -103,7 +103,7 @@ export function CreateLinkedActionDialog({ open, onOpenChange, context, onCreate
         <DialogTitle>Create Action from {context?.source ?? "Source"}</DialogTitle>
         <DialogDescription>The source context and evidence are linked automatically. Add only the action ownership details.</DialogDescription>
       </DialogHeader>
-      {context && <div className="-mx-4 min-h-0 flex-1 overflow-y-auto px-4 sm:-mx-8 sm:px-8">
+      {context && <div className="-mx-4 min-h-0 flex-1 overflow-y-auto px-4 pb-6 sm:-mx-8 sm:px-8 sm:pb-8">
         <div className="grid gap-6">
           <div className="rounded-lg border bg-muted/25 p-4">
             <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Source context · read-only</p>

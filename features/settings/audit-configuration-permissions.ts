@@ -18,3 +18,9 @@ export function canManageAuditConfiguration(identity: Identity, user: AdminUser 
   // Do not infer membership of another organization from a permission or caller-supplied ID.
   return organizationId === DEMO_ORGANIZATION.id && hasPermission(user, "administration.manage_configuration");
 }
+
+/** Question management is reserved for Admin and platform Super Admin roles. */
+export function canManageAuditQuestions(identity: Identity, user: AdminUser | undefined, organizationId = DEMO_ORGANIZATION.id) {
+  return canManageAuditConfiguration(identity, user, organizationId)
+    && (isActivePlatformSuperAdmin(identity, user) || Boolean(user?.roles.includes("Admin")));
+}

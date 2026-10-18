@@ -19,7 +19,7 @@ export default function AuditConfigurationPage() {
   const canEditStandard = canEditStandardChecklist(currentUser);
   if (!allowed) return <PageContainer><FiveSPageHeader eyebrow="OPS Workspace" title="Audits" description="Plan, conduct, and review 5S workplace audits." /><AuditNav /><AuditConfigurationAccessDenied /></PageContainer>;
   const rows = [
-    { title: "5S Standard Checklist", description: `${STANDARD_QUESTIONS.length} questions · Standard audit requirements`, detail: canEditStandard ? "Edit checklist" : "Super Admin only", icon: ClipboardList, href: canEditStandard ? "/audits/settings/standard-checklist" : undefined },
+    { title: "5S Standard Checklist", description: `${STANDARD_QUESTIONS.length} questions · Standard audit requirements`, detail: canEditStandard ? "Edit checklist" : "Read only", icon: ClipboardList, href: "/audits/settings/standard-checklist" },
     { title: "Custom Questions", description: `${questions.filter((question) => question.active).length} active questions`, detail: "Manage", icon: ClipboardList, href: "/audits/settings/custom-questions" },
     { title: "Scoring Configuration", description: "Compliance scores for new Audits", detail: "Configure", icon: SlidersHorizontal, href: "/audits/settings/scoring" },
   ];

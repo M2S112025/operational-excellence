@@ -328,7 +328,7 @@ function FiveSAuditExecution({
               (question, questionIndex) => ({
                 ...question,
 
-                ...(!question.referenceImage && question.questionSource !== "custom" && isFiveSCategory(section.category) ? referenceFields(section.category, questionIndex) : {}),
+                ...(question.referenceImage === undefined && question.questionSource !== "custom" && isFiveSCategory(section.category) ? referenceFields(section.category, questionIndex) : {}),
 
                 evidence:
                   question.evidence ?? [],

@@ -1,0 +1,152 @@
+import React from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { FiveSSection } from "@/features/five-s/types/five-s";
+import type { CustomAuditQuestionInput } from "@/features/settings/custom-audit-questions/types";
+let values: Map<string, string>;
+beforeEach(() => {
+  vi.resetModules(); values = new Map();
+  vi.stubGlobal("window", { localStorage: { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => { values.set(key, value); } } });
+});
+afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
+async function setup(role: "auditor" | "superAdmin" | "responsible" = "auditor") {
+  const identity = await import("@/lib/current-user"); identity.setDemoRole(role);
+  const users = await import("@/features/five-s/administration/store");
+  const standard = await import("@/features/settings/standard-audit-checklist/store");
+  const custom = await import("@/features/settings/custom-audit-questions/store");
+  const checklist = await import("@/features/settings/custom-audit-questions/checklist");
+  const sections: FiveSSection[] = [{ category: "Sort", description: "Sort", score: 0, maxScore: 2, questions: [{ id: "stable-question", category: "Sort", question: standard.STANDARD_QUESTIONS[0].question, referenceImage: "/demo-5s/reference-images/sort/sort-01.webp", maxScore: 2, score: null, status: "Not Started", evidence: [], actionRequired: false }] }];
+  return { identity, users, standard, custom, checklist, sections };
+}
+const input = (organizationId = "abc-manufacturing"): CustomAuditQuestionInput => ({ organizationId, question: "Is the reference followed?", stage: "Sort", responseType: "Compliance", mandatory: true, requireEvidenceOnNonCompliance: true, instruction: "Compare with reference", referenceImage: "https://example.com/custom.jpg", active: true, order: 3 });
+const edit = { question: "Updated standard requirement?", instruction: "New guidance", referenceImage: "https://example.com/standard.jpg" };
+describe("organization-scoped question management", () => {
+  it.each(["auditor", "superAdmin"] as const)("allows %s to edit standard and create/edit/remove custom questions with image URLs", async role => {
+    const { standard, custom, checklist, sections } = await setup(role);
+    standard.updateStandardAuditQuestion("Sort:0", edit);
+    expect(standard.applyStandardQuestionEdit(sections[0].questions[0])).toMatchObject({ id: "stable-question", ...{ question: edit.question, description: edit.instruction, referenceImage: edit.referenceImage }, maxScore: 2 });
+    const added = custom.createCustomAuditQuestion(input())!;
+    expect(added.referenceImage).toBe("https://example.com/custom.jpg");
+    expect(custom.updateCustomAuditQuestion(added.id, { ...input(), referenceImage: "https://example.com/replaced.jpg" })?.referenceImage).toBe("https://example.com/replaced.jpg");
+    expect(custom.updateCustomAuditQuestion(added.id, { ...input(), referenceImage: "" })?.referenceImage).toBeUndefined();
+    const snapshot = checklist.createAuditChecklistSnapshot(sections);
+    expect(snapshot[0].questions.some(q => q.customQuestionId === added.id)).toBe(true);
+    expect(custom.deleteCustomAuditQuestion(added.id)).toBe(true);
+    expect(custom.getCustomAuditQuestions().find(q => q.id === added.id)?.active).toBe(false);
+    expect(checklist.createAuditChecklistSnapshot(sections)[0].questions.some(q => q.customQuestionId === added.id)).toBe(false);
+    expect(snapshot[0].questions.some(q => q.customQuestionId === added.id)).toBe(true);
+  });
+  it("isolates standard and custom configuration between organizations and denies Admin cross-organization mutation", async () => {
+    const { standard, custom, checklist, sections, identity } = await setup("superAdmin");
+    standard.updateStandardAuditQuestion("Sort:0", edit, "xyz-components");
+    const added = custom.createCustomAuditQuestion(input("xyz-components"))!;
+    expect(standard.applyStandardQuestionEdit(sections[0].questions[0]).question).toBe(sections[0].questions[0].question);
+    expect(checklist.createAuditChecklistSnapshot(sections)[0].questions.some(q => q.customQuestionId === added.id)).toBe(false);
+    const other = checklist.createAuditChecklistSnapshot(sections, undefined, "xyz-components");
+    expect(other[0].questions[0].question).toBe(edit.question);
+    expect(other[0].questions.some(q => q.customQuestionId === added.id)).toBe(true);
+    identity.setDemoRole("auditor");
+    expect(() => standard.updateStandardAuditQuestion("Sort:0", edit, "xyz-components")).toThrow("organization");
+    expect(() => custom.deleteCustomAuditQuestion(added.id)).toThrow("configuration permission");
+    expect(() => custom.updateCustomAuditQuestion(added.id, input("xyz-components"))).toThrow();
+    expect(() => custom.createCustomAuditQuestion(input("xyz-components"))).toThrow();
+    identity.setDemoRole("superAdmin");
+    expect(() => standard.updateStandardAuditQuestion("Sort:0", edit, "unknown")).toThrow();
+  });
+  it.each(["Auditor", "Zone Leader", "Zone Member", "Reviewer", "Viewer"] as const)("denies %s even with an explicit configuration permission", async role => {
+    const { standard, custom, identity, users } = await setup();
+    const actor = users.getAdminUser(identity.getCurrentDemoUser().id)!;
+    actor.roles = [role]; actor.permissions = ["administration.manage_configuration"];
+    expect(() => standard.updateStandardAuditQuestion("Sort:0", edit)).toThrow();
+    expect(() => custom.createCustomAuditQuestion(input())).toThrow();
+    expect(() => custom.updateCustomAuditQuestion(custom.CUSTOM_AUDIT_QUESTION_SEEDS[0].id, input())).toThrow();
+    expect(() => custom.deleteCustomAuditQuestion(custom.CUSTOM_AUDIT_QUESTION_SEEDS[0].id)).toThrow();
+    expect(() => custom.moveCustomAuditQuestion(custom.CUSTOM_AUDIT_QUESTION_SEEDS[0].id, 1)).toThrow();
+    expect(() => custom.setCustomAuditQuestionActive(custom.CUSTOM_AUDIT_QUESTION_SEEDS[0].id, false)).toThrow();
+  });
+  it.each(["javascript:alert(1)", "data:image/png;base64,a", "http://example.com/a.png", "ftp://example.com/a.png", "not a URL", "https://user:secret@example.com/a.png", "//example.com/a.png"])("rejects unsafe or malformed reference %s at both mutation boundaries", async url => {
+    const { standard, custom } = await setup();
+    expect(() => standard.updateStandardAuditQuestion("Sort:0", { ...edit, referenceImage: url })).toThrow(/HTTPS|JPEG/);
+    expect(() => custom.createCustomAuditQuestion({ ...input(), referenceImage: url })).toThrow(/HTTPS|JPEG/);
+    const added = custom.createCustomAuditQuestion(input())!;
+    expect(() => custom.updateCustomAuditQuestion(added.id, { ...input(), referenceImage: url })).toThrow(/HTTPS|JPEG/);
+    expect(custom.getCustomAuditQuestions().find(q => q.id === added.id)?.referenceImage).toBe(input().referenceImage);
+  });
+  it("preserves legacy configuration, reloads organization-scoped changes, and persists explicit image removal", async () => {
+    values.set("ops-standard-audit-checklist-v1", JSON.stringify({ "Sort:0": { question: "Legacy edit", instruction: "Legacy guidance", updatedBy: "old", updatedAt: "old" } }));
+    const { standard, sections } = await setup();
+    expect(standard.applyStandardQuestionEdit(sections[0].questions[0]).question).toBe("Legacy edit");
+    standard.updateStandardAuditQuestion("Sort:1", edit);
+    standard.updateStandardAuditQuestion("Sort:0", { ...edit, referenceImage: "" });
+    vi.resetModules();
+    const reloaded = await import("@/features/settings/standard-audit-checklist/store");
+    expect(reloaded.getStandardQuestionEdits()["Sort:1"].referenceImage).toBe(edit.referenceImage);
+    expect(reloaded.applyStandardQuestionEdit(sections[0].questions[0]).referenceImage).toBe("");
+    expect(reloaded.getStandardQuestionEdits("xyz-components")).toEqual({});
+  });
+  it("preserves completed answers, evidence and scoring snapshots while new audits receive current references", async () => {
+    const { standard, custom, checklist, sections } = await setup();
+    const added = custom.createCustomAuditQuestion(input())!;
+    const earlier = checklist.createAuditChecklistSnapshot(sections);
+    earlier[0].questions[0] = { ...earlier[0].questions[0], status: "Pass", score: 2, complianceResponse: 2, evidence: [{ id: "e", name: "Evidence", type: "image", size: 32, dataUrl: "data:image/jpeg;base64,old", uploadedAt: "old", uploadedBy: "Auditor" }] };
+    const before = JSON.stringify(earlier);
+    values.set("manufacturing-qms-five-s-audits-v1", JSON.stringify([{ status: "Completed", sections: earlier }]));
+    const raw = values.get("manufacturing-qms-five-s-audits-v1");
+    standard.updateStandardAuditQuestion("Sort:0", edit);
+    custom.updateCustomAuditQuestion(added.id, { ...input(), referenceImage: "https://example.com/latest.jpg", question: "Changed later" });
+    const later = checklist.createAuditChecklistSnapshot(sections);
+    expect(later[0].questions[0]).toMatchObject({ referenceImage: edit.referenceImage, maxScore: 2, score: null, status: "Not Started" });
+    expect(later[0].questions.find(q => q.customQuestionId === added.id)?.referenceImage).toBe("https://example.com/latest.jpg");
+    expect(JSON.stringify(earlier)).toBe(before); expect(values.get("manufacturing-qms-five-s-audits-v1")).toBe(raw);
+    expect(checklist.isAuditQuestionComplete(later[0].questions[0], { score: 0, complianceResponse: 0 })).toBe(false);
+    expect(checklist.isAuditQuestionComplete(later[0].questions[0], { score: 0, complianceResponse: 0, observation: "Issue", actionId: "A", evidence: [{}] })).toBe(true);
+  });
+  it("persists custom image replacements and removals after reload and rejects inactive administrators", async () => {
+    const { custom, standard, identity, users } = await setup();
+    const added = custom.createCustomAuditQuestion(input())!;
+    custom.updateCustomAuditQuestion(added.id, { ...input(), referenceImage: "https://example.com/replaced.jpg" });
+    vi.resetModules();
+    const reloaded = await import("@/features/settings/custom-audit-questions/store");
+    expect(reloaded.getCustomAuditQuestions().find(q => q.id === added.id)?.referenceImage).toBe("https://example.com/replaced.jpg");
+    reloaded.updateCustomAuditQuestion(added.id, { ...input(), referenceImage: "" });
+    vi.resetModules();
+    const removed = await import("@/features/settings/custom-audit-questions/store");
+    expect(removed.getCustomAuditQuestions().find(q => q.id === added.id)?.referenceImage).toBeUndefined();
+    users.getAdminUser(identity.getCurrentDemoUser().id)!.status = "Inactive";
+    expect(() => standard.updateStandardAuditQuestion("Sort:0", edit)).toThrow();
+    expect(() => custom.createCustomAuditQuestion(input())).toThrow();
+  });
+  it("saves uploaded/captured raster photos in both question models and preserves prior audit images", async () => {
+    const { standard, custom, checklist, sections } = await setup();
+    const photo = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aGl0AAAAASUVORK5CYII=";
+    standard.updateStandardAuditQuestion("Sort:0", { ...edit, referenceImage: photo });
+    const added = custom.createCustomAuditQuestion({ ...input(), referenceImage: photo })!;
+    const earlier = checklist.createAuditChecklistSnapshot(sections);
+    expect(earlier[0].questions[0].referenceImage).toBe(photo);
+    expect(earlier[0].questions.find(q => q.customQuestionId === added.id)?.referenceImage).toBe(photo);
+    standard.updateStandardAuditQuestion("Sort:0", { ...edit, referenceImage: "" });
+    custom.updateCustomAuditQuestion(added.id, { ...input(), referenceImage: "" });
+    expect(earlier[0].questions[0].referenceImage).toBe(photo);
+    expect(earlier[0].questions.find(q => q.customQuestionId === added.id)?.referenceImage).toBe(photo);
+    vi.resetModules();
+    const reloaded = await import("@/features/settings/standard-audit-checklist/store");
+    expect(reloaded.getStandardQuestionEdits()["Sort:0"].referenceImage).toBe("");
+  });
+  it("offers Upload Photo and Take Photo while keeping large inline image data out of the URL input", async () => {
+    const { AuditReferenceImageEditor, validateAuditReferenceImage } = await import("@/features/settings/audit-reference-image");
+    const photo = "data:image/jpeg;base64,/9j/AA==";
+    const html = renderToStaticMarkup(React.createElement(AuditReferenceImageEditor, { id: "reference", value: photo, onChange: () => {} }));
+    expect(html).toContain("Upload Photo"); expect(html).toContain("Take Photo");
+    expect(html).toContain("Photo attached"); expect(html).toContain('src="'+photo+'"');
+    expect(html).not.toContain('value="'+photo+'"');
+    for (const invalid of ["data:image/svg+xml;base64,PHN2Zz4=", "data:text/html;base64,PHN2Zz4=", "data:image/png;base64,/9j/AA=="]) expect(() => validateAuditReferenceImage(invalid)).toThrow();
+  });
+  it("renders HTTPS previews, removal controls and visible validation without rendering unsafe images", async () => {
+    const { AuditReferenceImageEditor } = await import("@/features/settings/audit-reference-image");
+    const render = (value: string) => renderToStaticMarkup(React.createElement(AuditReferenceImageEditor, { id: "reference", value, onChange: () => {} }));
+    expect(render("https://example.com/a.jpg")).toContain('src="https://example.com/a.jpg"');
+    expect(render("https://example.com/a.jpg")).toContain("Remove");
+    const unsafe = render("javascript:alert(1)"); expect(unsafe).toContain('aria-invalid="true"'); expect(unsafe).not.toContain("<img");
+    expect(render("")).not.toContain("<img");
+  });
+});

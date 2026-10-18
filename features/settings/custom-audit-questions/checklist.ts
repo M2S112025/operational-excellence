@@ -1,3 +1,4 @@
+import { DEMO_ORGANIZATION } from "@/lib/module-entitlements";
 import { questionComplianceResponse, hasConsistentComplianceScore, type AuditScoringValues, type ComplianceResponse } from "@/lib/five-s/scoring-policy";
 import type { FiveSAuditStage, FiveSQuestion, FiveSSection } from "@/features/five-s/types/five-s";
 import { applyStandardQuestionEdit } from "../standard-audit-checklist/store";
@@ -30,16 +31,17 @@ function toSnapshot(question: CustomAuditQuestion): FiveSQuestion {
 
 export function createAuditChecklistSnapshot(
   standardSections: FiveSSection[],
-  customQuestions: CustomAuditQuestion[] = getActiveCustomAuditQuestions(),
+  customQuestions: CustomAuditQuestion[] | undefined = undefined,
+  organizationId = DEMO_ORGANIZATION.id,
 ) {
-  const active = customQuestions.filter((question) => question.active);
+  const active = (customQuestions ?? getActiveCustomAuditQuestions(organizationId)).filter((question) => question.active && (question.organizationId ?? DEMO_ORGANIZATION.id) === organizationId);
   const sections = standardSections.map((section) => {
     const custom = active
       .filter((question) => question.stage === section.category)
       .sort((a, b) => a.order - b.order)
       .map(toSnapshot);
     const standard = section.questions.map((question) => ({
-      ...applyStandardQuestionEdit(question),
+      ...applyStandardQuestionEdit(question, organizationId),
       evidence: [...(question.evidence ?? [])],
       questionSource: question.questionSource ?? "standard" as const,
       responseType: question.responseType ?? "Compliance" as const,
