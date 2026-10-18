@@ -6,8 +6,8 @@ import type { MyActionEvidence } from "@/features/five-s/types/my-actions";
 import { getGembaPhoto } from "@/lib/gemba/gemba-photo-storage";
 
 /** Resolves source-owned evidence without copying its binary into the Action. */
-export function useActionEvidenceUrl(evidence: MyActionEvidence | null | undefined) {
-  const directUrl = evidence?.url;
+export function useActionEvidenceUrl(evidence: Pick<MyActionEvidence, "url" | "storageKey"> | null | undefined) {
+  const directUrl = evidence?.url || undefined;
   const storageKey = evidence?.storageKey;
   const [resolvedUrl, setResolvedUrl] = useState<{ key: string; url: string }>();
 

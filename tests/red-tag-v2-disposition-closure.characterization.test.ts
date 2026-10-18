@@ -24,7 +24,7 @@ async function setup() {
 afterEach(() => { vi.resetModules(); vi.unstubAllGlobals(); });
 
 const creator = DEMO_USERS.auditor;
-const reviewer = DEMO_USERS.leader;
+const reviewer = DEMO_USERS.auditor;
 const evidence = [{ id: "RTE-3C", name: "complete.jpg", url: "data:image/jpeg;base64,complete", uploadedBy: reviewer.name, uploadedAt: "2026-09-22T08:00:00.000Z" }];
 
 function create(store: Awaited<ReturnType<typeof setup>>, decision: "keep" | "relocate" | "return" | "repair" | "sell_reuse" | "scrap" | "further_evaluation") {
@@ -54,7 +54,8 @@ describe("Red Tag V2 executable disposition", () => {
     expect(store.setRedTagHandlingMode(tag.id, "direct", reviewer)).toMatchObject({ handlingMode: "direct" });
     expect(store.clearRedTagHandlingMode(tag.id, reviewer)).toMatchObject({ handlingMode: undefined });
     expect(store.setRedTagHandlingMode(tag.id, "linked_action", reviewer)).toMatchObject({ handlingMode: "linked_action" });
-    store.linkRedTagAction(tag.id, "ACT-LOCKED", reviewer);
+    const locked = (await import("@/lib/actions/action-store")).createAction({ ...completedAction("unused", "Assigned"), sourceId: tag.id });
+    expect(store.linkRedTagAction(tag.id, locked.id, reviewer)).toBeDefined();
     expect(store.clearRedTagHandlingMode(tag.id, reviewer)).toBeUndefined();
   });
 
@@ -62,9 +63,10 @@ describe("Red Tag V2 executable disposition", () => {
     const store = await setup();
     const tag = create(store, "repair");
     store.setRedTagHandlingMode(tag.id, "linked_action", reviewer);
-    store.linkRedTagAction(tag.id, "ACT-EXECUTION", reviewer);
+    const linked = (await import("@/lib/actions/action-store")).createAction({ ...completedAction("unused", "Completed"), sourceId: tag.id });
+    expect(store.linkRedTagAction(tag.id, linked.id, reviewer)).toBeDefined();
     const completed = {
-      ...completedAction("ACT-EXECUTION", "Completed"),
+      ...linked,
       evidence: [{ id: "ACTION-AFTER", name: "repair-complete.jpg", type: "image" as const, url: "data:image/jpeg;base64,repaired", uploadedAt: "2026-09-30T08:00:00.000Z", uploadedBy: reviewer.name }],
     };
 
@@ -87,7 +89,7 @@ describe("Red Tag V2 executable disposition", () => {
     expect(moduleSource).toContain("if (!linked) return false");
     expect(moduleSource).toContain('<ReadOnly label="Responsible Person" value={responsible?.name ?? user.name} />');
     expect(moduleSource).toContain("goBackToHandlingChoice");
-    expect(moduleSource).toContain('if (tag.handlingMode === "linked_action" && action?.status !== "Completed") return null');
+    expect(moduleSource).toContain('if (tag.handlingMode === "linked_action" && (incompleteLinkedAction || !actions.length)) return null');
     expect(actionConfig).toContain('if (moduleId === "redTag") return `/5s/red/${encodeURIComponent(sourceId)}`');
   });
 
@@ -131,12 +133,18 @@ describe("Red Tag V2 executable disposition", () => {
     const store = await setup();
     const tag = create(store, "relocate");
     store.startRedTagDisposition(tag.id, { responsiblePersonId: reviewer.id, responsiblePersonName: reviewer.name, targetDate: "2026-09-30", executionNotes: "Move to approved location" }, reviewer);
-    expect(store.linkRedTagAction(tag.id, "ACT-3C-1", reviewer)).toBeTruthy();
-    expect(store.linkRedTagAction(tag.id, "ACT-DUPLICATE", reviewer)).toBeUndefined();
+    const actions = await import("@/lib/actions/action-store");
+    const linked = actions.createAction({ ...completedAction("unused", "Assigned"), sourceId: tag.id, responsiblePersonId: "USR-RITIKA", assignedTo: "Ritika", createdByUserId: reviewer.id, auditor: reviewer.name });
+    expect(store.linkRedTagAction(tag.id, linked.id, reviewer)).toBeTruthy();
+    expect(store.linkRedTagAction(tag.id, linked.id, reviewer)).toBeUndefined();
     expect(store.completeRedTagDisposition(tag.id, evidence, reviewer)).toBeUndefined();
-    store.reconcileRedTagActions([completedAction("ACT-3C-1", "Completed")]);
+    const owner = { id: "USR-RITIKA", name: "Ritika" };
+    actions.addActionEvidence(linked.id, { ...evidence[0], type: "image" }, owner);
+    actions.submitActionForReview(linked.id, owner, { observation: "Relocated fixture", correctiveActionCategory: "Other", costSaving: 0 });
+    expect(actions.closeReviewedAction(linked.id, reviewer)).toBeDefined();
+    store.reconcileRedTagActions(actions.getActions());
     expect(store.getRedTag(tag.id)?.status).toBe("Disposition In Progress");
-    expect(store.completeRedTagDisposition(tag.id, { evidence, completionNotes: "Relocated as approved", responsibleConfirmed: true }, reviewer)).toMatchObject({ status: "Closed", actionId: "ACT-3C-1", syncedActionStatus: "Completed" });
+    expect(store.completeRedTagDisposition(tag.id, { evidence, completionNotes: "Relocated as approved", responsibleConfirmed: true }, reviewer)).toMatchObject({ status: "Closed", actionId: linked.id, syncedActionStatus: "Completed" });
 
     const direct = create(store, "return");
     store.startRedTagDisposition(direct.id, { responsiblePersonId: reviewer.id, responsiblePersonName: reviewer.name, targetDate: "2026-09-30", executionNotes: "Return to supplier" }, reviewer);
@@ -149,8 +157,9 @@ describe("Red Tag V2 special decisions", () => {
   it("closes Keep directly after confirmation without disposition, verification, evidence, or Action", async () => {
     const store = await setup();
     const tag = create(store, "keep");
+    (await import("@/lib/current-user")).setDemoRole("auditor");
     expect(store.startRedTagDisposition(tag.id, { responsiblePersonId: reviewer.id, responsiblePersonName: reviewer.name, targetDate: "2026-09-30" }, reviewer)).toBeUndefined();
-    const closed = store.confirmRedTagKeep(tag.id, "", reviewer)!;
+    const closed = store.confirmRedTagKeep(tag.id, "Retain the calibrated fixture", reviewer)!;
     expect(closed.status).toBe("Closed");
     expect(closed.actionId).toBeUndefined();
     expect(closed.dispositionDetails).toBeUndefined();

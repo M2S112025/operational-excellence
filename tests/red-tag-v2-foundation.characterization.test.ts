@@ -39,7 +39,7 @@ const evidence = [{ id: "RTE-V2-1", name: "after.jpg", url: "data:image/jpeg;bas
 function createTag(store: Awaited<ReturnType<typeof redTagStore>>["store"]) {
   return store.createRedTag({
     plant: creator.plant,
-    zone: "Zone A",
+    zone: "Zone B",
     section: "Production",
     department: "Production",
     category: "Equipment",
@@ -90,6 +90,7 @@ describe("Red Tag V2 lifecycle commands", () => {
 
     expect(store.submitRedTagForReview(tag.id, { reviewerId: reviewer.id, reviewerName: reviewer.name, comments: "Review requested" }, creator)).toMatchObject({ status: "Under Review", review: { reviewerId: reviewer.id, reviewerName: reviewer.name } });
     expect(store.recordRedTagDecision(tag.id, { decision: "scrap", comments: "Beyond repair" }, creator)).toBeUndefined();
+    (await import("@/lib/current-user")).setDemoRole("leader");
     expect(store.recordRedTagDecision(tag.id, { decision: "scrap", comments: "Beyond repair" }, reviewer)).toMatchObject({ status: "Decision Made", decisionRecord: { type: "scrap", decidedByUserId: reviewer.id } });
     expect(store.startRedTagDisposition(tag.id, { responsiblePersonId: "", responsiblePersonName: "", targetDate: "" }, reviewer)).toBeUndefined();
     expect(store.startRedTagDisposition(tag.id, { responsiblePersonId: reviewer.id, responsiblePersonName: reviewer.name, targetDate: "2026-09-30", executionNotes: "Move to approved scrap holding" }, reviewer)).toMatchObject({ status: "Disposition In Progress", dispositionDetails: { decision: "scrap", responsiblePersonId: reviewer.id } });

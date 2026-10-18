@@ -61,9 +61,10 @@ describe("OPS UX consistency layer", () => {
       "features/five-s/continuous-improvement/components.tsx",
       "features/visual-management/visual-management-components.tsx",
       "features/actions/action-center-page.tsx",
-      "features/five-s/action-detail-page.tsx",
       "features/reports/reports-page.tsx",
     ]) expect(source(path)).toContain("OpsTabBar");
+    expect(source("features/five-s/action-detail-page.tsx")).toContain("ActionDetailAccordion");
+    expect(source("features/five-s/action-detail-page.tsx")).toContain("aria-expanded={open}");
     expect(source("features/ops-dashboard/ops-dashboard-page.tsx")).toContain("OpsTabBar");
     expect(source("features/red-flag/red-flag-components.tsx")).toContain("OpsTimeline");
     expect(source("features/five-s/continuous-improvement/components.tsx")).toContain("OpsTimeline");

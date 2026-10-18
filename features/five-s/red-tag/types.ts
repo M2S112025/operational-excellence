@@ -17,6 +17,10 @@ export const RED_TAG_SECTIONS = [
   "Production", "Assembly", "Quality", "Maintenance", "Stores", "Warehouse", "Utilities", "Office", "Other",
 ] as const;
 
+export function getRedTagReasonCategoryDisplay(category: RedTagReasonCategory) {
+  return category === "Organization" ? "Arrangement" : category;
+}
+
 export const RED_TAG_CATEGORIES = ["Equipment", "Tools", "Materials", "Furniture", "Documents", "Other"] as const;
 
 export const RED_TAG_DECISIONS = ["keep", "relocate", "return", "repair", "sell_reuse", "scrap", "further_evaluation"] as const;
@@ -54,6 +58,7 @@ export interface RedTagEvidence {
   id: string;
   name: string;
   url: string;
+  storageKey?: string;
   mimeType?: string;
   uploadedBy: string;
   uploadedAt: string;
@@ -148,6 +153,8 @@ export interface RedTag {
   createdAt: string;
   imageUrl?: string;
   actionId?: string;
+  /** Canonical Action IDs only; legacy actionId remains the original first link. */
+  actionIds?: string[];
   syncedActionStatus?: import("@/features/five-s/types/my-actions").MyActionStatus;
   disposition?: RedTagDisposition;
   dispositionNote?: string;

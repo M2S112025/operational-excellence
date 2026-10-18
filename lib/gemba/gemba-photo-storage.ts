@@ -1,7 +1,8 @@
 "use client";
 
 /**
- * Small IndexedDB-backed store for Gemba photo evidence binary.
+ * Shared IndexedDB-backed binary storage, originally introduced for Gemba photos.
+ * Action evidence reuses this store with action-specific key prefixes.
  *
  * Structured Gemba data (walks/observations) stays in localStorage via
  * features/gemba/gemba-store.ts — only the photo Blob itself lives here, so
@@ -49,7 +50,8 @@ function withStore<T>(mode: IDBTransactionMode, run: (store: IDBObjectStore) => 
         const transaction = db.transaction(STORE_NAME, mode);
         const store = transaction.objectStore(STORE_NAME);
         const request = run(store);
-        request.onsuccess = () => resolve(request.result);
+        transaction.oncomplete = () => resolve(request.result);
+        transaction.onabort = () => reject(transaction.error ?? new Error("Local asset storage transaction failed."));
         request.onerror = () => reject(request.error ?? new Error("Local photo storage operation failed."));
       })
   );

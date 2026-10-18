@@ -73,8 +73,9 @@ describe("Gemba dialog layout polish — Create Action from Gemba", () => {
     expect(createActionDialogSource).toContain("Source context · read-only");
   });
 
-  it("keeps derived/read-only fields (Due Date, Zone Leader, Assigned By) using the existing disabled Input treatment, not new logic", () => {
-    expect(createActionDialogSource).toMatch(/label="Due Date" derived>*<Input type="date" value=\{dueDate\} disabled/);
+  it("allows an editable validated due date while keeping Zone Leader and Assigned By derived", () => {
+    expect(createActionDialogSource).toContain('aria-label="Due Date" type="date" min={toLocalInputDate(new Date())}');
+    expect(createActionDialogSource).toContain('validateActionDueDate(dueDate)');
     expect(createActionDialogSource).toMatch(/label="Zone Leader" derived>*<Input value=\{zone\?\.leader/);
     expect(createActionDialogSource).toMatch(/label="Assigned By" derived>*<Input value=\{currentUser\.name\} disabled/);
   });

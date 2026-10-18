@@ -1,4 +1,4 @@
-import { MAX_SOURCE_IMAGE_BYTES, optimizeEvidenceImage } from "./evidence-images";
+import { MAX_SOURCE_IMAGE_BYTES, optimizeEvidenceImage, optimizeEvidenceImageToBlob } from "./evidence-images";
 
 const DOCUMENT_TYPES = new Set(["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]);
 
@@ -16,4 +16,12 @@ export async function readEvidenceFile(file: File): Promise<{ dataUrl: string; s
     reader.readAsDataURL(file);
   });
   return { dataUrl, size: file.size };
+}
+
+/** Action-owned evidence keeps binary outside the localStorage-backed record. */
+export async function readEvidenceFileBlob(file: File): Promise<Blob> {
+  if (file.type.startsWith("image/")) return (await optimizeEvidenceImageToBlob(file)).blob;
+  if (!DOCUMENT_TYPES.has(file.type) && !(file.type === "" && /\.(pdf|doc|docx)$/i.test(file.name))) throw new Error("Choose an image, PDF or Word document.");
+  if (file.size > MAX_SOURCE_IMAGE_BYTES) throw new Error("File is too large. Please choose a file smaller than 8 MB.");
+  return file;
 }

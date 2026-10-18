@@ -62,8 +62,11 @@ describe("canonical linked Action assignment", () => {
     await actionStore();
     const { findEligibleActionMember, createCanonicalLinkedAction } = await import("@/features/actions/create-linked-action-dialog");
     expect(findEligibleActionMember([{ id: "USR-SIVA-KUMAR", name: "Siva Kumar" }], " usr-siva-kumar ")).toMatchObject({ name: "Siva Kumar" });
+    const identity = await import("@/lib/current-user"); identity.setDemoRole("responsible");
+    const tags = await import("@/features/five-s/red-tag/store");
+    const tag = tags.createRedTagV2({ plant: "Egmore Plant", zone: "Zone B", section: "Production", department: "Production", itemName: "Fixture", reason: "Unused", remarks: "Unused", imageUrl: "data:image/png;base64,before", createdById: identity.DEMO_USERS.responsible.id, createdByName: identity.DEMO_USERS.responsible.name }, identity.DEMO_USERS.responsible)!;
     const action = createCanonicalLinkedAction({
-      source: "Red Tag", sourceModule: "redTag", sourceId: "RT-EGM-ZB-005", sourceObservation: "Decision · Relocate · Reason · Unused old fixture",
+      source: "Red Tag", sourceModule: "redTag", sourceId: tag.id, sourceObservation: "Decision · Relocate · Reason · Unused old fixture",
       title: "Relocate fixture", description: "Unused old fixture", plant: "Egmore Plant", zone: "Zone B", location: "Production", evidence: [], sourceEvidenceCount: 1,
     }, " usr-siva-kumar ", { id: "USR-SIVA-KUMAR", name: "Siva Kumar" }, "Organization & Layout");
     expect(action).toMatchObject({ responsiblePersonId: "USR-SIVA-KUMAR", responsiblePersonName: "Siva Kumar", assignedByUserId: "USR-SIVA-KUMAR", assignedByName: "Siva Kumar", zoneLeaderId: "USR-RUMESH", zoneLeaderName: "Rumesh" });
