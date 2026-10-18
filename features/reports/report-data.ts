@@ -136,7 +136,7 @@ export function buildRedTagReportData(redTags: RedTag[]): ReportLibraryItem[] {
     reference: tag.tagNumber,
     plant: tag.plant,
     zone: tag.zone,
-    generatedBy: tag.workflowVersion === "5s-v2" ? tag.reviewedBy ?? tag.createdByName : tag.closure?.verifiedByName ?? tag.createdByName,
+    generatedBy: tag.closure?.verifiedByName ?? tag.createdByName,
     date: tag.closedAt ?? tag.closure?.verifiedAt ?? tag.createdAt,
     status: tag.status === "Closed" ? "Final" : "Draft",
     previewHref: `/5s/red/${encodeURIComponent(tag.id)}/report`,

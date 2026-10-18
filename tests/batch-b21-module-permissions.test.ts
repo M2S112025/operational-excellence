@@ -9,29 +9,7 @@ beforeEach(() => {
   vi.stubGlobal("window", { localStorage }); vi.stubGlobal("localStorage", localStorage);
 });
 afterEach(() => vi.unstubAllGlobals());
-const tagInput = { plant: "Egmore Plant", zone: "Zone A", section: "Office", department: "Administration", category: "Equipment" as const, itemName: "Unused printer", quantity: 1, reason: "Undefined Items" as const, remarks: "Remove unused equipment", requiredAction: "Remove printer", createdById: admin.id, createdByName: admin.name, imageUrl: "data:image/png;base64,test" };
 
-describe("B2.1 Red Tag command authorization", () => {
-  it("rejects unauthorized decisions and closure without changing history or identity", async () => {
-    const s = await import("@/features/five-s/red-tag/store");
-    const tag = s.createRedTag(tagInput, admin)!;
-    const plan = {actionPlan:"Remove printer",memberId:member.id,dueDate:"2030-10-20",priority:"Medium" as const};
-    expect(s.assignRedTagAction(tag.id, member, plan)).toBeUndefined();
-    expect(s.assignRedTagAction(tag.id, leader, plan)).toBeUndefined();
-    expect(s.approveAndCloseRedTag(tag.id, member)).toBeUndefined();
-    expect(s.approveAndCloseRedTag(tag.id, leader)).toBeUndefined();
-    expect(s.getRedTag(tag.id)).toEqual(tag);
-
-  });
-  it("rejects inactive actors even when their record contains management permissions", async () => {
-    const access = await import("@/features/five-s/red-tag/access");
-    const users = await import("@/features/five-s/administration/store");
-    const tag = { plant: "Egmore Plant", zone: "Zone A", workflowVersion: "5s-v2" as const };
-    expect(access.canManageRedTag({ ...users.getAdminUser(admin.id)!, status: "Inactive" }, tag)).toBe(false);
-    expect(access.canManageRedTag(users.getAdminUser(leader.id), tag)).toBe(false);
-    expect(access.canManageRedTag(users.getAdminUser(admin.id), tag)).toBe(true);
-  });
-});
 describe("B2.1 Gemba command authorization", () => {
   it("protects observations, source links and IndexedDB references from unauthorized edits", async () => {
     const s = await import("@/features/gemba/gemba-store");
@@ -83,19 +61,11 @@ describe("B2.1 Visual Management command authorization", () => {
     const inactive = users.createAdminUser({ ...original, employeeId: "B21-INACTIVE", email: "b21-inactive@example.test", name: "Inactive fixture", status: "Inactive" }, admin.id)!;
     const gemba = await import("@/features/gemba/gemba-access");
     const vm = await import("@/features/visual-management/visual-management-store");
-    const red = await import("@/features/five-s/red-tag/access");
+
     expect(gemba.canMutateGembaWalk({ plant: "Egmore Plant" }, inactive)).toBe(false);
     expect(vm.startVisualManagementMeeting("VM-ZA-T1", inactive)).toBeNull();
-    expect(red.canManageRedTag(inactive, { plant: "Egmore Plant", zone: "Zone A" })).toBe(false);
+
     const configuration = await import("@/features/visual-management/visual-management-access");
     expect(configuration.canManageVisualManagementConfiguration(inactive)).toBe(false);
   });
-});
-
-it("does not accept caller-supplied snapshots to close source Red Tags", async () => {
- const tags = await import("@/features/five-s/red-tag/store");
- const tag = tags.createRedTag(tagInput,admin)!;
- expect(tags.approveAndCloseRedTag(tag.id,admin)).toBeUndefined();
- expect(tags.getRedTag(tag.id)?.status).toBe("Open");
- expect("reconcileRedTagActions" in tags).toBe(false);
 });

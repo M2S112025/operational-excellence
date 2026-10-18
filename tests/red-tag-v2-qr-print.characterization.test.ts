@@ -1,9 +1,81 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
-afterEach(() => { vi.unstubAllGlobals(); vi.resetModules(); });
 import { readFileSync } from "node:fs";
-import { getRedTagQrTarget, getRedTagRecordPath } from "@/features/five-s/red-tag/qr";
-describe("Standards-compliant stable record QR and source print",()=>{
- it("encodes stable identity independently of lifecycle",()=>{expect(getRedTagQrTarget("RT-EGM-ZB-009","https://ops.example")).toBe("https://ops.example/5s/red/RT-EGM-ZB-009");expect(getRedTagRecordPath("old tag/01")).toBe("/5s/red/old%20tag%2F01");expect(getRedTagQrTarget("RT-1","invalid")).toBe("/5s/red/RT-1");});
- it("uses the real encoder with four-module quiet zone instead of source pseudo QR",()=>{const s=readFileSync("features/five-s/red-tag/qr-code.tsx","utf8");expect(s).toContain("QRCodeSVG");expect(s).toContain("marginSize={4}");expect(s).not.toContain("charCodeAt");expect(readFileSync("features/five-s/red-tag/red-tag-module.tsx","utf8")).toContain('value={getRedTagQrTarget(tag.id)}');});
- it("retains source physical fields, reports and PDF support without V2 values",()=>{const s=readFileSync("features/five-s/red-tag/red-tag-module.tsx","utf8");for(const label of ["RedTagLabel","Quantity","Required Action","RED_TAG_INITIAL_EVIDENCE_LABEL","ReportPdfActions","red-tag-print-surface"])expect(s).toContain(label);expect(s).not.toContain("tag.estimatedValue");const css=readFileSync("app/globals.css","utf8");expect(css).toContain("body:has(.red-tag-print-page)");});
+import { resolve } from "node:path";
+
+import { describe, expect, it } from "vitest";
+
+import { getCreateRedTagPath, getCreateRedTagQrTarget, getRedTagQrTarget, getRedTagRecordPath } from "@/features/five-s/red-tag/qr";
+
+describe("Red Tag V2 canonical QR identity", () => {
+  it("builds the record locator from only the stable RT ID", () => {
+    const tagId = "RT-EGM-ZA-125";
+    expect(getRedTagRecordPath(tagId)).toBe("/5s/red/RT-EGM-ZA-125");
+    expect(getRedTagQrTarget(tagId, "https://ops.example.com")).toBe("https://ops.example.com/5s/red/RT-EGM-ZA-125");
+    const payload = getRedTagQrTarget(tagId, "https://ops.example.com");
+    expect(payload).not.toContain("Unused Motor");
+    expect(payload).not.toContain("Open");
+    expect(payload).not.toContain("history");
+  });
+
+  it("is lifecycle-independent and remains identical after closure", () => {
+    const statuses = ["Open", "Under Review", "Decision Made", "Disposition In Progress", "Awaiting Verification", "Closed"];
+    const targets = statuses.map(() => getRedTagQrTarget("RT-EGM-ZB-009", "https://factory.example"));
+    expect(new Set(targets)).toEqual(new Set(["https://factory.example/5s/red/RT-EGM-ZB-009"]));
+  });
+
+  it("retains legacy IDs and safely encodes unusual locator characters", () => {
+    expect(getRedTagQrTarget("RT-EGM-ZA-077")).toBe("/5s/red/RT-EGM-ZA-077");
+    expect(getRedTagRecordPath("legacy tag/01")).toBe("/5s/red/legacy%20tag%2F01");
+  });
+
+  it("falls back to the relative canonical path when an origin is unavailable or invalid", () => {
+    expect(getRedTagQrTarget("RT-EGM-ZA-010")).toBe("/5s/red/RT-EGM-ZA-010");
+    expect(getRedTagQrTarget("RT-EGM-ZA-010", "not an origin")).toBe("/5s/red/RT-EGM-ZA-010");
+  });
+});
+
+describe("Red Tag QR and physical print UI", () => {
+  const source = readFileSync(resolve(process.cwd(), "features/five-s/red-tag/red-tag-module.tsx"), "utf8");
+
+  it("uses the same canonical target for detail, View QR, and Print Tag", () => {
+    expect(source).toContain("const qrTarget = useRedTagQrTarget(tagId)");
+    expect(source.match(/<QrCode value=\{qrTarget\}/g)).toHaveLength(3);
+    expect(source).toContain("View QR");
+    expect(source).toContain("Print Red Tag");
+  });
+
+  it("prints the physical identity and operational context without workflow payload", () => {
+    for (const text of ["RED TAG", "tag.tagNumber", "tag.itemName", "Quantity", "Location", "Department", "Reason", "Identified", "Identified By", "SCAN TO VIEW RECORD"]) expect(source).toContain(text);
+    expect(source).toContain("tag.category &&");
+    expect(source).toContain("tag.estimatedValue !== undefined");
+    expect(source).not.toContain("<LabelValue label=\"History\"");
+    expect(source).not.toContain("<LabelValue label=\"Status\"");
+  });
+
+  it("preserves the lifecycle, Action, detail, print, and QR routes", () => {
+    expect(source).toContain("RedTagLifecycleIndicator");
+    expect(source).toContain("LinkedActionSection");
+    expect(source).toContain("`/5s/red/${tag.id}/print`");
+    expect(getRedTagRecordPath("RT-EGM-ZA-001")).toBe("/5s/red/RT-EGM-ZA-001");
+  });
+});
+
+describe("reusable Create Red Tag QR", () => {
+  const source = readFileSync(resolve(process.cwd(), "features/five-s/red-tag/red-tag-module.tsx"), "utf8");
+
+  it("targets the same canonical create form with an encoded stable plant reference", () => {
+    expect(getCreateRedTagPath("PLANT-EGM")).toBe("/5s/red/create?plant=PLANT-EGM");
+    expect(getCreateRedTagQrTarget("PLANT A/01", "https://ops.example.com")).toBe("https://ops.example.com/5s/red/create?plant=PLANT%20A%2F01");
+    expect(getCreateRedTagPath()).toBe("/5s/red/create");
+  });
+
+  it("reuses canonical creation and validates plant context against organization data", () => {
+    expect(source).toContain("const resolvedPlant = organization.plants.find");
+    expect(source).toContain("const plantName = resolvedPlant?.name ?? user.plant");
+    expect(source).toContain("createAndSubmitRedTagV2");
+    expect(source).toContain("Scan to create a Red Tag");
+    expect(source).toContain("Number of QR labels");
+    expect(source).toContain("quantity: String(qrQuantity)");
+    expect(source).toContain("Array.from({ length: quantity }");
+    expect(source).not.toContain("createQrRedTag");
+  });
 });

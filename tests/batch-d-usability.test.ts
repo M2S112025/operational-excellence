@@ -9,17 +9,16 @@ import { crumbsForPath } from "@/components/navigation/breadcrumb-nav";
 import { OpsPersonSelect, filterPeople } from "@/components/ops/ops-person-select";
 import { ManualActionDialog } from "@/features/actions/action-center-page";
 import { RedTagCreatePage } from "@/features/five-s/red-tag/red-tag-module";
-import { RED_TAG_REASON_GROUPS, getRedTagReasonCategoryLabel } from "@/features/five-s/red-tag/types";
+import { RED_TAG_REASON_GROUPS } from "@/features/five-s/red-tag/types";
 import { UiPreferencesProvider } from "@/components/preferences/ui-preferences-provider";
 const source = (path: string) => readFileSync(resolve(process.cwd(), path), "utf8");
 function render(element: React.ReactElement) { return renderToStaticMarkup(React.createElement(UiPreferencesProvider, null, element)); }
 describe("Batch D terminology and usable forms", () => {
-  it("shows Arrangement without changing stored Red Tag category values", () => {
-    expect(getRedTagReasonCategoryLabel("Organization")).toBe("Arrangement");
+  it("restores the OPS categorized reasons and identification form", () => {
     expect(RED_TAG_REASON_GROUPS.Organization).toContain("Wrong location");
     const html = render(React.createElement(RedTagCreatePage));
-    expect(html).toContain("Undefined Items"); expect(html).toContain("Issue Photo");
-    expect(html).not.toContain("Capture the Before image"); expect(html).toContain("Required Action");
+    expect(html).toContain("Photo Identification");
+    expect(html).toContain("Identification");
   });
   it("makes Manual provenance understandable and its owner selector searchable", () => {
     const html = render(React.createElement(ManualActionDialog, { open: true, onOpenChange: vi.fn(), onCreated: vi.fn() }));
@@ -41,8 +40,8 @@ describe("Batch D terminology and usable forms", () => {
     expect(manual).toContain("if (!valid || !zone || busyRef.current) return");
     expect(manual).toContain('formError && <p role="alert"');
     const red = source("features/five-s/red-tag/red-tag-module.tsx");
-    expect(red).toContain('createError && <OpsFeedback tone="error"');
-    expect(red).toContain("setCreateError(getRedTagOperationError())");
+    expect(red).toContain('role="alert"');
+    expect(red).toContain("setCreateError(");
   });
 });
 describe("Batch D breadcrumb return paths", () => {

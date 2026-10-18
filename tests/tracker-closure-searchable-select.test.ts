@@ -58,7 +58,7 @@ describe("Lakshman row 4 searchable entity controls", () => {
       const source = readFileSync(file, "utf8"); expect(source).toContain("selectableImprovementOwners"); expect(source).toContain("people={ownerOptions.map"); expect(source).toContain("<OpsPersonSelect");
     }
     const audit = readFileSync("features/five-s/components/FiveSAuditCreate.tsx", "utf8"); expect(audit).toContain("disabled: item.name === currentZone"); expect(audit).toContain("canAuditZone");
-    const red = readFileSync("features/five-s/red-tag/red-tag-module.tsx", "utf8"); expect(red).toContain("people={zoneConfig?.members ?? []}"); expect(red).toContain('label="Responsible Zone Member"');
+    const red = readFileSync("features/five-s/red-tag/red-tag-module.tsx", "utf8"); expect(red).toContain("Disposition In Progress"); expect(red).toContain("Responsible Person");
     expect(readFileSync("features/actions/action-center-page.tsx", "utf8")).toContain('<Select searchLabel={"Priority"} value={effectivePriority}');
     expect(readFileSync("features/five-s/administration/users-page.tsx", "utf8")).toContain('<Select searchLabel={"Status"} value={form.status}');
   });

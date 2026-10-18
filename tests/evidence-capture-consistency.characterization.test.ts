@@ -46,7 +46,7 @@ describe("Team Feedback #15/#33/#35 — evidence capture consistency", () => {
     expect(gemba).toContain('accept="image/*" multiple');
     expect(redFlag).toContain('accept="image/*" multiple');
     expect(ci).toContain('accept="image/*" multiple');
-    expect(redTag).toContain("IssuePhotoCaptureDialog"); expect(redTag).toContain("AfterPhotoCaptureDialog");
+    expect(redTag).toContain("OpsCameraCapture"); expect(redTag).toContain("AfterEvidencePicker");
   });
 
   it("provides immediate preview plus View, Replace, and Remove where editing permits", () => {
@@ -55,8 +55,8 @@ describe("Team Feedback #15/#33/#35 — evidence capture consistency", () => {
       expect(moduleSource).toContain("Replace");
       expect(moduleSource).toContain("Remove");
     }
-    expect(redTag).toContain("Issue preview");
-    expect(redTag).toContain('aria-label="Remove issue photo"');
+    expect(redTag).toContain("Photo Identification");
+    expect(redTag).toContain('setImageUrl(undefined)');
     expect(action).toContain("onPreview={setPreview}");
   });
 
@@ -74,7 +74,7 @@ describe("Team Feedback #15/#33/#35 — evidence capture consistency", () => {
   it("keeps established evidence requirements and module lifecycle code in place", () => {
     expect(audit).toContain("requiresEvidence");
     expect(action).toContain("ACTION_LIFECYCLE_STAGES");
-    expect(redTag).toContain("Awaiting Review");
+    expect(redTag).toContain("Disposition In Progress");
     expect(ci).toContain("ImprovementStatusBadge");
     expect(source("features/red-flag/types.ts")).toContain('"Awaiting Closure"');
   });

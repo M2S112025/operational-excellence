@@ -1,8 +1,9 @@
+import { resetImportedRedTagData } from "@/lib/five-s/red-tag-reset";
 /**
  * OPS Relationship Store
- * 
+ *
  * PHASE 4 — Canonical store for cross-module relationships
- * 
+ *
  * CRITICAL RULES:
  * - Metadata only
  * - NO Base64/binary content
@@ -115,7 +116,8 @@ function persistRelationships(): boolean {
 function initializeStore(): void {
   if (typeof window === "undefined") return;
   if (hasInitialized) return;
-  
+
+  resetImportedRedTagData();
   hasInitialized = true;
   loadRelationships();
 }
@@ -141,7 +143,7 @@ function getSnapshot(): OpsRelationship[] {
 
 /**
  * Create a new relationship
- * 
+ *
  * IMPORTANT: Only call this AFTER the underlying records are successfully created.
  * Never create a relationship pointing to a failed/non-existent record.
  */
@@ -231,7 +233,7 @@ export function getIncomingRelationships(record: OpsRecordRef): OpsRelationship[
 
 /**
  * Remove a relationship by ID
- * 
+ *
  * CRITICAL: This does NOT delete the underlying records.
  * Only the relationship metadata is removed.
  */
@@ -252,7 +254,7 @@ export function removeRelationship(relationshipId: string): boolean {
 
 /**
  * React hook for subscribing to relationships
- * 
+ *
  * Uses useSyncExternalStore for proper React 18 compatibility
  */
 export function useRelationships(): OpsRelationship[] {

@@ -15,10 +15,10 @@ function redReport() { return renderToStaticMarkup(React.createElement(UiPrefere
 describe("Batch C report output correctness", () => {
   it("does not report a pending Keep decision as closed", () => {
     records.tags = [structuredClone(tag)];
-    expect(redReport()).toContain("Original status: Decision Made");
+    expect(redReport()).toContain(">Decision Made<");
     expect(redReport()).not.toContain("Kept · Closed");
     records.tags = [{ ...tag, status: "Closed", keepConfirmation: { justification: "Retained", confirmedAt: "2026-10-16", confirmedByUserId: "USR-LAKSHMAN", confirmedByName: "Lakshman" } }];
-    expect(redReport()).toContain("Original status: Closed");
+    expect(redReport()).toContain(">Closed<");
   });
   it("renders all disposition photos separately from the identification photo", () => {
     records.tags = [{ ...tag, decisionRecord: { ...tag.decisionRecord!, type: "repair" }, afterEvidence: [{ id: "A1", name: "First completion", url: "data:image/jpeg;base64,after-one", uploadedAt: "2026-10-16", uploadedBy: "Lakshman" }, { id: "A2", name: "Second completion", url: "data:image/jpeg;base64,after-two", uploadedAt: "2026-10-16", uploadedBy: "Lakshman" }] }];
