@@ -1,0 +1,25 @@
+
+Running 18 tests using 1 worker
+
+(node:46383) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 e2e/ui-batch2-interactions.spec.ts:4:6 › Batch 2 operational forms 320px (11.7s)
+  ✓   2 e2e/ui-batch2-interactions.spec.ts:24:6 › Batch 2 reports and filters 320px (6.4s)
+  ✓   3 e2e/ui-batch2-interactions.spec.ts:4:6 › Batch 2 operational forms 375px (11.2s)
+  ✓   4 e2e/ui-batch2-interactions.spec.ts:24:6 › Batch 2 reports and filters 375px (6.0s)
+  ✓   5 e2e/ui-batch2-interactions.spec.ts:4:6 › Batch 2 operational forms 390px (11.6s)
+  ✓   6 e2e/ui-batch2-interactions.spec.ts:24:6 › Batch 2 reports and filters 390px (5.9s)
+  ✓   7 e2e/ui-batch2-interactions.spec.ts:4:6 › Batch 2 operational forms 430px (11.2s)
+  ✓   8 e2e/ui-batch2-interactions.spec.ts:24:6 › Batch 2 reports and filters 430px (6.1s)
+  ✓   9 e2e/ui-batch2-interactions.spec.ts:4:6 › Batch 2 operational forms 768px (11.3s)
+  ✓  10 e2e/ui-batch2-interactions.spec.ts:24:6 › Batch 2 reports and filters 768px (6.1s)
+  ✓  11 e2e/ui-batch2-interactions.spec.ts:4:6 › Batch 2 operational forms 1024px (11.4s)
+  ✓  12 e2e/ui-batch2-interactions.spec.ts:24:6 › Batch 2 reports and filters 1024px (6.0s)
+  ✓  13 e2e/ui-batch2-interactions.spec.ts:4:6 › Batch 2 operational forms 1280px (11.3s)
+  ✓  14 e2e/ui-batch2-interactions.spec.ts:24:6 › Batch 2 reports and filters 1280px (5.9s)
+  ✓  15 e2e/ui-batch2-interactions.spec.ts:4:6 › Batch 2 operational forms 1440px (11.3s)
+  ✓  16 e2e/ui-batch2-interactions.spec.ts:24:6 › Batch 2 reports and filters 1440px (6.3s)
+  ✓  17 e2e/ui-batch2-interactions.spec.ts:4:6 › Batch 2 operational forms 1920px (11.4s)
+  ✓  18 e2e/ui-batch2-interactions.spec.ts:24:6 › Batch 2 reports and filters 1920px (6.0s)
+
+  18 passed (2.6m)

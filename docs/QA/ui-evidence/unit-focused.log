@@ -1,0 +1,12 @@
+
+> manufacturing-qms@0.1.0 test
+> vitest run tests/audit-navigation-focus.test.ts tests/audit-scroll-focus.test.ts tests/audit-question-management.test.ts tests/standard-audit-checklist.test.ts tests/custom-audit-question-authorization.test.ts tests/red-tag-v2-qr-print.characterization.test.ts tests/action-center.characterization.test.ts tests/gemba-dialog-layout-polish.characterization.test.ts tests/p0-dashboard-red-tag.test.ts tests/p0-data-integrity.test.ts
+
+
+ RUN  v4.1.11 /Users/rumesh-9634/Projects/Ops
+
+
+ Test Files  10 passed (10)
+      Tests  110 passed (110)
+   Start at  15:03:04
+   Duration  575ms (transform 564ms, setup 0ms, import 436ms, tests 1.42s, environment 0ms)

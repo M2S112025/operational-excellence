@@ -1,0 +1,38 @@
+{
+  "baselineFiles": 651,
+  "unchangedBaselineFiles": 629,
+  "changedBaselineFiles": [
+    "e2e/ui-batch2-helpers.ts",
+    "e2e/windows-disposition.spec.ts",
+    "features/actions/create-linked-action-dialog.tsx",
+    "features/five-s/action-detail-page.tsx",
+    "features/five-s/red-tag/access.ts",
+    "features/five-s/red-tag/red-tag-module.tsx",
+    "features/five-s/red-tag/red-tag-report-page.tsx",
+    "features/five-s/red-tag/store.ts",
+    "features/five-s/red-tag/types.ts",
+    "features/five-s/types/my-actions.ts",
+    "lib/actions/action-store.ts",
+    "tests/action-step-persistence-assignment.characterization.test.ts",
+    "tests/gemba-dialog-layout-polish.characterization.test.ts",
+    "tests/p0-data-integrity.test.ts",
+    "tests/red-tag-before-after-evidence.characterization.test.ts",
+    "tests/red-tag-keep-confirmation.test.ts",
+    "tests/red-tag-reset.test.ts",
+    "tests/red-tag-simplification.characterization.test.ts",
+    "tests/red-tag-v2-create-review-decision.characterization.test.ts",
+    "tests/red-tag-v2-disposition-closure.characterization.test.ts",
+    "tests/red-tag-v2-foundation.characterization.test.ts",
+    "tests/red-tag.characterization.test.ts"
+  ],
+  "newImplementationFiles": [
+    "features/actions/action-submission-history.tsx",
+    "features/five-s/red-tag/workflow.ts",
+    "tests/red-tag-phase2.test.ts",
+    "e2e/red-tag-phase2.spec.ts",
+    "playwright.red-tag-phase2.config.ts",
+    "docs/QA/RED-TAG-PHASE2-IMPLEMENTATION.md"
+  ],
+  "authorizationAcceptanceUnchanged": true,
+  "existingDocumentationUnchanged": true
+}

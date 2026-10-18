@@ -46,11 +46,11 @@ export default function FiveSPageHeader({
             </p>
           )}
 
-          <h1 className={cn("font-heading text-2xl font-semibold leading-tight tracking-[-0.025em] text-foreground", eyebrow && "mt-1")}>
+          <h1 className={cn("font-heading text-2xl font-semibold leading-tight tracking-[-0.025em] text-foreground [overflow-wrap:anywhere]", eyebrow && "mt-1")}>
             {translatedTitleKey ? t(translatedTitleKey) : title}
           </h1>
 
-          <p className="mt-1 max-w-2xl text-sm leading-5 text-muted-foreground">
+          <p className="mt-1 max-w-2xl text-sm leading-5 text-muted-foreground [overflow-wrap:anywhere]">
             {description}
           </p>
           </div>

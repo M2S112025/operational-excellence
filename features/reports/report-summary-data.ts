@@ -24,6 +24,7 @@ export interface ReportSummaryEvidencePair {
   before?: string;
   beforeEvidence?: MyAction["evidence"][number];
   after?: string;
+  afterEvidence?: MyAction["evidence"][number];
   description: string;
   owner: string;
   completionDate: string;
@@ -105,7 +106,7 @@ function beforeAfter(input: ReportSummaryInput, generatedAt: string): ReportSumm
   const actionPairs: ReportSummaryEvidencePair[] = input.actions.filter((action) => action.status === "Completed").map((action) => ({
     id: `action:${action.id}`, reference: action.id, module: "Actions", title: action.title,
     before: firstImage(resolveActionSourceBeforeEvidence(action, input.redTags ?? [], input.gemba).evidence),
-    beforeEvidence: resolveActionSourceBeforeEvidence(action, input.redTags ?? [], input.gemba).evidence.find(item => item.type === "image"), after: firstImage(action.evidence),
+    beforeEvidence: resolveActionSourceBeforeEvidence(action, input.redTags ?? [], input.gemba).evidence.find(item => item.type === "image"), after: firstImage(action.evidence), afterEvidence: action.evidence.find(item => item.type === "image" && (item.url || item.storageKey)),
     description: action.resolutionObservation ?? action.actionTakenDescription ?? action.description,
     owner: action.completedByName ?? action.responsiblePersonName ?? action.assignedTo,
     completionDate: action.completedAt ?? "",
@@ -120,7 +121,7 @@ function beforeAfter(input: ReportSummaryInput, generatedAt: string): ReportSumm
   const evidencePairs = [...actionPairs, ...ciPairs];
   const rows = evidencePairs.map((pair) => ({
     module: pair.module, reference: pair.reference, title: pair.title, before: pair.before ?? pair.beforeEvidence?.storageKey ?? "No image",
-    after: pair.after ?? "No image", description: pair.description, owner: pair.owner, completionDate: pair.completionDate,
+    after: pair.after ?? pair.afterEvidence?.storageKey ?? "No image", description: pair.description, owner: pair.owner, completionDate: pair.completionDate,
   }));
   return {
     ...summary("beforeAfterSummary", "Paired evidence from completed Actions and Continual Improvements.", "/actions?tab=completed", generatedAt, [

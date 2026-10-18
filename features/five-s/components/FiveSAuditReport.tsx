@@ -133,7 +133,7 @@ export default function FiveSAuditReport({ auditId, origin, returnTo }: { auditI
   }
 
   return (
-    <div className="audit-report-page -m-5 min-h-screen bg-slate-100 p-4 text-slate-950 dark:bg-slate-950 dark:text-slate-100 sm:-m-6 sm:p-6 lg:-m-7 xl:-m-8">
+    <div className="audit-report-page min-h-screen bg-slate-100 p-4 text-slate-950 dark:bg-slate-950 dark:text-slate-100 sm:p-6">
       <div className="audit-report-controls mx-auto mb-4 flex max-w-[1120px] flex-wrap items-center justify-between gap-3">
         <Button variant="ghost" onClick={() => router.push(backDestination)}>
           <ArrowLeft className="size-4" /> {backLabel}

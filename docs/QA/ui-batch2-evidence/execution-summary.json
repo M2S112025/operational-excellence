@@ -1,0 +1,555 @@
+{
+  "branch": "feat/audit-admin-question-management",
+  "head": "e5e9950121bf7a89d2c1700a748b5534f28dd3c3",
+  "workingTree": "existing and new changes uncommitted",
+  "browser": "Chromium 156.0.8078.4 / Playwright 1.64.1",
+  "viewports": [
+    320,
+    375,
+    390,
+    430,
+    768,
+    1024,
+    1280,
+    1440,
+    1920
+  ],
+  "baselineRoutePatterns": 84,
+  "initialRouteStateEntries": 94,
+  "initialRequestedPathnames": 91,
+  "routeViewportCombinations": 846,
+  "geometryCaptures": 1363,
+  "interactionGeometryCaptures": 517,
+  "finalBrowserTests": {
+    "passed": 63,
+    "failed": 0,
+    "skipped": 0
+  },
+  "jobs": [
+    {
+      "phase": "routes-final",
+      "selectedTests": 8,
+      "runnerStats": {
+        "startTime": "2026-10-18T11:15:54.030Z",
+        "duration": 603758.589,
+        "expected": 8,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      }
+    },
+    {
+      "phase": "routes-320-final",
+      "selectedTests": 1,
+      "runnerStats": {
+        "startTime": "2026-10-18T11:20:29.284Z",
+        "duration": 73564.13,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    {
+      "phase": "forms-final",
+      "selectedTests": 18,
+      "runnerStats": {
+        "startTime": "2026-10-18T11:22:37.320Z",
+        "duration": 158502.70299999998,
+        "expected": 18,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    {
+      "phase": "meetings-final",
+      "selectedTests": 9,
+      "runnerStats": {
+        "startTime": "2026-10-18T11:22:27.356Z",
+        "duration": 56204.371999999996,
+        "expected": 9,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    {
+      "phase": "evidence-final",
+      "selectedTests": 9,
+      "runnerStats": {
+        "startTime": "2026-10-18T11:20:20.703Z",
+        "duration": 69173.279,
+        "expected": 9,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    {
+      "phase": "settings-final",
+      "selectedTests": 9,
+      "runnerStats": {
+        "startTime": "2026-10-18T11:21:48.874Z",
+        "duration": 54625.78,
+        "expected": 9,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    {
+      "phase": "compatibility-final",
+      "selectedTests": 9,
+      "runnerStats": {
+        "startTime": "2026-10-18T11:23:43.551Z",
+        "duration": 28057.642,
+        "expected": 9,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    }
+  ],
+  "tests": [
+    {
+      "title": "Batch 2 routes 375px",
+      "status": "passed",
+      "durationMs": 64958,
+      "phase": "routes-final"
+    },
+    {
+      "title": "Batch 2 routes 390px",
+      "status": "passed",
+      "durationMs": 64969,
+      "phase": "routes-final"
+    },
+    {
+      "title": "Batch 2 routes 430px",
+      "status": "passed",
+      "durationMs": 67442,
+      "phase": "routes-final"
+    },
+    {
+      "title": "Batch 2 routes 768px",
+      "status": "passed",
+      "durationMs": 69584,
+      "phase": "routes-final"
+    },
+    {
+      "title": "Batch 2 routes 1024px",
+      "status": "passed",
+      "durationMs": 68642,
+      "phase": "routes-final"
+    },
+    {
+      "title": "Batch 2 routes 1280px",
+      "status": "passed",
+      "durationMs": 65887,
+      "phase": "routes-final"
+    },
+    {
+      "title": "Batch 2 routes 1440px",
+      "status": "passed",
+      "durationMs": 66783,
+      "phase": "routes-final"
+    },
+    {
+      "title": "Batch 2 routes 1920px",
+      "status": "passed",
+      "durationMs": 65138,
+      "phase": "routes-final"
+    },
+    {
+      "title": "Batch 2 routes 320px",
+      "status": "passed",
+      "durationMs": 72675,
+      "phase": "routes-320-final"
+    },
+    {
+      "title": "Batch 2 operational forms 320px",
+      "status": "passed",
+      "durationMs": 11675,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 reports and filters 320px",
+      "status": "passed",
+      "durationMs": 6429,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 operational forms 375px",
+      "status": "passed",
+      "durationMs": 11225,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 reports and filters 375px",
+      "status": "passed",
+      "durationMs": 6005,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 operational forms 390px",
+      "status": "passed",
+      "durationMs": 11590,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 reports and filters 390px",
+      "status": "passed",
+      "durationMs": 5932,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 operational forms 430px",
+      "status": "passed",
+      "durationMs": 11230,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 reports and filters 430px",
+      "status": "passed",
+      "durationMs": 6051,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 operational forms 768px",
+      "status": "passed",
+      "durationMs": 11333,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 reports and filters 768px",
+      "status": "passed",
+      "durationMs": 6071,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 operational forms 1024px",
+      "status": "passed",
+      "durationMs": 11428,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 reports and filters 1024px",
+      "status": "passed",
+      "durationMs": 6048,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 operational forms 1280px",
+      "status": "passed",
+      "durationMs": 11325,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 reports and filters 1280px",
+      "status": "passed",
+      "durationMs": 5885,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 operational forms 1440px",
+      "status": "passed",
+      "durationMs": 11339,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 reports and filters 1440px",
+      "status": "passed",
+      "durationMs": 6271,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 operational forms 1920px",
+      "status": "passed",
+      "durationMs": 11375,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 reports and filters 1920px",
+      "status": "passed",
+      "durationMs": 6002,
+      "phase": "forms-final"
+    },
+    {
+      "title": "Batch 2 VM and linked forms 320px",
+      "status": "passed",
+      "durationMs": 6341,
+      "phase": "meetings-final"
+    },
+    {
+      "title": "Batch 2 VM and linked forms 375px",
+      "status": "passed",
+      "durationMs": 6172,
+      "phase": "meetings-final"
+    },
+    {
+      "title": "Batch 2 VM and linked forms 390px",
+      "status": "passed",
+      "durationMs": 6335,
+      "phase": "meetings-final"
+    },
+    {
+      "title": "Batch 2 VM and linked forms 430px",
+      "status": "passed",
+      "durationMs": 6005,
+      "phase": "meetings-final"
+    },
+    {
+      "title": "Batch 2 VM and linked forms 768px",
+      "status": "passed",
+      "durationMs": 6075,
+      "phase": "meetings-final"
+    },
+    {
+      "title": "Batch 2 VM and linked forms 1024px",
+      "status": "passed",
+      "durationMs": 6189,
+      "phase": "meetings-final"
+    },
+    {
+      "title": "Batch 2 VM and linked forms 1280px",
+      "status": "passed",
+      "durationMs": 6134,
+      "phase": "meetings-final"
+    },
+    {
+      "title": "Batch 2 VM and linked forms 1440px",
+      "status": "passed",
+      "durationMs": 6101,
+      "phase": "meetings-final"
+    },
+    {
+      "title": "Batch 2 VM and linked forms 1920px",
+      "status": "passed",
+      "durationMs": 6082,
+      "phase": "meetings-final"
+    },
+    {
+      "title": "Batch 2 upload and long content 320px",
+      "status": "passed",
+      "durationMs": 7796,
+      "phase": "evidence-final"
+    },
+    {
+      "title": "Batch 2 upload and long content 375px",
+      "status": "passed",
+      "durationMs": 7681,
+      "phase": "evidence-final"
+    },
+    {
+      "title": "Batch 2 upload and long content 390px",
+      "status": "passed",
+      "durationMs": 7567,
+      "phase": "evidence-final"
+    },
+    {
+      "title": "Batch 2 upload and long content 430px",
+      "status": "passed",
+      "durationMs": 7733,
+      "phase": "evidence-final"
+    },
+    {
+      "title": "Batch 2 upload and long content 768px",
+      "status": "passed",
+      "durationMs": 7087,
+      "phase": "evidence-final"
+    },
+    {
+      "title": "Batch 2 upload and long content 1024px",
+      "status": "passed",
+      "durationMs": 7533,
+      "phase": "evidence-final"
+    },
+    {
+      "title": "Batch 2 upload and long content 1280px",
+      "status": "passed",
+      "durationMs": 7283,
+      "phase": "evidence-final"
+    },
+    {
+      "title": "Batch 2 upload and long content 1440px",
+      "status": "passed",
+      "durationMs": 8437,
+      "phase": "evidence-final"
+    },
+    {
+      "title": "Batch 2 upload and long content 1920px",
+      "status": "passed",
+      "durationMs": 7108,
+      "phase": "evidence-final"
+    },
+    {
+      "title": "Batch 2 settings and secondary views 320px",
+      "status": "passed",
+      "durationMs": 6128,
+      "phase": "settings-final"
+    },
+    {
+      "title": "Batch 2 settings and secondary views 375px",
+      "status": "passed",
+      "durationMs": 5861,
+      "phase": "settings-final"
+    },
+    {
+      "title": "Batch 2 settings and secondary views 390px",
+      "status": "passed",
+      "durationMs": 5761,
+      "phase": "settings-final"
+    },
+    {
+      "title": "Batch 2 settings and secondary views 430px",
+      "status": "passed",
+      "durationMs": 5971,
+      "phase": "settings-final"
+    },
+    {
+      "title": "Batch 2 settings and secondary views 768px",
+      "status": "passed",
+      "durationMs": 5745,
+      "phase": "settings-final"
+    },
+    {
+      "title": "Batch 2 settings and secondary views 1024px",
+      "status": "passed",
+      "durationMs": 5874,
+      "phase": "settings-final"
+    },
+    {
+      "title": "Batch 2 settings and secondary views 1280px",
+      "status": "passed",
+      "durationMs": 5775,
+      "phase": "settings-final"
+    },
+    {
+      "title": "Batch 2 settings and secondary views 1440px",
+      "status": "passed",
+      "durationMs": 6616,
+      "phase": "settings-final"
+    },
+    {
+      "title": "Batch 2 settings and secondary views 1920px",
+      "status": "passed",
+      "durationMs": 6034,
+      "phase": "settings-final"
+    },
+    {
+      "title": "Batch 2 shared observations and legacy edit 320px",
+      "status": "passed",
+      "durationMs": 3092,
+      "phase": "compatibility-final"
+    },
+    {
+      "title": "Batch 2 shared observations and legacy edit 375px",
+      "status": "passed",
+      "durationMs": 3128,
+      "phase": "compatibility-final"
+    },
+    {
+      "title": "Batch 2 shared observations and legacy edit 390px",
+      "status": "passed",
+      "durationMs": 2953,
+      "phase": "compatibility-final"
+    },
+    {
+      "title": "Batch 2 shared observations and legacy edit 430px",
+      "status": "passed",
+      "durationMs": 2973,
+      "phase": "compatibility-final"
+    },
+    {
+      "title": "Batch 2 shared observations and legacy edit 768px",
+      "status": "passed",
+      "durationMs": 3091,
+      "phase": "compatibility-final"
+    },
+    {
+      "title": "Batch 2 shared observations and legacy edit 1024px",
+      "status": "passed",
+      "durationMs": 3010,
+      "phase": "compatibility-final"
+    },
+    {
+      "title": "Batch 2 shared observations and legacy edit 1280px",
+      "status": "passed",
+      "durationMs": 2940,
+      "phase": "compatibility-final"
+    },
+    {
+      "title": "Batch 2 shared observations and legacy edit 1440px",
+      "status": "passed",
+      "durationMs": 3102,
+      "phase": "compatibility-final"
+    },
+    {
+      "title": "Batch 2 shared observations and legacy edit 1920px",
+      "status": "passed",
+      "durationMs": 3022,
+      "phase": "compatibility-final"
+    }
+  ],
+  "issues": {
+    "found": 4,
+    "fixed": 4,
+    "remainingUI_P0": 0,
+    "remainingUI_P1": 0
+  },
+  "preservation": {
+    "checkedFiles": 89,
+    "unexpectedChanges": []
+  },
+  "knownAuthorizationAcceptanceFailures": 3,
+  "intermediateFailures": [
+    "Initial two-width matrix: role matrix, VM print margins, CI proposal sidebar.",
+    "Gemba observation filters at 1024px.",
+    "Harness corrections: mobile accessible names, default overview tabs, canonical plant route, disabled clean preference Save, obsolete VM controls, seeded read-only KPI dates.",
+    "Full route job began before final role containing-block fix; its failed 320px result is replaced by separate final 320px 94-entry passing run.",
+    "Interrupted interaction job retained separately; all final forms and VM jobs rerun cleanly."
+  ],
+  "regressions": {
+    "batch1": {
+      "passed": 38,
+      "failed": 0
+    },
+    "p0Browser": {
+      "passed": 15,
+      "failed": 0
+    },
+    "units": {
+      "passed": 1054,
+      "failed": 3,
+      "files": 116
+    },
+    "typeScript": "passed",
+    "lint": {
+      "errors": 0,
+      "existingWarnings": 13
+    }
+  },
+  "knownAuthorizationAcceptanceIds": [
+    "P0-AUTH-RT",
+    "P0-AUTH-ENT",
+    "P0-AUTH-ACT"
+  ],
+  "productionBuild": {
+    "defaultTurbopack": {
+      "exitCode": 1,
+      "result": "Environment failure: worker port binding EPERM"
+    },
+    "webpack": {
+      "exitCode": 0,
+      "result": "Compiled and prerendered 85/85 static pages successfully"
+    }
+  },
+  "readiness": "READY WITH GAPS",
+  "productFilesChanged": {
+    "features/gemba/gemba-page.tsx": "545fc48306665ae82ef3180a7733b5519d37ea27c952e63a24e7a2e5eb115dcd",
+    "features/five-s/continuous-improvement/detail-page.tsx": "8068249f1a7c350cb8ca89b24807bd246a6c6bf70faf5e5af5be78519c5a7396",
+    "features/settings/roles-permissions-page.tsx": "677d8e48532ca16d71d2548a1e38a311355951312e5e2414d48e8b2f828af8a5",
+    "features/visual-management/print/visual-management-print.module.css": "8e440a5b218402dabf188140f4c7cb792dd96daefc528696e2dc85d3bc0f6ae2"
+  },
+  "retainedBatch2Screenshots": 11
+}

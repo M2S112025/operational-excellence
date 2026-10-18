@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Isolated browser QA artifacts and auth state
+/test-results/
+/playwright-report/
+/playwright/.auth/
+
+# Large local trace bundles and transient status snapshots (QA summaries stay tracked)
+/docs/QA/**/*.zip
+/docs/BACKEND-HANDOVER/evidence/browser-launch/trace.zip
+/docs/QA/**/git-status.txt

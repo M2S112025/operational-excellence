@@ -59,7 +59,7 @@ describe("Red Tag V2 create", () => {
 
   it("creates and automatically submits to the reviewer", async () => {
     const store = await redTagStore();
-    const tag = store.createAndSubmitRedTagV2({ ...validInput, section: "Production", reasonCategory: "Usage", reason: "Obsolete" }, creator, reviewer)!;
+    const tag = store.createAndSubmitRedTagV2({ ...validInput, zone: "Zone B", section: "Production", reasonCategory: "Usage", reason: "Obsolete" }, creator, reviewer)!;
     expect(tag).toMatchObject({ status: "Under Review", review: { reviewerId: reviewer.id, reviewerName: reviewer.name } });
     expect(tag.actionId).toBeUndefined();
     expect(tag.history.map((event) => event.type)).toEqual(["created", "review_submitted"]);
@@ -69,11 +69,12 @@ describe("Red Tag V2 create", () => {
 describe("Red Tag V2 review and decision", () => {
   it("uses lifecycle commands for reviewer/date, canonical decision, comments, history, and transition guards", async () => {
     const store = await redTagStore();
-    const tag = store.createRedTagV2(validInput, creator)!;
+    const tag = store.createRedTagV2({ ...validInput, zone: "Zone B" }, creator)!;
     expect(store.recordRedTagDecision(tag.id, { decision: "relocate", comments: "Move it" }, reviewer)).toBeUndefined();
     expect(store.submitRedTagForReview(tag.id, { reviewerId: reviewer.id, reviewerName: reviewer.name }, creator)).toMatchObject({ status: "Under Review", review: { reviewerId: reviewer.id } });
     expect(store.recordRedTagDecision(tag.id, { decision: "not-canonical" as never }, reviewer)).toBeUndefined();
     expect(store.recordRedTagDecision(tag.id, { decision: "relocate", comments: "Move to the central tool store" }, creator)).toBeUndefined();
+    (await import("@/lib/current-user")).setDemoRole("leader");
     const decided = store.recordRedTagDecision(tag.id, { decision: "relocate", comments: "Move to the central tool store" }, reviewer)!;
     expect(RED_TAG_DECISIONS).toContain(decided.decisionRecord?.type);
     expect(decided).toMatchObject({ status: "Decision Made", review: { reviewerId: reviewer.id, reviewerName: reviewer.name, comments: "Move to the central tool store" }, decisionRecord: { type: "relocate", decidedByUserId: reviewer.id, comments: "Move to the central tool store" } });

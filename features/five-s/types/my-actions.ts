@@ -15,6 +15,7 @@ export type MyActionActivityType =
   | "awaiting_assignment"
   | "assigned"
   | "started"
+  | "start_undone"
   | "evidence_uploaded"
   | "submitted"
   | "resubmitted"
@@ -35,6 +36,24 @@ export interface MyActionActivity {
   actorName: string;
   createdAt: string;
   remark?: string;
+}
+
+/** Immutable submission content; reviewEventId refers to canonical Action history. */
+export interface MyActionSubmissionRevision {
+  id: string;
+  number: number;
+  submittedAt: string;
+  submittedByUserId?: string;
+  submittedByName?: string;
+  observation: string;
+  correctiveActionCategory?: string;
+  costSaving?: number;
+  currency?: string;
+  evidence: MyActionEvidence[];
+  progressEvidence: MyActionEvidence[];
+  reviewEventId?: string;
+  /** Existing latest work captured at review time, not reconstructed older revisions. */
+  legacyCapturedAt?: string;
 }
 
 export interface MyActionReassignment {
@@ -92,7 +111,7 @@ export interface MyActionEvidence {
   mimeType?: string;
 
   url?: string;
-  /** Source-owned binary reference, currently used by Gemba IndexedDB photos. */
+  /** Durable binary reference in the shared local asset database; used by Gemba and Action uploads. */
   storageKey?: string;
 }
 
@@ -198,6 +217,7 @@ export interface MyAction {
    * to the auditor for verification.
    */
   submittedForReviewAt?: string;
+  submissionRevisions?: MyActionSubmissionRevision[];
 
   /**
    * Final auditor verification details.

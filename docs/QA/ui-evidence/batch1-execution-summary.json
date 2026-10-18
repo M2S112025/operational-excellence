@@ -1,0 +1,6461 @@
+{
+  "phase": "Batch 1",
+  "branch": "feat/audit-admin-question-management",
+  "baselineCommit": "e5e9950121bf7a89d2c1700a748b5534f28dd3c3",
+  "includesUncommittedChanges": true,
+  "recordedAtIST": "2026-10-18T15:24:13.554299+05:30",
+  "browser": "Chrome for Testing 156.0.8078.4 / Playwright 1.64.1",
+  "stats": {
+    "startTime": "2026-10-18T09:47:17.306Z",
+    "duration": 413644.278,
+    "expected": 38,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "viewportWidths": [
+    320,
+    375,
+    390,
+    430,
+    768,
+    1024,
+    1280,
+    1440,
+    1920
+  ],
+  "initialRouteEntries": 26,
+  "initialDistinctPathnames": 25,
+  "initialRouteViewportCombinations": 234,
+  "interactionGeometryChecks": 270,
+  "stickyGeometryChecks": 9,
+  "populatedActionGeometryChecks": 9,
+  "totalGeometryChecks": 522,
+  "pngScreenshots": 531,
+  "issuesFound": 11,
+  "issuesFixed": 11,
+  "remainingConfirmedBatch1UiIssues": 0,
+  "unitTests": {
+    "passed": 1054,
+    "failed": 3,
+    "unresolved": [
+      "P0-AUTH-RT",
+      "P0-AUTH-ENT",
+      "P0-AUTH-ACT"
+    ]
+  },
+  "focusedUnitTests": 110,
+  "p0BrowserTestsPassed": 15,
+  "typescript": "PASS",
+  "lint": {
+    "errors": 0,
+    "warnings": 13
+  },
+  "routes": [
+    {
+      "width": 320,
+      "routes": [
+        {
+          "route": "/dashboard",
+          "url": "http://127.0.0.1:4179/dashboard",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 288,
+              "scrollWidth": 288,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits",
+          "url": "http://127.0.0.1:4179/audits",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 288,
+              "scrollWidth": 288,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits?audit=5S-EGM-ZA-006",
+          "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/audits/5S-EGM-ZA-006/report",
+          "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings",
+          "url": "http://127.0.0.1:4179/audits/settings",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 288,
+              "scrollWidth": 288,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/standard-checklist",
+          "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/custom-questions",
+          "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/scoring",
+          "url": "http://127.0.0.1:4179/audits/settings/scoring",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red",
+          "url": "http://127.0.0.1:4179/5s/red",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 288,
+              "scrollWidth": 468,
+              "scrollLeft": 180
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/overview",
+          "url": "http://127.0.0.1:4179/5s/red/overview",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 288,
+              "scrollWidth": 468,
+              "scrollLeft": 180
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create",
+          "url": "http://127.0.0.1:4179/5s/red/create",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/awaiting-closure",
+          "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 288,
+              "scrollWidth": 468,
+              "scrollLeft": 180
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/closed",
+          "url": "http://127.0.0.1:4179/5s/red/closed",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 288,
+              "scrollWidth": 468,
+              "scrollLeft": 180
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/settings",
+          "url": "http://127.0.0.1:4179/5s/red/settings",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 288,
+              "scrollWidth": 468,
+              "scrollLeft": 180
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/report",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/print",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions",
+          "url": "http://127.0.0.1:4179/actions",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 288,
+              "scrollWidth": 792,
+              "scrollLeft": 504
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 288,
+              "scrollWidth": 288,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001/report",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings",
+          "url": "http://127.0.0.1:4179/actions/settings",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 288,
+              "scrollWidth": 296,
+              "scrollLeft": 8
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/categories",
+          "url": "http://127.0.0.1:4179/actions/settings/categories",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/priority-due-dates",
+          "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/reminder-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/escalation-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+          "status": 200,
+          "width": 320,
+          "documentWidth": 320,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 375,
+      "routes": [
+        {
+          "route": "/dashboard",
+          "url": "http://127.0.0.1:4179/dashboard",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 343,
+              "scrollWidth": 343,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits",
+          "url": "http://127.0.0.1:4179/audits",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 343,
+              "scrollWidth": 343,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits?audit=5S-EGM-ZA-006",
+          "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/audits/5S-EGM-ZA-006/report",
+          "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings",
+          "url": "http://127.0.0.1:4179/audits/settings",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 343,
+              "scrollWidth": 343,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/standard-checklist",
+          "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/custom-questions",
+          "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/scoring",
+          "url": "http://127.0.0.1:4179/audits/settings/scoring",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red",
+          "url": "http://127.0.0.1:4179/5s/red",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 343,
+              "scrollWidth": 468,
+              "scrollLeft": 125
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/overview",
+          "url": "http://127.0.0.1:4179/5s/red/overview",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 343,
+              "scrollWidth": 468,
+              "scrollLeft": 125
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create",
+          "url": "http://127.0.0.1:4179/5s/red/create",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/awaiting-closure",
+          "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 343,
+              "scrollWidth": 468,
+              "scrollLeft": 125
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/closed",
+          "url": "http://127.0.0.1:4179/5s/red/closed",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 343,
+              "scrollWidth": 468,
+              "scrollLeft": 125
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/settings",
+          "url": "http://127.0.0.1:4179/5s/red/settings",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 343,
+              "scrollWidth": 468,
+              "scrollLeft": 125
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/report",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/print",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions",
+          "url": "http://127.0.0.1:4179/actions",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 343,
+              "scrollWidth": 792,
+              "scrollLeft": 449
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 343,
+              "scrollWidth": 343,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001/report",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings",
+          "url": "http://127.0.0.1:4179/actions/settings",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 343,
+              "scrollWidth": 343,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/categories",
+          "url": "http://127.0.0.1:4179/actions/settings/categories",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/priority-due-dates",
+          "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/reminder-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/escalation-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+          "status": 200,
+          "width": 375,
+          "documentWidth": 375,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 390,
+      "routes": [
+        {
+          "route": "/dashboard",
+          "url": "http://127.0.0.1:4179/dashboard",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 358,
+              "scrollWidth": 358,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits",
+          "url": "http://127.0.0.1:4179/audits",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 358,
+              "scrollWidth": 358,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits?audit=5S-EGM-ZA-006",
+          "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/audits/5S-EGM-ZA-006/report",
+          "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings",
+          "url": "http://127.0.0.1:4179/audits/settings",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 358,
+              "scrollWidth": 358,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/standard-checklist",
+          "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/custom-questions",
+          "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/scoring",
+          "url": "http://127.0.0.1:4179/audits/settings/scoring",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red",
+          "url": "http://127.0.0.1:4179/5s/red",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 358,
+              "scrollWidth": 468,
+              "scrollLeft": 110
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/overview",
+          "url": "http://127.0.0.1:4179/5s/red/overview",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 358,
+              "scrollWidth": 468,
+              "scrollLeft": 110
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create",
+          "url": "http://127.0.0.1:4179/5s/red/create",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/awaiting-closure",
+          "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 358,
+              "scrollWidth": 468,
+              "scrollLeft": 110
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/closed",
+          "url": "http://127.0.0.1:4179/5s/red/closed",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 358,
+              "scrollWidth": 468,
+              "scrollLeft": 110
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/settings",
+          "url": "http://127.0.0.1:4179/5s/red/settings",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 358,
+              "scrollWidth": 468,
+              "scrollLeft": 110
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/report",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/print",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions",
+          "url": "http://127.0.0.1:4179/actions",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 358,
+              "scrollWidth": 792,
+              "scrollLeft": 434
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 358,
+              "scrollWidth": 358,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001/report",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings",
+          "url": "http://127.0.0.1:4179/actions/settings",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 358,
+              "scrollWidth": 358,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/categories",
+          "url": "http://127.0.0.1:4179/actions/settings/categories",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/priority-due-dates",
+          "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/reminder-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/escalation-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+          "status": 200,
+          "width": 390,
+          "documentWidth": 390,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 430,
+      "routes": [
+        {
+          "route": "/dashboard",
+          "url": "http://127.0.0.1:4179/dashboard",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 398,
+              "scrollWidth": 398,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits",
+          "url": "http://127.0.0.1:4179/audits",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 398,
+              "scrollWidth": 398,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits?audit=5S-EGM-ZA-006",
+          "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/audits/5S-EGM-ZA-006/report",
+          "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings",
+          "url": "http://127.0.0.1:4179/audits/settings",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 398,
+              "scrollWidth": 398,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/standard-checklist",
+          "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/custom-questions",
+          "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/scoring",
+          "url": "http://127.0.0.1:4179/audits/settings/scoring",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red",
+          "url": "http://127.0.0.1:4179/5s/red",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 398,
+              "scrollWidth": 468,
+              "scrollLeft": 70
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/overview",
+          "url": "http://127.0.0.1:4179/5s/red/overview",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 398,
+              "scrollWidth": 468,
+              "scrollLeft": 70
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create",
+          "url": "http://127.0.0.1:4179/5s/red/create",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/awaiting-closure",
+          "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 398,
+              "scrollWidth": 468,
+              "scrollLeft": 70
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/closed",
+          "url": "http://127.0.0.1:4179/5s/red/closed",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 398,
+              "scrollWidth": 468,
+              "scrollLeft": 70
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/settings",
+          "url": "http://127.0.0.1:4179/5s/red/settings",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 398,
+              "scrollWidth": 468,
+              "scrollLeft": 70
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/report",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/print",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions",
+          "url": "http://127.0.0.1:4179/actions",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 398,
+              "scrollWidth": 792,
+              "scrollLeft": 394
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 398,
+              "scrollWidth": 398,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001/report",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings",
+          "url": "http://127.0.0.1:4179/actions/settings",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 398,
+              "scrollWidth": 398,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/categories",
+          "url": "http://127.0.0.1:4179/actions/settings/categories",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/priority-due-dates",
+          "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/reminder-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/escalation-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+          "status": 200,
+          "width": 430,
+          "documentWidth": 430,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 768,
+      "routes": [
+        {
+          "route": "/dashboard",
+          "url": "http://127.0.0.1:4179/dashboard",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 728,
+              "scrollWidth": 728,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits",
+          "url": "http://127.0.0.1:4179/audits",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 728,
+              "scrollWidth": 728,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits?audit=5S-EGM-ZA-006",
+          "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/audits/5S-EGM-ZA-006/report",
+          "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings",
+          "url": "http://127.0.0.1:4179/audits/settings",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 728,
+              "scrollWidth": 728,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/standard-checklist",
+          "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/custom-questions",
+          "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/scoring",
+          "url": "http://127.0.0.1:4179/audits/settings/scoring",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red",
+          "url": "http://127.0.0.1:4179/5s/red",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 728,
+              "scrollWidth": 728,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/overview",
+          "url": "http://127.0.0.1:4179/5s/red/overview",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 728,
+              "scrollWidth": 728,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create",
+          "url": "http://127.0.0.1:4179/5s/red/create",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/awaiting-closure",
+          "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 728,
+              "scrollWidth": 728,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/closed",
+          "url": "http://127.0.0.1:4179/5s/red/closed",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 728,
+              "scrollWidth": 728,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/settings",
+          "url": "http://127.0.0.1:4179/5s/red/settings",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 728,
+              "scrollWidth": 728,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/report",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/print",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions",
+          "url": "http://127.0.0.1:4179/actions",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 728,
+              "scrollWidth": 792,
+              "scrollLeft": 64
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 728,
+              "scrollWidth": 728,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001/report",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings",
+          "url": "http://127.0.0.1:4179/actions/settings",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 728,
+              "scrollWidth": 728,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/categories",
+          "url": "http://127.0.0.1:4179/actions/settings/categories",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/priority-due-dates",
+          "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/reminder-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/escalation-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+          "status": 200,
+          "width": 768,
+          "documentWidth": 768,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1024,
+      "routes": [
+        {
+          "route": "/dashboard",
+          "url": "http://127.0.0.1:4179/dashboard",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 720,
+              "scrollWidth": 720,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits",
+          "url": "http://127.0.0.1:4179/audits",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 720,
+              "scrollWidth": 720,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits?audit=5S-EGM-ZA-006",
+          "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/audits/5S-EGM-ZA-006/report",
+          "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings",
+          "url": "http://127.0.0.1:4179/audits/settings",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 720,
+              "scrollWidth": 720,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/standard-checklist",
+          "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/custom-questions",
+          "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 670,
+              "scrollWidth": 1196,
+              "scrollLeft": 526
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/scoring",
+          "url": "http://127.0.0.1:4179/audits/settings/scoring",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red",
+          "url": "http://127.0.0.1:4179/5s/red",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 720,
+              "scrollWidth": 720,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/overview",
+          "url": "http://127.0.0.1:4179/5s/red/overview",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 720,
+              "scrollWidth": 720,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create",
+          "url": "http://127.0.0.1:4179/5s/red/create",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/awaiting-closure",
+          "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 720,
+              "scrollWidth": 720,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/closed",
+          "url": "http://127.0.0.1:4179/5s/red/closed",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 720,
+              "scrollWidth": 720,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/settings",
+          "url": "http://127.0.0.1:4179/5s/red/settings",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 720,
+              "scrollWidth": 720,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/report",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/print",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions",
+          "url": "http://127.0.0.1:4179/actions",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 720,
+              "scrollWidth": 792,
+              "scrollLeft": 72
+            },
+            {
+              "width": 718,
+              "scrollWidth": 1040,
+              "scrollLeft": 322
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 720,
+              "scrollWidth": 720,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001/report",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings",
+          "url": "http://127.0.0.1:4179/actions/settings",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 720,
+              "scrollWidth": 720,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/categories",
+          "url": "http://127.0.0.1:4179/actions/settings/categories",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 670,
+              "scrollWidth": 699,
+              "scrollLeft": 29
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/priority-due-dates",
+          "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/reminder-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/escalation-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+          "status": 200,
+          "width": 1024,
+          "documentWidth": 1024,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1280,
+      "routes": [
+        {
+          "route": "/dashboard",
+          "url": "http://127.0.0.1:4179/dashboard",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 976,
+              "scrollWidth": 976,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits",
+          "url": "http://127.0.0.1:4179/audits",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 976,
+              "scrollWidth": 976,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits?audit=5S-EGM-ZA-006",
+          "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/audits/5S-EGM-ZA-006/report",
+          "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings",
+          "url": "http://127.0.0.1:4179/audits/settings",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 976,
+              "scrollWidth": 976,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/standard-checklist",
+          "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/custom-questions",
+          "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 926,
+              "scrollWidth": 1196,
+              "scrollLeft": 270
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/scoring",
+          "url": "http://127.0.0.1:4179/audits/settings/scoring",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red",
+          "url": "http://127.0.0.1:4179/5s/red",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 976,
+              "scrollWidth": 976,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/overview",
+          "url": "http://127.0.0.1:4179/5s/red/overview",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 976,
+              "scrollWidth": 976,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create",
+          "url": "http://127.0.0.1:4179/5s/red/create",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/awaiting-closure",
+          "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 976,
+              "scrollWidth": 976,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/closed",
+          "url": "http://127.0.0.1:4179/5s/red/closed",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 976,
+              "scrollWidth": 976,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/settings",
+          "url": "http://127.0.0.1:4179/5s/red/settings",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 976,
+              "scrollWidth": 976,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/report",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/print",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions",
+          "url": "http://127.0.0.1:4179/actions",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 976,
+              "scrollWidth": 976,
+              "scrollLeft": 0
+            },
+            {
+              "width": 974,
+              "scrollWidth": 1040,
+              "scrollLeft": 66
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 976,
+              "scrollWidth": 976,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001/report",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings",
+          "url": "http://127.0.0.1:4179/actions/settings",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 976,
+              "scrollWidth": 976,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/categories",
+          "url": "http://127.0.0.1:4179/actions/settings/categories",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 926,
+              "scrollWidth": 926,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/priority-due-dates",
+          "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/reminder-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/escalation-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+          "status": 200,
+          "width": 1280,
+          "documentWidth": 1280,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "routes": [
+        {
+          "route": "/dashboard",
+          "url": "http://127.0.0.1:4179/dashboard",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1136,
+              "scrollWidth": 1136,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits",
+          "url": "http://127.0.0.1:4179/audits",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1136,
+              "scrollWidth": 1136,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits?audit=5S-EGM-ZA-006",
+          "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/audits/5S-EGM-ZA-006/report",
+          "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings",
+          "url": "http://127.0.0.1:4179/audits/settings",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1136,
+              "scrollWidth": 1136,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/standard-checklist",
+          "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/custom-questions",
+          "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1086,
+              "scrollWidth": 1196,
+              "scrollLeft": 110
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/scoring",
+          "url": "http://127.0.0.1:4179/audits/settings/scoring",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red",
+          "url": "http://127.0.0.1:4179/5s/red",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1136,
+              "scrollWidth": 1136,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/overview",
+          "url": "http://127.0.0.1:4179/5s/red/overview",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1136,
+              "scrollWidth": 1136,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create",
+          "url": "http://127.0.0.1:4179/5s/red/create",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/awaiting-closure",
+          "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1136,
+              "scrollWidth": 1136,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/closed",
+          "url": "http://127.0.0.1:4179/5s/red/closed",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1136,
+              "scrollWidth": 1136,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/settings",
+          "url": "http://127.0.0.1:4179/5s/red/settings",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1136,
+              "scrollWidth": 1136,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/report",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/print",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions",
+          "url": "http://127.0.0.1:4179/actions",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1136,
+              "scrollWidth": 1136,
+              "scrollLeft": 0
+            },
+            {
+              "width": 1134,
+              "scrollWidth": 1134,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1136,
+              "scrollWidth": 1136,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001/report",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings",
+          "url": "http://127.0.0.1:4179/actions/settings",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1136,
+              "scrollWidth": 1136,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/categories",
+          "url": "http://127.0.0.1:4179/actions/settings/categories",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1086,
+              "scrollWidth": 1086,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/priority-due-dates",
+          "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/reminder-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/escalation-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+          "status": 200,
+          "width": 1440,
+          "documentWidth": 1440,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1920,
+      "routes": [
+        {
+          "route": "/dashboard",
+          "url": "http://127.0.0.1:4179/dashboard",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1600,
+              "scrollWidth": 1600,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits",
+          "url": "http://127.0.0.1:4179/audits",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1600,
+              "scrollWidth": 1600,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits?audit=5S-EGM-ZA-006",
+          "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/audits/5S-EGM-ZA-006/report",
+          "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings",
+          "url": "http://127.0.0.1:4179/audits/settings",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1600,
+              "scrollWidth": 1600,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/standard-checklist",
+          "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/custom-questions",
+          "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1550,
+              "scrollWidth": 1550,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/audits/settings/scoring",
+          "url": "http://127.0.0.1:4179/audits/settings/scoring",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red",
+          "url": "http://127.0.0.1:4179/5s/red",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1600,
+              "scrollWidth": 1600,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/overview",
+          "url": "http://127.0.0.1:4179/5s/red/overview",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1600,
+              "scrollWidth": 1600,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create",
+          "url": "http://127.0.0.1:4179/5s/red/create",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/awaiting-closure",
+          "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1600,
+              "scrollWidth": 1600,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/closed",
+          "url": "http://127.0.0.1:4179/5s/red/closed",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1600,
+              "scrollWidth": 1600,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/settings",
+          "url": "http://127.0.0.1:4179/5s/red/settings",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1600,
+              "scrollWidth": 1600,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/report",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/RT-EGM-ZA-001/print",
+          "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions",
+          "url": "http://127.0.0.1:4179/actions",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1600,
+              "scrollWidth": 1600,
+              "scrollLeft": 0
+            },
+            {
+              "width": 1598,
+              "scrollWidth": 1598,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1600,
+              "scrollWidth": 1600,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/ACT-VM-001/report",
+          "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings",
+          "url": "http://127.0.0.1:4179/actions/settings",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1600,
+              "scrollWidth": 1600,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/categories",
+          "url": "http://127.0.0.1:4179/actions/settings/categories",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [
+            {
+              "width": 1550,
+              "scrollWidth": 1550,
+              "scrollLeft": 0
+            }
+          ],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/priority-due-dates",
+          "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/reminder-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        },
+        {
+          "route": "/actions/settings/escalation-rules",
+          "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+          "status": 200,
+          "width": 1920,
+          "documentWidth": 1920,
+          "outside": [],
+          "scrollers": [],
+          "unnamedButtons": []
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "interactionStates": [
+    {
+      "test": "Batch 1 interaction geometry 320px",
+      "state": "audit-create",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 320px",
+      "state": "audit-schedule",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 320px",
+      "state": "audit-zone-popup",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 320px",
+      "state": "audit-execution",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 320px",
+      "state": "standard-long-editor",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 320px",
+      "state": "custom-validation",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 320px",
+      "state": "custom-dropdown",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 320px",
+      "state": "manual-action-dialog",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 288,
+          "scrollWidth": 792,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 320px",
+      "state": "manual-action-zone-popup",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 288,
+          "scrollWidth": 792,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 320px",
+      "state": "qr-validation",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 288,
+          "scrollWidth": 468,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 320px",
+      "state": "red-tag-validation",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 320px",
+      "state": "record-qr-dialog",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 320px",
+      "state": "missing-action",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 320px",
+      "state": "missing-red-tag",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 320px",
+      "state": "mobile-navigation",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 288,
+          "scrollWidth": 288,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 375px",
+      "state": "audit-create",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 375px",
+      "state": "audit-schedule",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 375px",
+      "state": "audit-zone-popup",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 375px",
+      "state": "audit-execution",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 375px",
+      "state": "standard-long-editor",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 375px",
+      "state": "custom-validation",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 375px",
+      "state": "custom-dropdown",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 375px",
+      "state": "manual-action-dialog",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 343,
+          "scrollWidth": 792,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 375px",
+      "state": "manual-action-zone-popup",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 343,
+          "scrollWidth": 792,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 375px",
+      "state": "qr-validation",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 343,
+          "scrollWidth": 468,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 375px",
+      "state": "red-tag-validation",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 375px",
+      "state": "record-qr-dialog",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 375px",
+      "state": "missing-action",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 375px",
+      "state": "missing-red-tag",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 375px",
+      "state": "mobile-navigation",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 343,
+          "scrollWidth": 343,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 390px",
+      "state": "audit-create",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 390px",
+      "state": "audit-schedule",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 390px",
+      "state": "audit-zone-popup",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 390px",
+      "state": "audit-execution",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 390px",
+      "state": "standard-long-editor",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 390px",
+      "state": "custom-validation",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 390px",
+      "state": "custom-dropdown",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 390px",
+      "state": "manual-action-dialog",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 358,
+          "scrollWidth": 792,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 390px",
+      "state": "manual-action-zone-popup",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 358,
+          "scrollWidth": 792,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 390px",
+      "state": "qr-validation",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 358,
+          "scrollWidth": 468,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 390px",
+      "state": "red-tag-validation",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 390px",
+      "state": "record-qr-dialog",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 390px",
+      "state": "missing-action",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 390px",
+      "state": "missing-red-tag",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 390px",
+      "state": "mobile-navigation",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 358,
+          "scrollWidth": 358,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 430px",
+      "state": "audit-create",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 430px",
+      "state": "audit-schedule",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 430px",
+      "state": "audit-zone-popup",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 430px",
+      "state": "audit-execution",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 430px",
+      "state": "standard-long-editor",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 430px",
+      "state": "custom-validation",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 430px",
+      "state": "custom-dropdown",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 430px",
+      "state": "manual-action-dialog",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 398,
+          "scrollWidth": 792,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 430px",
+      "state": "manual-action-zone-popup",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 398,
+          "scrollWidth": 792,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 430px",
+      "state": "qr-validation",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 398,
+          "scrollWidth": 468,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 430px",
+      "state": "red-tag-validation",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 430px",
+      "state": "record-qr-dialog",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 430px",
+      "state": "missing-action",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 430px",
+      "state": "missing-red-tag",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 430px",
+      "state": "mobile-navigation",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 398,
+          "scrollWidth": 398,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 768px",
+      "state": "audit-create",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 768px",
+      "state": "audit-schedule",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 768px",
+      "state": "audit-zone-popup",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 768px",
+      "state": "audit-execution",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 768px",
+      "state": "standard-long-editor",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 768px",
+      "state": "custom-validation",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 768px",
+      "state": "custom-dropdown",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 768px",
+      "state": "manual-action-dialog",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 728,
+          "scrollWidth": 792,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 768px",
+      "state": "manual-action-zone-popup",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 728,
+          "scrollWidth": 792,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 768px",
+      "state": "qr-validation",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 728,
+          "scrollWidth": 728,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 768px",
+      "state": "red-tag-validation",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 768px",
+      "state": "record-qr-dialog",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 768px",
+      "state": "missing-action",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 768px",
+      "state": "missing-red-tag",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 768px",
+      "state": "mobile-navigation",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 728,
+          "scrollWidth": 728,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1024px",
+      "state": "audit-create",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1024px",
+      "state": "audit-schedule",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1024px",
+      "state": "audit-zone-popup",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1024px",
+      "state": "audit-execution",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1024px",
+      "state": "standard-long-editor",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1024px",
+      "state": "custom-validation",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 670,
+          "scrollWidth": 1196,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1024px",
+      "state": "custom-dropdown",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 670,
+          "scrollWidth": 1196,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1024px",
+      "state": "manual-action-dialog",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 720,
+          "scrollWidth": 792,
+          "scrollLeft": 0
+        },
+        {
+          "width": 718,
+          "scrollWidth": 1040,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1024px",
+      "state": "manual-action-zone-popup",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 720,
+          "scrollWidth": 792,
+          "scrollLeft": 0
+        },
+        {
+          "width": 718,
+          "scrollWidth": 1040,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1024px",
+      "state": "qr-validation",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 720,
+          "scrollWidth": 720,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1024px",
+      "state": "red-tag-validation",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1024px",
+      "state": "record-qr-dialog",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1024px",
+      "state": "missing-action",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1024px",
+      "state": "missing-red-tag",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1024px",
+      "state": "collapsed-sidebar",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 908,
+          "scrollWidth": 908,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1280px",
+      "state": "audit-create",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1280px",
+      "state": "audit-schedule",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1280px",
+      "state": "audit-zone-popup",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1280px",
+      "state": "audit-execution",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1280px",
+      "state": "standard-long-editor",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1280px",
+      "state": "custom-validation",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 926,
+          "scrollWidth": 1196,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1280px",
+      "state": "custom-dropdown",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 926,
+          "scrollWidth": 1196,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1280px",
+      "state": "manual-action-dialog",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 976,
+          "scrollWidth": 976,
+          "scrollLeft": 0
+        },
+        {
+          "width": 974,
+          "scrollWidth": 1040,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1280px",
+      "state": "manual-action-zone-popup",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 976,
+          "scrollWidth": 976,
+          "scrollLeft": 0
+        },
+        {
+          "width": 974,
+          "scrollWidth": 1040,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1280px",
+      "state": "qr-validation",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 976,
+          "scrollWidth": 976,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1280px",
+      "state": "red-tag-validation",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1280px",
+      "state": "record-qr-dialog",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1280px",
+      "state": "missing-action",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1280px",
+      "state": "missing-red-tag",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1280px",
+      "state": "collapsed-sidebar",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1164,
+          "scrollWidth": 1164,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1440px",
+      "state": "audit-create",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1440px",
+      "state": "audit-schedule",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1440px",
+      "state": "audit-zone-popup",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1440px",
+      "state": "audit-execution",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1440px",
+      "state": "standard-long-editor",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1440px",
+      "state": "custom-validation",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1086,
+          "scrollWidth": 1196,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1440px",
+      "state": "custom-dropdown",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1086,
+          "scrollWidth": 1196,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1440px",
+      "state": "manual-action-dialog",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1136,
+          "scrollWidth": 1136,
+          "scrollLeft": 0
+        },
+        {
+          "width": 1134,
+          "scrollWidth": 1134,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1440px",
+      "state": "manual-action-zone-popup",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1136,
+          "scrollWidth": 1136,
+          "scrollLeft": 0
+        },
+        {
+          "width": 1134,
+          "scrollWidth": 1134,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1440px",
+      "state": "qr-validation",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1136,
+          "scrollWidth": 1136,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1440px",
+      "state": "red-tag-validation",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1440px",
+      "state": "record-qr-dialog",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1440px",
+      "state": "missing-action",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1440px",
+      "state": "missing-red-tag",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1440px",
+      "state": "collapsed-sidebar",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1324,
+          "scrollWidth": 1324,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1920px",
+      "state": "audit-create",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1920px",
+      "state": "audit-schedule",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1920px",
+      "state": "audit-zone-popup",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1920px",
+      "state": "audit-execution",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1920px",
+      "state": "standard-long-editor",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1920px",
+      "state": "custom-validation",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1550,
+          "scrollWidth": 1550,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1920px",
+      "state": "custom-dropdown",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1550,
+          "scrollWidth": 1550,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1920px",
+      "state": "manual-action-dialog",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1600,
+          "scrollWidth": 1600,
+          "scrollLeft": 0
+        },
+        {
+          "width": 1598,
+          "scrollWidth": 1598,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1920px",
+      "state": "manual-action-zone-popup",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1600,
+          "scrollWidth": 1600,
+          "scrollLeft": 0
+        },
+        {
+          "width": 1598,
+          "scrollWidth": 1598,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1920px",
+      "state": "qr-validation",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1600,
+          "scrollWidth": 1600,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1920px",
+      "state": "red-tag-validation",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1920px",
+      "state": "record-qr-dialog",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1920px",
+      "state": "missing-action",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1920px",
+      "state": "missing-red-tag",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 interaction geometry 1920px",
+      "state": "collapsed-sidebar",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1788,
+          "scrollWidth": 1788,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 320px",
+      "state": "long-red-tag-detail",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 320px",
+      "state": "long-red-tag-report",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 320px",
+      "state": "long-red-tag-label",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 320px",
+      "state": "linked-action-long-context",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 320px",
+      "state": "linked-action-validation",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 320px",
+      "state": "linked-action-info-tooltip",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 320px",
+      "state": "empty-closed-tags",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 288,
+          "scrollWidth": 468,
+          "scrollLeft": 180
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 375px",
+      "state": "long-red-tag-detail",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 375px",
+      "state": "long-red-tag-report",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 375px",
+      "state": "long-red-tag-label",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 375px",
+      "state": "linked-action-long-context",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 375px",
+      "state": "linked-action-validation",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 375px",
+      "state": "linked-action-info-tooltip",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 375px",
+      "state": "empty-closed-tags",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 343,
+          "scrollWidth": 468,
+          "scrollLeft": 125
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 390px",
+      "state": "long-red-tag-detail",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 390px",
+      "state": "long-red-tag-report",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 390px",
+      "state": "long-red-tag-label",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 390px",
+      "state": "linked-action-long-context",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 390px",
+      "state": "linked-action-validation",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 390px",
+      "state": "linked-action-info-tooltip",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 390px",
+      "state": "empty-closed-tags",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 358,
+          "scrollWidth": 468,
+          "scrollLeft": 110
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 430px",
+      "state": "long-red-tag-detail",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 430px",
+      "state": "long-red-tag-report",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 430px",
+      "state": "long-red-tag-label",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 430px",
+      "state": "linked-action-long-context",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 430px",
+      "state": "linked-action-validation",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 430px",
+      "state": "linked-action-info-tooltip",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 430px",
+      "state": "empty-closed-tags",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 398,
+          "scrollWidth": 468,
+          "scrollLeft": 70
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 768px",
+      "state": "long-red-tag-detail",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 768px",
+      "state": "long-red-tag-report",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 768px",
+      "state": "long-red-tag-label",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 768px",
+      "state": "linked-action-long-context",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 768px",
+      "state": "linked-action-validation",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 768px",
+      "state": "linked-action-info-tooltip",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 768px",
+      "state": "empty-closed-tags",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 728,
+          "scrollWidth": 728,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1024px",
+      "state": "long-red-tag-detail",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1024px",
+      "state": "long-red-tag-report",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1024px",
+      "state": "long-red-tag-label",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1024px",
+      "state": "linked-action-long-context",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1024px",
+      "state": "linked-action-validation",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1024px",
+      "state": "linked-action-info-tooltip",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1024px",
+      "state": "empty-closed-tags",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 720,
+          "scrollWidth": 720,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1280px",
+      "state": "long-red-tag-detail",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1280px",
+      "state": "long-red-tag-report",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1280px",
+      "state": "long-red-tag-label",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1280px",
+      "state": "linked-action-long-context",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1280px",
+      "state": "linked-action-validation",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1280px",
+      "state": "linked-action-info-tooltip",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1280px",
+      "state": "empty-closed-tags",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 976,
+          "scrollWidth": 976,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1440px",
+      "state": "long-red-tag-detail",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1440px",
+      "state": "long-red-tag-report",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1440px",
+      "state": "long-red-tag-label",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1440px",
+      "state": "linked-action-long-context",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1440px",
+      "state": "linked-action-validation",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1440px",
+      "state": "linked-action-info-tooltip",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1440px",
+      "state": "empty-closed-tags",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1136,
+          "scrollWidth": 1136,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1920px",
+      "state": "long-red-tag-detail",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1920px",
+      "state": "long-red-tag-report",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1920px",
+      "state": "long-red-tag-label",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1920px",
+      "state": "linked-action-long-context",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1920px",
+      "state": "linked-action-validation",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1920px",
+      "state": "linked-action-info-tooltip",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 linked Action and long content 1920px",
+      "state": "empty-closed-tags",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1600,
+          "scrollWidth": 1600,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 320px",
+      "state": "dashboard-performance",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 288,
+          "scrollWidth": 288,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 320px",
+      "state": "dashboard-modules",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 288,
+          "scrollWidth": 288,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 320px",
+      "state": "expanded-action-filters",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 288,
+          "scrollWidth": 792,
+          "scrollLeft": 504
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 320px",
+      "state": "empty-action-search",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 288,
+          "scrollWidth": 792,
+          "scrollLeft": 504
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 320px",
+      "state": "due-date-validation",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 288,
+          "scrollWidth": 288,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 320px",
+      "state": "invalid-reference-upload",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 320px",
+      "state": "simulated-camera-loading",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 320px",
+      "state": "simulated-camera-denied",
+      "width": 320,
+      "documentWidth": 320,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 375px",
+      "state": "dashboard-performance",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 343,
+          "scrollWidth": 343,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 375px",
+      "state": "dashboard-modules",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 343,
+          "scrollWidth": 343,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 375px",
+      "state": "expanded-action-filters",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 343,
+          "scrollWidth": 792,
+          "scrollLeft": 449
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 375px",
+      "state": "empty-action-search",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 343,
+          "scrollWidth": 792,
+          "scrollLeft": 449
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 375px",
+      "state": "due-date-validation",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 343,
+          "scrollWidth": 343,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 375px",
+      "state": "invalid-reference-upload",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 375px",
+      "state": "simulated-camera-loading",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 375px",
+      "state": "simulated-camera-denied",
+      "width": 375,
+      "documentWidth": 375,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 390px",
+      "state": "dashboard-performance",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 358,
+          "scrollWidth": 358,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 390px",
+      "state": "dashboard-modules",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 358,
+          "scrollWidth": 358,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 390px",
+      "state": "expanded-action-filters",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 358,
+          "scrollWidth": 792,
+          "scrollLeft": 434
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 390px",
+      "state": "empty-action-search",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 358,
+          "scrollWidth": 792,
+          "scrollLeft": 434
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 390px",
+      "state": "due-date-validation",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 358,
+          "scrollWidth": 358,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 390px",
+      "state": "invalid-reference-upload",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 390px",
+      "state": "simulated-camera-loading",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 390px",
+      "state": "simulated-camera-denied",
+      "width": 390,
+      "documentWidth": 390,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 430px",
+      "state": "dashboard-performance",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 398,
+          "scrollWidth": 398,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 430px",
+      "state": "dashboard-modules",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 398,
+          "scrollWidth": 398,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 430px",
+      "state": "expanded-action-filters",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 398,
+          "scrollWidth": 792,
+          "scrollLeft": 394
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 430px",
+      "state": "empty-action-search",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 398,
+          "scrollWidth": 792,
+          "scrollLeft": 394
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 430px",
+      "state": "due-date-validation",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 398,
+          "scrollWidth": 398,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 430px",
+      "state": "invalid-reference-upload",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 430px",
+      "state": "simulated-camera-loading",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 430px",
+      "state": "simulated-camera-denied",
+      "width": 430,
+      "documentWidth": 430,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 768px",
+      "state": "dashboard-performance",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 728,
+          "scrollWidth": 728,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 768px",
+      "state": "dashboard-modules",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 728,
+          "scrollWidth": 728,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 768px",
+      "state": "expanded-action-filters",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 728,
+          "scrollWidth": 792,
+          "scrollLeft": 64
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 768px",
+      "state": "empty-action-search",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 728,
+          "scrollWidth": 792,
+          "scrollLeft": 64
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 768px",
+      "state": "due-date-validation",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 728,
+          "scrollWidth": 728,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 768px",
+      "state": "invalid-reference-upload",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 768px",
+      "state": "simulated-camera-loading",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 768px",
+      "state": "simulated-camera-denied",
+      "width": 768,
+      "documentWidth": 768,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1024px",
+      "state": "dashboard-performance",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 720,
+          "scrollWidth": 720,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1024px",
+      "state": "dashboard-modules",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 720,
+          "scrollWidth": 720,
+          "scrollLeft": 0
+        },
+        {
+          "width": 720,
+          "scrollWidth": 720,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1024px",
+      "state": "expanded-action-filters",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 720,
+          "scrollWidth": 792,
+          "scrollLeft": 72
+        },
+        {
+          "width": 718,
+          "scrollWidth": 1040,
+          "scrollLeft": 322
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1024px",
+      "state": "empty-action-search",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 720,
+          "scrollWidth": 792,
+          "scrollLeft": 72
+        },
+        {
+          "width": 718,
+          "scrollWidth": 1040,
+          "scrollLeft": 322
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1024px",
+      "state": "due-date-validation",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 720,
+          "scrollWidth": 720,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1024px",
+      "state": "invalid-reference-upload",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1024px",
+      "state": "simulated-camera-loading",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1024px",
+      "state": "simulated-camera-denied",
+      "width": 1024,
+      "documentWidth": 1024,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1280px",
+      "state": "dashboard-performance",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 976,
+          "scrollWidth": 976,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1280px",
+      "state": "dashboard-modules",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 976,
+          "scrollWidth": 976,
+          "scrollLeft": 0
+        },
+        {
+          "width": 976,
+          "scrollWidth": 976,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1280px",
+      "state": "expanded-action-filters",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 976,
+          "scrollWidth": 976,
+          "scrollLeft": 0
+        },
+        {
+          "width": 974,
+          "scrollWidth": 1040,
+          "scrollLeft": 66
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1280px",
+      "state": "empty-action-search",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 976,
+          "scrollWidth": 976,
+          "scrollLeft": 0
+        },
+        {
+          "width": 974,
+          "scrollWidth": 1040,
+          "scrollLeft": 66
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1280px",
+      "state": "due-date-validation",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 976,
+          "scrollWidth": 976,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1280px",
+      "state": "invalid-reference-upload",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1280px",
+      "state": "simulated-camera-loading",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1280px",
+      "state": "simulated-camera-denied",
+      "width": 1280,
+      "documentWidth": 1280,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1440px",
+      "state": "dashboard-performance",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1136,
+          "scrollWidth": 1136,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1440px",
+      "state": "dashboard-modules",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1136,
+          "scrollWidth": 1136,
+          "scrollLeft": 0
+        },
+        {
+          "width": 1136,
+          "scrollWidth": 1136,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1440px",
+      "state": "expanded-action-filters",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1136,
+          "scrollWidth": 1136,
+          "scrollLeft": 0
+        },
+        {
+          "width": 1134,
+          "scrollWidth": 1134,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1440px",
+      "state": "empty-action-search",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1136,
+          "scrollWidth": 1136,
+          "scrollLeft": 0
+        },
+        {
+          "width": 1134,
+          "scrollWidth": 1134,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1440px",
+      "state": "due-date-validation",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1136,
+          "scrollWidth": 1136,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1440px",
+      "state": "invalid-reference-upload",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1440px",
+      "state": "simulated-camera-loading",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1440px",
+      "state": "simulated-camera-denied",
+      "width": 1440,
+      "documentWidth": 1440,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1920px",
+      "state": "dashboard-performance",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1600,
+          "scrollWidth": 1600,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1920px",
+      "state": "dashboard-modules",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1600,
+          "scrollWidth": 1600,
+          "scrollLeft": 0
+        },
+        {
+          "width": 1600,
+          "scrollWidth": 1600,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1920px",
+      "state": "expanded-action-filters",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1600,
+          "scrollWidth": 1600,
+          "scrollLeft": 0
+        },
+        {
+          "width": 1598,
+          "scrollWidth": 1598,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1920px",
+      "state": "empty-action-search",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1600,
+          "scrollWidth": 1600,
+          "scrollLeft": 0
+        },
+        {
+          "width": 1598,
+          "scrollWidth": 1598,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1920px",
+      "state": "due-date-validation",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [
+        {
+          "width": 1600,
+          "scrollWidth": 1600,
+          "scrollLeft": 0
+        }
+      ],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1920px",
+      "state": "invalid-reference-upload",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1920px",
+      "state": "simulated-camera-loading",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    },
+    {
+      "test": "Batch 1 filters and media error states 1920px",
+      "state": "simulated-camera-denied",
+      "width": 1920,
+      "documentWidth": 1920,
+      "outside": [],
+      "scrollers": [],
+      "unnamedButtons": []
+    }
+  ],
+  "additionalGeometry": {
+    "populated-action-geometry.json": [
+      {
+        "width": 320,
+        "documentWidth": 320
+      },
+      {
+        "width": 375,
+        "documentWidth": 375
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      },
+      {
+        "width": 430,
+        "documentWidth": 430
+      },
+      {
+        "width": 768,
+        "documentWidth": 768
+      },
+      {
+        "width": 1024,
+        "documentWidth": 1024,
+        "table": {
+          "width": 718,
+          "scrollWidth": 1263,
+          "scrollLeft": 545
+        }
+      },
+      {
+        "width": 1280,
+        "documentWidth": 1280,
+        "table": {
+          "width": 974,
+          "scrollWidth": 1263,
+          "scrollLeft": 289
+        }
+      },
+      {
+        "width": 1440,
+        "documentWidth": 1440,
+        "table": {
+          "width": 1134,
+          "scrollWidth": 1263,
+          "scrollLeft": 129
+        }
+      },
+      {
+        "width": 1920,
+        "documentWidth": 1920,
+        "table": {
+          "width": 1598,
+          "scrollWidth": 1598,
+          "scrollLeft": 0
+        }
+      }
+    ],
+    "sticky-geometry.json": [
+      {
+        "width": 320,
+        "shell": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 64
+        },
+        "create": {
+          "x": 16,
+          "y": 64,
+          "width": 288,
+          "height": 135
+        },
+        "documentWidth": 320
+      },
+      {
+        "width": 375,
+        "shell": {
+          "x": 0,
+          "y": 0,
+          "width": 375,
+          "height": 64
+        },
+        "create": {
+          "x": 16,
+          "y": 64,
+          "width": 343,
+          "height": 135
+        },
+        "documentWidth": 375
+      },
+      {
+        "width": 390,
+        "shell": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 64
+        },
+        "create": {
+          "x": 16,
+          "y": 64,
+          "width": 358,
+          "height": 135
+        },
+        "documentWidth": 390
+      },
+      {
+        "width": 430,
+        "shell": {
+          "x": 0,
+          "y": 0,
+          "width": 430,
+          "height": 64
+        },
+        "create": {
+          "x": 16,
+          "y": 64,
+          "width": 398,
+          "height": 135
+        },
+        "documentWidth": 430
+      },
+      {
+        "width": 768,
+        "shell": {
+          "x": 0,
+          "y": 0,
+          "width": 768,
+          "height": 64
+        },
+        "create": {
+          "x": 20,
+          "y": 64,
+          "width": 728,
+          "height": 79
+        },
+        "documentWidth": 768
+      },
+      {
+        "width": 1024,
+        "shell": {
+          "x": 256,
+          "y": 0,
+          "width": 768,
+          "height": 64
+        },
+        "create": {
+          "x": 280,
+          "y": 64,
+          "width": 720,
+          "height": 79
+        },
+        "documentWidth": 1024
+      },
+      {
+        "width": 1280,
+        "shell": {
+          "x": 256,
+          "y": 0,
+          "width": 1024,
+          "height": 64
+        },
+        "create": {
+          "x": 280,
+          "y": 64,
+          "width": 976,
+          "height": 79
+        },
+        "documentWidth": 1280
+      },
+      {
+        "width": 1440,
+        "shell": {
+          "x": 256,
+          "y": 0,
+          "width": 1184,
+          "height": 64
+        },
+        "create": {
+          "x": 280,
+          "y": 64,
+          "width": 1136,
+          "height": 79
+        },
+        "documentWidth": 1440
+      },
+      {
+        "width": 1920,
+        "shell": {
+          "x": 256,
+          "y": 0,
+          "width": 1664,
+          "height": 64
+        },
+        "create": {
+          "x": 288,
+          "y": 64,
+          "width": 1600,
+          "height": 79
+        },
+        "documentWidth": 1920
+      }
+    ]
+  },
+  "validatedFilesSha256": {
+    "app/globals.css": "775af23a62632f4c9e8971cbd63533f38af23e4a2ceca9f2cd9f36219e854d9b",
+    "components/navigation/header.tsx": "ec8ae5dddc40db5533d3031cf01059d769f9860e6a6bacbee914b221f8a6619e",
+    "components/ui/tooltip.tsx": "9fd55aac56d4bd82416e3071934929d21e972ecbc86271c402e2d8ad3d587c4d",
+    "features/actions/action-center-page.tsx": "32856cdecb9a97f06443dbf26116a0bce3c97165a941cfa234f18a101345ab4d",
+    "features/actions/create-linked-action-dialog.tsx": "62b2d50c48877e7189cf37b38c8ab9daba43cc6cbe30cf55c460ea12909f9c69",
+    "features/five-s/components/FiveSAuditCreate.tsx": "885b89698baeddf563936ca851bfaa7a4e05c45721954e8d305292fa6a927844",
+    "features/five-s/components/FiveSAuditReport.tsx": "fe9ae46b094df30a6c7a810d4df6ab275e048d6f5acf8173351aef6b5c0c8ff2",
+    "features/five-s/components/FiveSPageHeader.tsx": "8f5019015b10ca093fbe867158330f3987dc78e97f681f6199de9243f62d75d3",
+    "features/five-s/red-tag/red-tag-module.tsx": "490a8fa31bafb4d6cb5954756da0f15184797c1e2639b71234e938e2c6d8795d",
+    "features/five-s/red-tag/red-tag-report-page.tsx": "f7ebd7105548defe3e403cbaef8a33051a981b04ca4c277a7bd585b3bd1c1a1c",
+    "e2e/p0-critical.spec.ts": "f5d3136391b0b7fd65f8b1f060b9542b93a8668ae39d4846f9ce15e86e62342d",
+    "e2e/ui-batch1.spec.ts": "8c38811340ad4c11884e7c38347ff94016cdb005f7ac78c3dd201b93acc2be06",
+    "e2e/ui-batch1-sticky.spec.ts": "3e41217448ab480896d5aa26213d9c461ecb1b52b13a17ff544c9bc1d032be12",
+    "e2e/ui-batch1-populated.spec.ts": "d41e4a9b1730482f50fcdb33bae5db8521727bb2cac55e5ee6ce284bb839861a",
+    "playwright.ui.config.ts": "4f2d65ea0931ae7bd274981c8f907dfcd9a4339417c578f4c4e897427ec36f90"
+  },
+  "limitations": [
+    "Chromium only; synthetic admin/demo contexts",
+    "Camera error/loading simulated; no physical camera/printer/QR scan",
+    "No screen reader, full contrast audit, real-device touch or short-height/zoom matrix",
+    "Batch 2 pending at this checkpoint"
+  ]
+}

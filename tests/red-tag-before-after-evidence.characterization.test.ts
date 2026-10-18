@@ -30,7 +30,7 @@ async function setup() {
 afterEach(() => { vi.resetModules(); vi.unstubAllGlobals(); });
 
 const creator = DEMO_USERS.auditor;
-const reviewer = DEMO_USERS.leader;
+const reviewer = DEMO_USERS.auditor;
 const beforeUrl = "data:image/jpeg;base64,before-photo";
 const after = [{ id: "RTE-AFTER", name: "after.jpg", url: "data:image/jpeg;base64,after-photo", uploadedBy: reviewer.name, uploadedAt: "2026-09-24T08:00:00.000Z" }];
 
@@ -62,7 +62,8 @@ describe("Feedback #34 Red Tag before and after evidence", () => {
     expect(store.completeRedTagDisposition(tag.id, { evidence: after, completionNotes: "", responsibleConfirmed: true }, reviewer)).toBeUndefined();
     expect(store.completeRedTagDisposition(tag.id, { evidence: after, completionNotes: "Moved", responsibleConfirmed: false }, reviewer)).toBeUndefined();
     expect(store.completeRedTagDisposition(tag.id, { evidence: [], completionNotes: "Moved", responsibleConfirmed: true }, reviewer)).toBeUndefined();
-    store.linkRedTagAction(tag.id, "ACT-34", reviewer);
+    const pending = (await import("@/lib/actions/action-store")).createAction({ title: "Pending execution", description: "Move fixture", source: "Red Tag", sourceModule: "redTag", sourceId: tag.id, sourceTitle: tag.id, plant: tag.plant, department: tag.department!, area: tag.zone, assignedTo: "Ritika", status: "Assigned", priority: "Medium", dueDate: "2030-10-01" });
+    expect(store.linkRedTagAction(tag.id, pending.id, reviewer)).toBeDefined();
     expect(store.completeRedTagDisposition(tag.id, { evidence: after, completionNotes: "Moved", responsibleConfirmed: true }, reviewer)).toBeUndefined();
     expect(store.getRedTag(tag.id)?.status).toBe("Disposition In Progress");
   });
@@ -79,6 +80,7 @@ describe("Feedback #34 Red Tag before and after evidence", () => {
   it("does not require After for Keep and preserves Further Evaluation's final-decision guard", async () => {
     const { store } = await setup();
     const keep = decision(store, "keep");
+    (await import("@/lib/current-user")).setDemoRole("auditor");
     expect(store.confirmRedTagKeep(keep.id, "Retain calibrated master", reviewer)).toMatchObject({ status: "Closed" });
     expect(store.verifyRedTagDisposition(keep.id, { passed: true, details: "Retained state checked" }, reviewer)).toBeUndefined();
     expect(store.getRedTag(keep.id)?.afterEvidence).toBeUndefined();

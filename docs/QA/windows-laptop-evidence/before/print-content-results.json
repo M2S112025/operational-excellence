@@ -1,0 +1,402 @@
+{
+  "config": {
+    "argv": [
+      "/Users/rumesh-9634/.nvm/versions/node/v24.21.0/bin/node",
+      "/Users/rumesh-9634/Projects/Ops/node_modules/.bin/playwright",
+      "test",
+      "-c",
+      "playwright.windows.config.ts",
+      "e2e/windows-operations.spec.ts",
+      "--grep",
+      "reports and filters",
+      "--workers=1"
+    ],
+    "configFile": "/Users/rumesh-9634/Projects/Ops/playwright.windows.config.ts",
+    "rootDir": "/Users/rumesh-9634/Projects/Ops/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/rumesh-9634/Projects/Ops/test-results/windows-print-content-before",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/Users/rumesh-9634/Projects/Ops/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "windows-*.spec.ts"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/rumesh-9634/Projects/Ops/test-results/windows-print-content-before",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/Users/rumesh-9634/Projects/Ops/e2e",
+        "snapshotDir": "/Users/rumesh-9634/Projects/Ops/e2e",
+        "testIgnore": [],
+        "testMatch": "windows-*.spec.ts",
+        "timeout": 120000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4179",
+          "browserName": "chromium",
+          "launchOptions": {
+            "executablePath": "/tmp/ops-p0-browsers/chromium-1248/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
+          },
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "video": "off",
+          "actionTimeout": 15000,
+          "navigationTimeout": 30000
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/windows-print-content-before-results.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report/windows-print-content-before",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "windows-operations.spec.ts",
+      "file": "windows-operations.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Laptop reports and filters 1024x600",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 17903,
+                  "error": {
+                    "message": "Error: print sheet content fits\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m254\u001b[39m\nReceived:    \u001b[31m567\u001b[39m",
+                    "stack": "Error: print sheet content fits\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m254\u001b[39m\nReceived:    \u001b[31m567\u001b[39m\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts:31:646",
+                    "location": {
+                      "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts",
+                      "column": 646,
+                      "line": 31
+                    },
+                    "snippet": "  29 |   await page.emulateMedia({media:'print'});await state(page,info,'report-print');await page.emulateMedia({media:'screen'});\n  30 |   await page.goto('/settings/roles',{waitUntil:'networkidle'});const matrix=page.getByLabel('Role capability matrix');await matrix.evaluate(el=>el.scrollLeft=el.scrollWidth);if(await matrix.evaluate(el=>el.scrollWidth>el.clientWidth+1))expect(await matrix.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);await state(page,info,'role-matrix',width===320||width===1440);\n> 31 |   await page.goto('/visual-management/boards/VM-ZA-T1/print',{waitUntil:'networkidle'});const sheets=await page.locator('[data-print-sheet]').evaluateAll(els=>els.map(el=>{const r=el.getBoundingClientRect();const table=el.querySelector('[data-print-table] table')?.getBoundingClientRect();return {height:r.height,clientHeight:el.clientHeight,scrollHeight:el.scrollHeight,tableBottom:table?.bottom,sheetBottom:r.bottom};}));await info.attach('vm-print-sheet-content.json',{body:JSON.stringify({viewport:{width,height},sheets}),contentType:'application/json'});for(const sheet of sheets){expect.soft(sheet.scrollHeight,'print sheet content fits').toBeLessThanOrEqual(sheet.clientHeight+1);if(sheet.tableBottom)expect.soft(sheet.tableBottom,'KPI table fits preview sheet').toBeLessThanOrEqual(sheet.sheetBottom+1);}await state(page,info,'vm-print-workspace',width===320||width===1440);await reachable(page,page.getByRole('button',{name:'Print / Save as PDF',exact:true}),info,'vm-print-primary');await reachable(page,page.getByRole('button',{name:'Board',exact:true}),info,'vm-print-back');if([911,1024,1440].includes(width))await page.screenshot({path:info.outputPath('vm-print-back-after.png'),animations:'disabled'});\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ^\n  32 |  });\n  33 | }\n  34 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts",
+                        "column": 646,
+                        "line": 31
+                      },
+                      "message": "Error: print sheet content fits\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m254\u001b[39m\nReceived:    \u001b[31m567\u001b[39m\n\n  29 |   await page.emulateMedia({media:'print'});await state(page,info,'report-print');await page.emulateMedia({media:'screen'});\n  30 |   await page.goto('/settings/roles',{waitUntil:'networkidle'});const matrix=page.getByLabel('Role capability matrix');await matrix.evaluate(el=>el.scrollLeft=el.scrollWidth);if(await matrix.evaluate(el=>el.scrollWidth>el.clientWidth+1))expect(await matrix.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);await state(page,info,'role-matrix',width===320||width===1440);\n> 31 |   await page.goto('/visual-management/boards/VM-ZA-T1/print',{waitUntil:'networkidle'});const sheets=await page.locator('[data-print-sheet]').evaluateAll(els=>els.map(el=>{const r=el.getBoundingClientRect();const table=el.querySelector('[data-print-table] table')?.getBoundingClientRect();return {height:r.height,clientHeight:el.clientHeight,scrollHeight:el.scrollHeight,tableBottom:table?.bottom,sheetBottom:r.bottom};}));await info.attach('vm-print-sheet-content.json',{body:JSON.stringify({viewport:{width,height},sheets}),contentType:'application/json'});for(const sheet of sheets){expect.soft(sheet.scrollHeight,'print sheet content fits').toBeLessThanOrEqual(sheet.clientHeight+1);if(sheet.tableBottom)expect.soft(sheet.tableBottom,'KPI table fits preview sheet').toBeLessThanOrEqual(sheet.sheetBottom+1);}await state(page,info,'vm-print-workspace',width===320||width===1440);await reachable(page,page.getByRole('button',{name:'Print / Save as PDF',exact:true}),info,'vm-print-primary');await reachable(page,page.getByRole('button',{name:'Board',exact:true}),info,'vm-print-back');if([911,1024,1440].includes(width))await page.screenshot({path:info.outputPath('vm-print-back-after.png'),animations:'disabled'});\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ^\n  32 |  });\n  33 | }\n  34 |\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts:31:646"
+                    },
+                    {
+                      "location": {
+                        "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts",
+                        "column": 771,
+                        "line": 31
+                      },
+                      "message": "Error: KPI table fits preview sheet\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m366.15625\u001b[39m\nReceived:    \u001b[31m768\u001b[39m\n\n  29 |   await page.emulateMedia({media:'print'});await state(page,info,'report-print');await page.emulateMedia({media:'screen'});\n  30 |   await page.goto('/settings/roles',{waitUntil:'networkidle'});const matrix=page.getByLabel('Role capability matrix');await matrix.evaluate(el=>el.scrollLeft=el.scrollWidth);if(await matrix.evaluate(el=>el.scrollWidth>el.clientWidth+1))expect(await matrix.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);await state(page,info,'role-matrix',width===320||width===1440);\n> 31 |   await page.goto('/visual-management/boards/VM-ZA-T1/print',{waitUntil:'networkidle'});const sheets=await page.locator('[data-print-sheet]').evaluateAll(els=>els.map(el=>{const r=el.getBoundingClientRect();const table=el.querySelector('[data-print-table] table')?.getBoundingClientRect();return {height:r.height,clientHeight:el.clientHeight,scrollHeight:el.scrollHeight,tableBottom:table?.bottom,sheetBottom:r.bottom};}));await info.attach('vm-print-sheet-content.json',{body:JSON.stringify({viewport:{width,height},sheets}),contentType:'application/json'});for(const sheet of sheets){expect.soft(sheet.scrollHeight,'print sheet content fits').toBeLessThanOrEqual(sheet.clientHeight+1);if(sheet.tableBottom)expect.soft(sheet.tableBottom,'KPI table fits preview sheet').toBeLessThanOrEqual(sheet.sheetBottom+1);}await state(page,info,'vm-print-workspace',width===320||width===1440);await reachable(page,page.getByRole('button',{name:'Print / Save as PDF',exact:true}),info,'vm-print-primary');await reachable(page,page.getByRole('button',{name:'Board',exact:true}),info,'vm-print-back');if([911,1024,1440].includes(width))await page.screenshot({path:info.outputPath('vm-print-back-after.png'),animations:'disabled'});\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ^\n  32 |  });\n  33 | }\n  34 |\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts:31:771"
+                    },
+                    {
+                      "location": {
+                        "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts",
+                        "column": 646,
+                        "line": 31
+                      },
+                      "message": "Error: print sheet content fits\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m254\u001b[39m\nReceived:    \u001b[31m567\u001b[39m\n\n  29 |   await page.emulateMedia({media:'print'});await state(page,info,'report-print');await page.emulateMedia({media:'screen'});\n  30 |   await page.goto('/settings/roles',{waitUntil:'networkidle'});const matrix=page.getByLabel('Role capability matrix');await matrix.evaluate(el=>el.scrollLeft=el.scrollWidth);if(await matrix.evaluate(el=>el.scrollWidth>el.clientWidth+1))expect(await matrix.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);await state(page,info,'role-matrix',width===320||width===1440);\n> 31 |   await page.goto('/visual-management/boards/VM-ZA-T1/print',{waitUntil:'networkidle'});const sheets=await page.locator('[data-print-sheet]').evaluateAll(els=>els.map(el=>{const r=el.getBoundingClientRect();const table=el.querySelector('[data-print-table] table')?.getBoundingClientRect();return {height:r.height,clientHeight:el.clientHeight,scrollHeight:el.scrollHeight,tableBottom:table?.bottom,sheetBottom:r.bottom};}));await info.attach('vm-print-sheet-content.json',{body:JSON.stringify({viewport:{width,height},sheets}),contentType:'application/json'});for(const sheet of sheets){expect.soft(sheet.scrollHeight,'print sheet content fits').toBeLessThanOrEqual(sheet.clientHeight+1);if(sheet.tableBottom)expect.soft(sheet.tableBottom,'KPI table fits preview sheet').toBeLessThanOrEqual(sheet.sheetBottom+1);}await state(page,info,'vm-print-workspace',width===320||width===1440);await reachable(page,page.getByRole('button',{name:'Print / Save as PDF',exact:true}),info,'vm-print-primary');await reachable(page,page.getByRole('button',{name:'Board',exact:true}),info,'vm-print-back');if([911,1024,1440].includes(width))await page.screenshot({path:info.outputPath('vm-print-back-after.png'),animations:'disabled'});\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ^\n  32 |  });\n  33 | }\n  34 |\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts:31:646"
+                    },
+                    {
+                      "location": {
+                        "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts",
+                        "column": 771,
+                        "line": 31
+                      },
+                      "message": "Error: KPI table fits preview sheet\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m643.3125\u001b[39m\nReceived:    \u001b[31m1045.15625\u001b[39m\n\n  29 |   await page.emulateMedia({media:'print'});await state(page,info,'report-print');await page.emulateMedia({media:'screen'});\n  30 |   await page.goto('/settings/roles',{waitUntil:'networkidle'});const matrix=page.getByLabel('Role capability matrix');await matrix.evaluate(el=>el.scrollLeft=el.scrollWidth);if(await matrix.evaluate(el=>el.scrollWidth>el.clientWidth+1))expect(await matrix.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);await state(page,info,'role-matrix',width===320||width===1440);\n> 31 |   await page.goto('/visual-management/boards/VM-ZA-T1/print',{waitUntil:'networkidle'});const sheets=await page.locator('[data-print-sheet]').evaluateAll(els=>els.map(el=>{const r=el.getBoundingClientRect();const table=el.querySelector('[data-print-table] table')?.getBoundingClientRect();return {height:r.height,clientHeight:el.clientHeight,scrollHeight:el.scrollHeight,tableBottom:table?.bottom,sheetBottom:r.bottom};}));await info.attach('vm-print-sheet-content.json',{body:JSON.stringify({viewport:{width,height},sheets}),contentType:'application/json'});for(const sheet of sheets){expect.soft(sheet.scrollHeight,'print sheet content fits').toBeLessThanOrEqual(sheet.clientHeight+1);if(sheet.tableBottom)expect.soft(sheet.tableBottom,'KPI table fits preview sheet').toBeLessThanOrEqual(sheet.sheetBottom+1);}await state(page,info,'vm-print-workspace',width===320||width===1440);await reachable(page,page.getByRole('button',{name:'Print / Save as PDF',exact:true}),info,'vm-print-primary');await reachable(page,page.getByRole('button',{name:'Board',exact:true}),info,'vm-print-back');if([911,1024,1440].includes(width))await page.screenshot({path:info.outputPath('vm-print-back-after.png'),animations:'disabled'});\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ^\n  32 |  });\n  33 | }\n  34 |\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts:31:771"
+                    },
+                    {
+                      "location": {
+                        "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts",
+                        "column": 646,
+                        "line": 31
+                      },
+                      "message": "Error: print sheet content fits\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m254\u001b[39m\nReceived:    \u001b[31m567\u001b[39m\n\n  29 |   await page.emulateMedia({media:'print'});await state(page,info,'report-print');await page.emulateMedia({media:'screen'});\n  30 |   await page.goto('/settings/roles',{waitUntil:'networkidle'});const matrix=page.getByLabel('Role capability matrix');await matrix.evaluate(el=>el.scrollLeft=el.scrollWidth);if(await matrix.evaluate(el=>el.scrollWidth>el.clientWidth+1))expect(await matrix.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);await state(page,info,'role-matrix',width===320||width===1440);\n> 31 |   await page.goto('/visual-management/boards/VM-ZA-T1/print',{waitUntil:'networkidle'});const sheets=await page.locator('[data-print-sheet]').evaluateAll(els=>els.map(el=>{const r=el.getBoundingClientRect();const table=el.querySelector('[data-print-table] table')?.getBoundingClientRect();return {height:r.height,clientHeight:el.clientHeight,scrollHeight:el.scrollHeight,tableBottom:table?.bottom,sheetBottom:r.bottom};}));await info.attach('vm-print-sheet-content.json',{body:JSON.stringify({viewport:{width,height},sheets}),contentType:'application/json'});for(const sheet of sheets){expect.soft(sheet.scrollHeight,'print sheet content fits').toBeLessThanOrEqual(sheet.clientHeight+1);if(sheet.tableBottom)expect.soft(sheet.tableBottom,'KPI table fits preview sheet').toBeLessThanOrEqual(sheet.sheetBottom+1);}await state(page,info,'vm-print-workspace',width===320||width===1440);await reachable(page,page.getByRole('button',{name:'Print / Save as PDF',exact:true}),info,'vm-print-primary');await reachable(page,page.getByRole('button',{name:'Board',exact:true}),info,'vm-print-back');if([911,1024,1440].includes(width))await page.screenshot({path:info.outputPath('vm-print-back-after.png'),animations:'disabled'});\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ^\n  32 |  });\n  33 | }\n  34 |\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts:31:646"
+                    },
+                    {
+                      "location": {
+                        "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts",
+                        "column": 771,
+                        "line": 31
+                      },
+                      "message": "Error: KPI table fits preview sheet\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m920.46875\u001b[39m\nReceived:    \u001b[31m1322.3125\u001b[39m\n\n  29 |   await page.emulateMedia({media:'print'});await state(page,info,'report-print');await page.emulateMedia({media:'screen'});\n  30 |   await page.goto('/settings/roles',{waitUntil:'networkidle'});const matrix=page.getByLabel('Role capability matrix');await matrix.evaluate(el=>el.scrollLeft=el.scrollWidth);if(await matrix.evaluate(el=>el.scrollWidth>el.clientWidth+1))expect(await matrix.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);await state(page,info,'role-matrix',width===320||width===1440);\n> 31 |   await page.goto('/visual-management/boards/VM-ZA-T1/print',{waitUntil:'networkidle'});const sheets=await page.locator('[data-print-sheet]').evaluateAll(els=>els.map(el=>{const r=el.getBoundingClientRect();const table=el.querySelector('[data-print-table] table')?.getBoundingClientRect();return {height:r.height,clientHeight:el.clientHeight,scrollHeight:el.scrollHeight,tableBottom:table?.bottom,sheetBottom:r.bottom};}));await info.attach('vm-print-sheet-content.json',{body:JSON.stringify({viewport:{width,height},sheets}),contentType:'application/json'});for(const sheet of sheets){expect.soft(sheet.scrollHeight,'print sheet content fits').toBeLessThanOrEqual(sheet.clientHeight+1);if(sheet.tableBottom)expect.soft(sheet.tableBottom,'KPI table fits preview sheet').toBeLessThanOrEqual(sheet.sheetBottom+1);}await state(page,info,'vm-print-workspace',width===320||width===1440);await reachable(page,page.getByRole('button',{name:'Print / Save as PDF',exact:true}),info,'vm-print-primary');await reachable(page,page.getByRole('button',{name:'Board',exact:true}),info,'vm-print-back');if([911,1024,1440].includes(width))await page.screenshot({path:info.outputPath('vm-print-back-after.png'),animations:'disabled'});\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ^\n  32 |  });\n  33 | }\n  34 |\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts:31:771"
+                    },
+                    {
+                      "location": {
+                        "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts",
+                        "column": 646,
+                        "line": 31
+                      },
+                      "message": "Error: print sheet content fits\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m254\u001b[39m\nReceived:    \u001b[31m567\u001b[39m\n\n  29 |   await page.emulateMedia({media:'print'});await state(page,info,'report-print');await page.emulateMedia({media:'screen'});\n  30 |   await page.goto('/settings/roles',{waitUntil:'networkidle'});const matrix=page.getByLabel('Role capability matrix');await matrix.evaluate(el=>el.scrollLeft=el.scrollWidth);if(await matrix.evaluate(el=>el.scrollWidth>el.clientWidth+1))expect(await matrix.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);await state(page,info,'role-matrix',width===320||width===1440);\n> 31 |   await page.goto('/visual-management/boards/VM-ZA-T1/print',{waitUntil:'networkidle'});const sheets=await page.locator('[data-print-sheet]').evaluateAll(els=>els.map(el=>{const r=el.getBoundingClientRect();const table=el.querySelector('[data-print-table] table')?.getBoundingClientRect();return {height:r.height,clientHeight:el.clientHeight,scrollHeight:el.scrollHeight,tableBottom:table?.bottom,sheetBottom:r.bottom};}));await info.attach('vm-print-sheet-content.json',{body:JSON.stringify({viewport:{width,height},sheets}),contentType:'application/json'});for(const sheet of sheets){expect.soft(sheet.scrollHeight,'print sheet content fits').toBeLessThanOrEqual(sheet.clientHeight+1);if(sheet.tableBottom)expect.soft(sheet.tableBottom,'KPI table fits preview sheet').toBeLessThanOrEqual(sheet.sheetBottom+1);}await state(page,info,'vm-print-workspace',width===320||width===1440);await reachable(page,page.getByRole('button',{name:'Print / Save as PDF',exact:true}),info,'vm-print-primary');await reachable(page,page.getByRole('button',{name:'Board',exact:true}),info,'vm-print-back');if([911,1024,1440].includes(width))await page.screenshot({path:info.outputPath('vm-print-back-after.png'),animations:'disabled'});\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ^\n  32 |  });\n  33 | }\n  34 |\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts:31:646"
+                    },
+                    {
+                      "location": {
+                        "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts",
+                        "column": 771,
+                        "line": 31
+                      },
+                      "message": "Error: KPI table fits preview sheet\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m1197.625\u001b[39m\nReceived:    \u001b[31m1538.96875\u001b[39m\n\n  29 |   await page.emulateMedia({media:'print'});await state(page,info,'report-print');await page.emulateMedia({media:'screen'});\n  30 |   await page.goto('/settings/roles',{waitUntil:'networkidle'});const matrix=page.getByLabel('Role capability matrix');await matrix.evaluate(el=>el.scrollLeft=el.scrollWidth);if(await matrix.evaluate(el=>el.scrollWidth>el.clientWidth+1))expect(await matrix.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);await state(page,info,'role-matrix',width===320||width===1440);\n> 31 |   await page.goto('/visual-management/boards/VM-ZA-T1/print',{waitUntil:'networkidle'});const sheets=await page.locator('[data-print-sheet]').evaluateAll(els=>els.map(el=>{const r=el.getBoundingClientRect();const table=el.querySelector('[data-print-table] table')?.getBoundingClientRect();return {height:r.height,clientHeight:el.clientHeight,scrollHeight:el.scrollHeight,tableBottom:table?.bottom,sheetBottom:r.bottom};}));await info.attach('vm-print-sheet-content.json',{body:JSON.stringify({viewport:{width,height},sheets}),contentType:'application/json'});for(const sheet of sheets){expect.soft(sheet.scrollHeight,'print sheet content fits').toBeLessThanOrEqual(sheet.clientHeight+1);if(sheet.tableBottom)expect.soft(sheet.tableBottom,'KPI table fits preview sheet').toBeLessThanOrEqual(sheet.sheetBottom+1);}await state(page,info,'vm-print-workspace',width===320||width===1440);await reachable(page,page.getByRole('button',{name:'Print / Save as PDF',exact:true}),info,'vm-print-primary');await reachable(page,page.getByRole('button',{name:'Board',exact:true}),info,'vm-print-back');if([911,1024,1440].includes(width))await page.screenshot({path:info.outputPath('vm-print-back-after.png'),animations:'disabled'});\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ^\n  32 |  });\n  33 | }\n  34 |\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts:31:771"
+                    },
+                    {
+                      "location": {
+                        "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts",
+                        "column": 646,
+                        "line": 31
+                      },
+                      "message": "Error: print sheet content fits\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m254\u001b[39m\nReceived:    \u001b[31m567\u001b[39m\n\n  29 |   await page.emulateMedia({media:'print'});await state(page,info,'report-print');await page.emulateMedia({media:'screen'});\n  30 |   await page.goto('/settings/roles',{waitUntil:'networkidle'});const matrix=page.getByLabel('Role capability matrix');await matrix.evaluate(el=>el.scrollLeft=el.scrollWidth);if(await matrix.evaluate(el=>el.scrollWidth>el.clientWidth+1))expect(await matrix.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);await state(page,info,'role-matrix',width===320||width===1440);\n> 31 |   await page.goto('/visual-management/boards/VM-ZA-T1/print',{waitUntil:'networkidle'});const sheets=await page.locator('[data-print-sheet]').evaluateAll(els=>els.map(el=>{const r=el.getBoundingClientRect();const table=el.querySelector('[data-print-table] table')?.getBoundingClientRect();return {height:r.height,clientHeight:el.clientHeight,scrollHeight:el.scrollHeight,tableBottom:table?.bottom,sheetBottom:r.bottom};}));await info.attach('vm-print-sheet-content.json',{body:JSON.stringify({viewport:{width,height},sheets}),contentType:'application/json'});for(const sheet of sheets){expect.soft(sheet.scrollHeight,'print sheet content fits').toBeLessThanOrEqual(sheet.clientHeight+1);if(sheet.tableBottom)expect.soft(sheet.tableBottom,'KPI table fits preview sheet').toBeLessThanOrEqual(sheet.sheetBottom+1);}await state(page,info,'vm-print-workspace',width===320||width===1440);await reachable(page,page.getByRole('button',{name:'Print / Save as PDF',exact:true}),info,'vm-print-primary');await reachable(page,page.getByRole('button',{name:'Board',exact:true}),info,'vm-print-back');if([911,1024,1440].includes(width))await page.screenshot({path:info.outputPath('vm-print-back-after.png'),animations:'disabled'});\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ^\n  32 |  });\n  33 | }\n  34 |\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts:31:646"
+                    },
+                    {
+                      "location": {
+                        "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts",
+                        "column": 771,
+                        "line": 31
+                      },
+                      "message": "Error: KPI table fits preview sheet\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m1474.78125\u001b[39m\nReceived:    \u001b[31m1816.125\u001b[39m\n\n  29 |   await page.emulateMedia({media:'print'});await state(page,info,'report-print');await page.emulateMedia({media:'screen'});\n  30 |   await page.goto('/settings/roles',{waitUntil:'networkidle'});const matrix=page.getByLabel('Role capability matrix');await matrix.evaluate(el=>el.scrollLeft=el.scrollWidth);if(await matrix.evaluate(el=>el.scrollWidth>el.clientWidth+1))expect(await matrix.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);await state(page,info,'role-matrix',width===320||width===1440);\n> 31 |   await page.goto('/visual-management/boards/VM-ZA-T1/print',{waitUntil:'networkidle'});const sheets=await page.locator('[data-print-sheet]').evaluateAll(els=>els.map(el=>{const r=el.getBoundingClientRect();const table=el.querySelector('[data-print-table] table')?.getBoundingClientRect();return {height:r.height,clientHeight:el.clientHeight,scrollHeight:el.scrollHeight,tableBottom:table?.bottom,sheetBottom:r.bottom};}));await info.attach('vm-print-sheet-content.json',{body:JSON.stringify({viewport:{width,height},sheets}),contentType:'application/json'});for(const sheet of sheets){expect.soft(sheet.scrollHeight,'print sheet content fits').toBeLessThanOrEqual(sheet.clientHeight+1);if(sheet.tableBottom)expect.soft(sheet.tableBottom,'KPI table fits preview sheet').toBeLessThanOrEqual(sheet.sheetBottom+1);}await state(page,info,'vm-print-workspace',width===320||width===1440);await reachable(page,page.getByRole('button',{name:'Print / Save as PDF',exact:true}),info,'vm-print-primary');await reachable(page,page.getByRole('button',{name:'Board',exact:true}),info,'vm-print-back');if([911,1024,1440].includes(width))await page.screenshot({path:info.outputPath('vm-print-back-after.png'),animations:'disabled'});\n     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ^\n  32 |  });\n  33 | }\n  34 |\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts:31:771"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-18T12:34:20.034Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "gemba?tab=observations-empty.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhP3RhYj1vYnNlcnZhdGlvbnMiLAogICJ3aWR0aCI6IDEwMjQsCiAgImRvY3VtZW50V2lkdGgiOiAxMDI0LAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogWwogICAgewogICAgICAid2lkdGgiOiA3MjAsCiAgICAgICJzY3JvbGxXaWR0aCI6IDcyMCwKICAgICAgInNjcm9sbExlZnQiOiAwCiAgICB9LAogICAgewogICAgICAid2lkdGgiOiA3MjAsCiAgICAgICJzY3JvbGxXaWR0aCI6IDcyMCwKICAgICAgInNjcm9sbExlZnQiOiAwCiAgICB9CiAgXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiR2VtYmEiCiAgXQp9"
+                    },
+                    {
+                      "name": "gemba?tab=observations-empty-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmE/dGFiPW9ic2VydmF0aW9ucyIsInZpZXdwb3J0Ijp7IndpZHRoIjoxMDI0LCJoZWlnaHQiOjYwMH0sInBvcHVwcyI6W119"
+                    },
+                    {
+                      "name": "gemba?tab=observations-filter.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhP3RhYj1vYnNlcnZhdGlvbnMiLAogICJ3aWR0aCI6IDEwMjQsCiAgImRvY3VtZW50V2lkdGgiOiAxMDI0LAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogWwogICAgewogICAgICAid2lkdGgiOiA3MjAsCiAgICAgICJzY3JvbGxXaWR0aCI6IDcyMCwKICAgICAgInNjcm9sbExlZnQiOiAwCiAgICB9LAogICAgewogICAgICAid2lkdGgiOiA3MjAsCiAgICAgICJzY3JvbGxXaWR0aCI6IDcyMCwKICAgICAgInNjcm9sbExlZnQiOiAwCiAgICB9CiAgXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiR2VtYmEiCiAgXQp9"
+                    },
+                    {
+                      "name": "gemba?tab=observations-filter-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmE/dGFiPW9ic2VydmF0aW9ucyIsInZpZXdwb3J0Ijp7IndpZHRoIjoxMDI0LCJoZWlnaHQiOjYwMH0sInBvcHVwcyI6W3sicm9sZSI6ImRpYWxvZyIsInRleHQiOiJBbGwgcGxhbnRzRWdtb3JlIFBsYW50IiwibGVmdCI6NjQ0LCJyaWdodCI6OTc1LCJ0b3AiOjM3NSwiYm90dG9tIjo1MjIsInNjcm9sbEhlaWdodCI6MTQ1LCJjbGllbnRIZWlnaHQiOjE0NX0seyJyb2xlIjoibGlzdGJveCIsInRleHQiOiJBbGwgcGxhbnRzRWdtb3JlIFBsYW50IiwibGVmdCI6NjQ1LCJyaWdodCI6OTc0LCJ0b3AiOjQzMywiYm90dG9tIjo1MjEsInNjcm9sbEhlaWdodCI6ODgsImNsaWVudEhlaWdodCI6ODh9XX0="
+                    },
+                    {
+                      "name": "continuous-improvement?tab=improvements-empty.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2NvbnRpbnVvdXMtaW1wcm92ZW1lbnQ/dGFiPWltcHJvdmVtZW50cyIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbCiAgICB7CiAgICAgICJ3aWR0aCI6IDcyMCwKICAgICAgInNjcm9sbFdpZHRoIjogNzIwLAogICAgICAic2Nyb2xsTGVmdCI6IDAKICAgIH0KICBdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJDb250aW51YWwgSW1wcm92ZW1lbnQiCiAgXQp9"
+                    },
+                    {
+                      "name": "continuous-improvement?tab=improvements-empty-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvY29udGludW91cy1pbXByb3ZlbWVudD90YWI9aW1wcm92ZW1lbnRzIiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbXX0="
+                    },
+                    {
+                      "name": "continuous-improvement?tab=improvements-filter.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2NvbnRpbnVvdXMtaW1wcm92ZW1lbnQ/dGFiPWltcHJvdmVtZW50cyIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbCiAgICB7CiAgICAgICJ3aWR0aCI6IDcyMCwKICAgICAgInNjcm9sbFdpZHRoIjogNzIwLAogICAgICAic2Nyb2xsTGVmdCI6IDAKICAgIH0KICBdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJDb250aW51YWwgSW1wcm92ZW1lbnQiCiAgXQp9"
+                    },
+                    {
+                      "name": "continuous-improvement?tab=improvements-filter-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvY29udGludW91cy1pbXByb3ZlbWVudD90YWI9aW1wcm92ZW1lbnRzIiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbeyJyb2xlIjoiZGlhbG9nIiwidGV4dCI6IkFsbCBzdGFnZXNEcmFmdFN1Ym1pdHRlZFVuZGVyIFJldmlld0FwcHJvdmVkT24gSG9sZFJlamVjdGVkSW4gUHJvZ3Jlc3NBd2FpdGluZyBDIiwibGVmdCI6NjQ0LCJyaWdodCI6OTc1LCJ0b3AiOjEzOSwiYm90dG9tIjo0ODYsInNjcm9sbEhlaWdodCI6MzQ1LCJjbGllbnRIZWlnaHQiOjM0NX0seyJyb2xlIjoibGlzdGJveCIsInRleHQiOiJBbGwgc3RhZ2VzRHJhZnRTdWJtaXR0ZWRVbmRlciBSZXZpZXdBcHByb3ZlZE9uIEhvbGRSZWplY3RlZEluIFByb2dyZXNzQXdhaXRpbmcgQyIsImxlZnQiOjY0NSwicmlnaHQiOjk3NCwidG9wIjoxOTcsImJvdHRvbSI6NDg1LCJzY3JvbGxIZWlnaHQiOjQwOCwiY2xpZW50SGVpZ2h0IjoyODh9XX0="
+                    },
+                    {
+                      "name": "reports-empty.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3JlcG9ydHMiLAogICJ3aWR0aCI6IDEwMjQsCiAgImRvY3VtZW50V2lkdGgiOiAxMDI0LAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogWwogICAgewogICAgICAid2lkdGgiOiA3MjAsCiAgICAgICJzY3JvbGxXaWR0aCI6IDcyMCwKICAgICAgInNjcm9sbExlZnQiOiAwCiAgICB9CiAgXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiUmVwb3J0cyIKICBdCn0="
+                    },
+                    {
+                      "name": "reports-empty-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvcmVwb3J0cyIsInZpZXdwb3J0Ijp7IndpZHRoIjoxMDI0LCJoZWlnaHQiOjYwMH0sInBvcHVwcyI6W119"
+                    },
+                    {
+                      "name": "reports-filter.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3JlcG9ydHMiLAogICJ3aWR0aCI6IDEwMjQsCiAgImRvY3VtZW50V2lkdGgiOiAxMDI0LAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogWwogICAgewogICAgICAid2lkdGgiOiA3MjAsCiAgICAgICJzY3JvbGxXaWR0aCI6IDcyMCwKICAgICAgInNjcm9sbExlZnQiOiAwCiAgICB9CiAgXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiUmVwb3J0cyIKICBdCn0="
+                    },
+                    {
+                      "name": "reports-filter-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvcmVwb3J0cyIsInZpZXdwb3J0Ijp7IndpZHRoIjoxMDI0LCJoZWlnaHQiOjYwMH0sInBvcHVwcyI6W3sicm9sZSI6Imxpc3Rib3giLCJ0ZXh0IjoiQWxsIG1vZHVsZXPinJTvuI9HZW1iYUNvbnRpbnVhbCBJbXByb3ZlbWVudFJlZCBUYWdBdWRpdEFjdGlvbnNWaXN1YWwgTWFuYWdlbWVudCIsImxlZnQiOjMwMiwicmlnaHQiOjQ2NiwidG9wIjo0MjgsImJvdHRvbSI6NTg5LCJzY3JvbGxIZWlnaHQiOjI1MiwiY2xpZW50SGVpZ2h0IjoxNjF9XX0="
+                    },
+                    {
+                      "name": "reports-export-menu.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3JlcG9ydHMiLAogICJ3aWR0aCI6IDEwMjQsCiAgImRvY3VtZW50V2lkdGgiOiAxMDI0LAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogWwogICAgewogICAgICAid2lkdGgiOiA3MjAsCiAgICAgICJzY3JvbGxXaWR0aCI6IDcyMCwKICAgICAgInNjcm9sbExlZnQiOiAwCiAgICB9CiAgXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiUmVwb3J0cyIKICBdCn0="
+                    },
+                    {
+                      "name": "reports-export-menu-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvcmVwb3J0cyIsInZpZXdwb3J0Ijp7IndpZHRoIjoxMDI0LCJoZWlnaHQiOjYwMH0sInBvcHVwcyI6W3sicm9sZSI6Im1lbnUiLCJ0ZXh0IjoiQ3VycmVudCByZXBvcnQgbGlzdEV4cG9ydCB2aXNpYmxlIHJvd3MgKC5jc3YpIiwibGVmdCI6Nzc2LCJyaWdodCI6MTAwMCwidG9wIjoxMzAsImJvdHRvbSI6MTkwLCJzY3JvbGxIZWlnaHQiOjYwLCJjbGllbnRIZWlnaHQiOjYwfV19"
+                    },
+                    {
+                      "name": "report-summary.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3JlcG9ydHMvc3VtbWFyeS9nZW1iYU9ic2VydmF0aW9uU3VtbWFyeSIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiUmVwb3J0IFByZXZpZXciCiAgXQp9"
+                    },
+                    {
+                      "name": "report-summary-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvcmVwb3J0cy9zdW1tYXJ5L2dlbWJhT2JzZXJ2YXRpb25TdW1tYXJ5Iiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbXX0="
+                    },
+                    {
+                      "name": "report-print.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3JlcG9ydHMvc3VtbWFyeS9nZW1iYU9ic2VydmF0aW9uU3VtbWFyeSIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiUmVwb3J0IFByZXZpZXciCiAgXQp9"
+                    },
+                    {
+                      "name": "report-print-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvcmVwb3J0cy9zdW1tYXJ5L2dlbWJhT2JzZXJ2YXRpb25TdW1tYXJ5Iiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbXX0="
+                    },
+                    {
+                      "name": "role-matrix.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3NldHRpbmdzL3JvbGVzIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJSb2xlcyAmIFBlcm1pc3Npb25zIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "role-matrix-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvc2V0dGluZ3Mvcm9sZXMiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOltdfQ=="
+                    },
+                    {
+                      "name": "vm-print-sheet-content.json",
+                      "contentType": "application/json",
+                      "body": "eyJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJzaGVldHMiOlt7ImhlaWdodCI6MjUzLjE1NjI1LCJjbGllbnRIZWlnaHQiOjI1Mywic2Nyb2xsSGVpZ2h0Ijo1NjcsInRhYmxlQm90dG9tIjo3NjgsInNoZWV0Qm90dG9tIjozNjUuMTU2MjV9LHsiaGVpZ2h0IjoyNTMuMTU2MjUsImNsaWVudEhlaWdodCI6MjUzLCJzY3JvbGxIZWlnaHQiOjU2NywidGFibGVCb3R0b20iOjEwNDUuMTU2MjUsInNoZWV0Qm90dG9tIjo2NDIuMzEyNX0seyJoZWlnaHQiOjI1My4xNTYyNSwiY2xpZW50SGVpZ2h0IjoyNTMsInNjcm9sbEhlaWdodCI6NTY3LCJ0YWJsZUJvdHRvbSI6MTMyMi4zMTI1LCJzaGVldEJvdHRvbSI6OTE5LjQ2ODc1fSx7ImhlaWdodCI6MjUzLjE1NjI1LCJjbGllbnRIZWlnaHQiOjI1Mywic2Nyb2xsSGVpZ2h0Ijo1NjcsInRhYmxlQm90dG9tIjoxNTM4Ljk2ODc1LCJzaGVldEJvdHRvbSI6MTE5Ni42MjV9LHsiaGVpZ2h0IjoyNTMuMTU2MjUsImNsaWVudEhlaWdodCI6MjUzLCJzY3JvbGxIZWlnaHQiOjU2NywidGFibGVCb3R0b20iOjE4MTYuMTI1LCJzaGVldEJvdHRvbSI6MTQ3My43ODEyNX1dfQ=="
+                    },
+                    {
+                      "name": "vm-print-workspace.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L2JvYXJkcy9WTS1aQS1UMS9wcmludCIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiUHJpbnQgRGFpbHkgTWFuYWdlbWVudCBCb2FyZCIKICBdCn0="
+                    },
+                    {
+                      "name": "vm-print-workspace-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvYm9hcmRzL1ZNLVpBLVQxL3ByaW50Iiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbXX0="
+                    },
+                    {
+                      "name": "vm-print-primary-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvYm9hcmRzL1ZNLVpBLVQxL3ByaW50IiwidGV4dCI6IlByaW50IC8gU2F2ZSBhcyBQREYiLCJsZWZ0IjozMjUsInJpZ2h0Ijo1NzMsInRvcCI6MjgyLCJib3R0b20iOjMxOCwiaGl0IjoiPGJ1dHRvbiB0eXBlPVwiYnV0dG9uXCIgdGFiaW5kZXg9XCIwXCIgZGF0YS1zbG90PVwiYnV0dG9uXCIgY2xhc3M9XCJncm91cC9idXR0b24gaW5saW5lLWZsZXggc2hyaW5rLTAgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHdoaXRlc3BhY2Utbm93cmFwIHJvdW5kZWQtbWQgdGV4dC1zbSBmb250LW1lZGl1bSBvdXRsaW5lLW5vbmUgdHJhbnNpdGlvbi1bYmFja2dyb3VuZC1jb2xvcixib3JkZXItY29sb3IsY29sb3Isb3BhY2l0eSx0cmFuc2Zvcm1dIGR1cmF0aW9uLTE1MCBlYXNlLW91dCBtb3Rpb24tcmVkdWNlOnRyYW5zaXRpb24tbiIsImZvY3VzZWQiOnRydWUsInVub2JzY3VyZWQiOnRydWV9"
+                    },
+                    {
+                      "name": "vm-print-back-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvYm9hcmRzL1ZNLVpBLVQxL3ByaW50IiwidGV4dCI6IkJvYXJkIiwibGVmdCI6MzI1LCJyaWdodCI6NDExLjM3NSwidG9wIjoxMzMsImJvdHRvbSI6MTY1LCJoaXQiOiI8YSByb2xlPVwiYnV0dG9uXCIgdGFiaW5kZXg9XCIwXCIgZGF0YS1zbG90PVwiYnV0dG9uXCIgY2xhc3M9XCJncm91cC9idXR0b24gaW5saW5lLWZsZXggc2hyaW5rLTAgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHdoaXRlc3BhY2Utbm93cmFwIHJvdW5kZWQtbWQgZm9udC1tZWRpdW0gb3V0bGluZS1ub25lIHRyYW5zaXRpb24tW2JhY2tncm91bmQtY29sb3IsYm9yZGVyLWNvbG9yLGNvbG9yLG9wYWNpdHksdHJhbnNmb3JtXSBkdXJhdGlvbi0xNTAgZWFzZS1vdXQgbW90aW9uLXJlZHVjZTp0cmFuc2l0aW9uLW5vbmUgYWN0aXZlOnNjIiwiZm9jdXNlZCI6dHJ1ZSwidW5vYnNjdXJlZCI6dHJ1ZX0="
+                    },
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/rumesh-9634/Projects/Ops/test-results/windows-print-content-before/windows-operations-Laptop-reports-and-filters-1024x600/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/rumesh-9634/Projects/Ops/test-results/windows-print-content-before/windows-operations-Laptop-reports-and-filters-1024x600/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/rumesh-9634/Projects/Ops/test-results/windows-print-content-before/windows-operations-Laptop-reports-and-filters-1024x600/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts",
+                    "column": 646,
+                    "line": 31
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "f0fc774b442c634fae19-b083a54c91c3dbf09cbb",
+          "file": "windows-operations.spec.ts",
+          "line": 24,
+          "column": 6
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-18T12:34:19.694Z",
+    "duration": 19435.05,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

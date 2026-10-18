@@ -11,19 +11,20 @@ const action = (overrides: Partial<MyAction> = {}): MyAction => ({ id: "ACT-RT",
 const redTag = { id: "RT-EGM-ZB-001", tagNumber: "RT-EGM-ZB-001", imageUrl: "data:image/jpeg;base64,before", createdAt: "2026-10-01T08:00:00.000Z", createdByName: "Rumesh" } as RedTag;
 
 describe("Action guided execution navigation", () => {
-  it("uses the Overview to Evidence to Review flow without an Activity tab", () => {
-    expect(source).toContain("<OpsTabBar");
+  it("uses stacked Overview, Evidence and Review accordions", () => {
+    expect(source).not.toContain("<OpsTabBar");
+    for (const id of ["overview", "evidence", "review"]) expect(source).toContain(`<ActionDetailAccordion id="${id}"`);
     expect(source).toContain('type DetailSection = "overview" | "evidence" | "review"');
     expect(source).not.toContain('{ id: "activity", label: "Activity" }');
     expect(source).not.toContain("ActivityTimeline");
     expect(source).toContain('primaryLabel={"Next: Evidence"}');
     expect(source).toContain('secondaryLabel="Save Progress" secondaryAction={saveProgress}');
-    expect(source).toContain('secondaryLabel="Back: Overview"');
+    expect(source).not.toContain('secondaryLabel="Back: Overview"');
     expect(source).toContain('secondaryLabel="Back: Evidence"');
-    expect(source).toContain('primaryLabel="Next: Review"');
+    expect(source).toContain('primaryLabel="Submit" submittingLabel="Submitting..." primaryAction={submitForReview}');
     expect(source).not.toContain('primaryLabel="Next: Complete"');
     expect(source).toContain('primaryAction={() => navigateToStep("evidence")}');
-    expect(source).toContain('onChange={(id) => navigateToStep(id as DetailSection)}');
+    expect(source).toContain('aria-expanded={open}');
   });
 
   it("keeps forward actions clickable and validates through one navigation guard", () => {

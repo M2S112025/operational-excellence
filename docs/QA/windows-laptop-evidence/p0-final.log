@@ -1,0 +1,22 @@
+
+Running 15 tests using 1 worker
+
+(node:71106) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 e2e/p0-critical.spec.ts:23:7 › critical route geometry at 320px (11.3s)
+  ✓   2 e2e/p0-critical.spec.ts:73:7 › question dialog controls and dropdown at 320px (3.7s)
+  ✓   3 e2e/p0-critical.spec.ts:23:7 › critical route geometry at 375px (11.5s)
+  ✓   4 e2e/p0-critical.spec.ts:73:7 › question dialog controls and dropdown at 375px (3.8s)
+  ✓   5 e2e/p0-critical.spec.ts:23:7 › critical route geometry at 768px (11.5s)
+  ✓   6 e2e/p0-critical.spec.ts:73:7 › question dialog controls and dropdown at 768px (3.8s)
+  ✓   7 e2e/p0-critical.spec.ts:23:7 › critical route geometry at 1024px (10.1s)
+  ✓   8 e2e/p0-critical.spec.ts:73:7 › question dialog controls and dropdown at 1024px (3.1s)
+  ✓   9 e2e/p0-critical.spec.ts:23:7 › critical route geometry at 1440px (11.6s)
+  ✓  10 e2e/p0-critical.spec.ts:73:7 › question dialog controls and dropdown at 1440px (3.4s)
+  ✓  11 e2e/p0-critical.spec.ts:112:5 › Admin edits standard question, reloads and retains identity (2.8s)
+  ✓  12 e2e/p0-critical.spec.ts:125:5 › Super Admin isolates XYZ standard override from Admin ABC and member is read-only (3.8s)
+  ✓  13 e2e/p0-critical.spec.ts:144:5 › reference photo upload persists through reload and explicit removal stays removed (4.2s)
+  ✓  14 e2e/p0-critical.spec.ts:161:5 › disabled module direct route and ordinary Super Admin route are denied (2.6s)
+  ✓  15 e2e/p0-critical.spec.ts:170:5 › original OPS reusable QR batch prints 100 labels without allocating records (2.0s)
+
+  15 passed (1.5m)

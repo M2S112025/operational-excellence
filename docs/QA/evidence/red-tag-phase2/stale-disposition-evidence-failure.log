@@ -1,0 +1,80 @@
+
+Running 2 tests using 2 workers
+
+(node:95972) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:95973) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 e2e/red-tag-phase2.spec.ts:47:33 › Phase 2 complete multi-Action and rework journey 1440x900 (34.6s)
+  ✘  2 e2e/red-tag-phase2.spec.ts:47:33 › Phase 2 complete multi-Action and rework journey 911x512 (34.8s)
+
+
+  1) e2e/red-tag-phase2.spec.ts:47:33 › Phase 2 complete multi-Action and rework journey 911x512 ───
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Closed"
+    Received: "Disposition In Progress"
+
+    Call Log:
+    - Timeout 15000ms exceeded while waiting on the predicate
+
+      59 |  await role(page,'responsible');await submitWork(page,second,1);await role(page,'leader');await closeAction(page,second);await page.goto('/5s/red/'+id,{waitUntil:'networkidle'});await expect(page.getByRole('button',{name:'Complete Disposition',exact:true})).toBeVisible();
+      60 |  const accordion=page.locator('details').filter({has:page.getByRole('link',{name:first,exact:true})}).first();await accordion.locator(':scope > summary').focus();await page.keyboard.press('Enter');await expect(accordion).toHaveAttribute('open');await accordion.getByText(/Submission revision 1/).click();await expect(accordion.getByText('Completed work revision 1',{exact:true})).toBeVisible();await expect(accordion.getByText('Replace unclear completion evidence',{exact:true})).toBeVisible();await state(page,info,'preserved-revision-accordion');
+    > 61 |  await page.getByPlaceholder('Describe the completed physical work.').fill('Repaired and returned to approved location');await page.getByRole('checkbox',{name:'The responsible person confirms the disposition work is complete.',exact:true}).check();await reachable(page,page.getByRole('button',{name:'Complete Disposition',exact:true}),info,'complete-tag');await page.getByRole('button',{name:'Complete Disposition',exact:true}).click();await expect.poll(async()=>(await tag(page,id)).status).toBe('Closed');
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ^
+      62 |  await page.reload({waitUntil:'networkidle'});expect((await tag(page,id)).status).toBe('Closed');await page.getByRole('button',{name:'View Report',exact:true}).click();await expect(page.getByRole('link',{name:first,exact:true}).first()).toBeVisible();await expect(page.getByRole('link',{name:second,exact:true})).toBeVisible();const description=page.getByText('Long identifier '+ 'UNBROKENIDENTIFIER'.repeat(12),{exact:true});expect(await description.evaluate(el=>el.scrollWidth<=el.clientWidth+1),'Report description must wrap').toBe(true);await state(page,info,'multi-action-report',viewport.width===911);
+      63 | });
+      64 | for(const viewport of sizes)test(`Phase 2 Keep direct closure ${viewport.width}x${viewport.height}`,async({page},info)=>{
+        at /Users/rumesh-9634/Projects/Ops/e2e/red-tag-phase2.spec.ts:61:493
+
+    attachment #23: screenshot (image/png) ─────────────────────────────────────────────────────────
+    test-results/red-tag-phase2/red-tag-phase2-Phase-2-com-55a64--and-rework-journey-911x512/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/red-tag-phase2/red-tag-phase2-Phase-2-com-55a64--and-rework-journey-911x512/error-context.md
+
+    attachment #25: trace (application/zip) ────────────────────────────────────────────────────────
+    test-results/red-tag-phase2/red-tag-phase2-Phase-2-com-55a64--and-rework-journey-911x512/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/red-tag-phase2/red-tag-phase2-Phase-2-com-55a64--and-rework-journey-911x512/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) e2e/red-tag-phase2.spec.ts:47:33 › Phase 2 complete multi-Action and rework journey 1440x900 ──
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Closed"
+    Received: "Disposition In Progress"
+
+    Call Log:
+    - Timeout 15000ms exceeded while waiting on the predicate
+
+      59 |  await role(page,'responsible');await submitWork(page,second,1);await role(page,'leader');await closeAction(page,second);await page.goto('/5s/red/'+id,{waitUntil:'networkidle'});await expect(page.getByRole('button',{name:'Complete Disposition',exact:true})).toBeVisible();
+      60 |  const accordion=page.locator('details').filter({has:page.getByRole('link',{name:first,exact:true})}).first();await accordion.locator(':scope > summary').focus();await page.keyboard.press('Enter');await expect(accordion).toHaveAttribute('open');await accordion.getByText(/Submission revision 1/).click();await expect(accordion.getByText('Completed work revision 1',{exact:true})).toBeVisible();await expect(accordion.getByText('Replace unclear completion evidence',{exact:true})).toBeVisible();await state(page,info,'preserved-revision-accordion');
+    > 61 |  await page.getByPlaceholder('Describe the completed physical work.').fill('Repaired and returned to approved location');await page.getByRole('checkbox',{name:'The responsible person confirms the disposition work is complete.',exact:true}).check();await reachable(page,page.getByRole('button',{name:'Complete Disposition',exact:true}),info,'complete-tag');await page.getByRole('button',{name:'Complete Disposition',exact:true}).click();await expect.poll(async()=>(await tag(page,id)).status).toBe('Closed');
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ^
+      62 |  await page.reload({waitUntil:'networkidle'});expect((await tag(page,id)).status).toBe('Closed');await page.getByRole('button',{name:'View Report',exact:true}).click();await expect(page.getByRole('link',{name:first,exact:true}).first()).toBeVisible();await expect(page.getByRole('link',{name:second,exact:true})).toBeVisible();const description=page.getByText('Long identifier '+ 'UNBROKENIDENTIFIER'.repeat(12),{exact:true});expect(await description.evaluate(el=>el.scrollWidth<=el.clientWidth+1),'Report description must wrap').toBe(true);await state(page,info,'multi-action-report',viewport.width===911);
+      63 | });
+      64 | for(const viewport of sizes)test(`Phase 2 Keep direct closure ${viewport.width}x${viewport.height}`,async({page},info)=>{
+        at /Users/rumesh-9634/Projects/Ops/e2e/red-tag-phase2.spec.ts:61:493
+
+    attachment #23: screenshot (image/png) ─────────────────────────────────────────────────────────
+    test-results/red-tag-phase2/red-tag-phase2-Phase-2-com-54759-and-rework-journey-1440x900/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/red-tag-phase2/red-tag-phase2-Phase-2-com-54759-and-rework-journey-1440x900/error-context.md
+
+    attachment #25: trace (application/zip) ────────────────────────────────────────────────────────
+    test-results/red-tag-phase2/red-tag-phase2-Phase-2-com-54759-and-rework-journey-1440x900/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/red-tag-phase2/red-tag-phase2-Phase-2-com-54759-and-rework-journey-1440x900/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    e2e/red-tag-phase2.spec.ts:47:33 › Phase 2 complete multi-Action and rework journey 911x512 ────
+    e2e/red-tag-phase2.spec.ts:47:33 › Phase 2 complete multi-Action and rework journey 1440x900 ───

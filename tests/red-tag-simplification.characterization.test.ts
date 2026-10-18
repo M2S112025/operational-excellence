@@ -64,12 +64,12 @@ describe("Change Log 2 Red Tag simplification", () => {
     expect(redTagSource).toContain("sourceEvidenceCount: tag.imageUrl?.trim() ? 1 : 0");
   });
 
-  it("offers direct handling and canonical linked Action handling", () => {
+  it("offers canonical linked Action handling without a new direct handling choice", () => {
     const redTagSource = source("features/five-s/red-tag/red-tag-module.tsx");
-    expect(redTagSource).toContain("Handle directly");
+    expect(redTagSource).not.toContain("Handle directly");
     expect(redTagSource).toContain("Create Linked Action");
     expect(redTagSource).toContain('source: "Red Tag", sourceModule: "redTag", sourceId: tag.id');
-    expect(redTagSource).toContain("action?.status !== \"Completed\"");
+    expect(redTagSource).toContain("incompleteLinkedAction");
   });
 
   it("places review and decision before the consolidated disposition outcome", () => {

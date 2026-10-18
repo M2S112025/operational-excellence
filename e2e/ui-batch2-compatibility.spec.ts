@@ -1,0 +1,8 @@
+import {test,expect} from '@playwright/test';
+import {widths,seed,state} from './ui-batch2-helpers';
+for(const width of widths)test(`Batch 2 shared observations and legacy edit ${width}px`,async({page},info)=>{
+ test.setTimeout(90000);await page.setViewportSize({width,height:900});await seed(page);
+ await page.goto('/gemba/GEM-2026-015/walk',{waitUntil:'networkidle'});await page.getByRole('button',{name:'Add Observation',exact:true}).click();await page.getByRole('button',{name:/Enter manually/}).click();await page.getByPlaceholder('What is working well?').fill('Synthetic shared observation');await page.getByRole('checkbox',{name:/Deployment Opportunity at other Zones/}).check();await state(page,info,'gemba-sharing-form');await page.getByRole('button',{name:'Save Observation',exact:true}).click();await expect(page.getByRole('dialog')).toHaveCount(0);
+ const id=await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('ops-gemba-v1')!);return s.observations.find((x:{title:string})=>x.title==='Synthetic shared observation').id as string;});await page.evaluate(()=>localStorage.setItem('five-s-demo-role','leader'));await page.goto('/gemba/observations/'+id,{waitUntil:'networkidle'});await expect(page.getByRole('heading',{name:'Synthetic shared observation',exact:true})).toBeVisible();await state(page,info,'gemba-shared-populated',width===320||width===1440);
+ await page.evaluate(()=>localStorage.setItem('five-s-demo-role','auditor'));await page.goto('/visual-improvement/VI-2026-013/edit',{waitUntil:'networkidle'});await expect(page.getByRole('heading',{name:'Update Improvement',exact:true})).toBeVisible();await state(page,info,'legacy-vi-edit');
+});

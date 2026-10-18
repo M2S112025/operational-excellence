@@ -1,0 +1,8 @@
+
+ RUN  v4.1.11 /Users/rumesh-9634/Projects/Ops
+
+
+ Test Files  15 passed (15)
+      Tests  156 passed (156)
+   Start at  18:08:53
+   Duration  1.59s (transform 2.54s, setup 0ms, import 3.41s, tests 2.72s, environment 1ms)

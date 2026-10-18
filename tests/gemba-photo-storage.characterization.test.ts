@@ -12,7 +12,7 @@ function createFakeIndexedDb() {
   const stores = new Map<string, Map<string, unknown>>();
   let db: unknown = null;
 
-  function makeRequest<T>(work: () => T) {
+  function makeRequest<T>(work: () => T, complete?: () => void) {
     const request: { result: T | undefined; error: unknown; onsuccess: (() => void) | null; onerror: (() => void) | null } = {
       result: undefined,
       error: null,
@@ -23,6 +23,7 @@ function createFakeIndexedDb() {
       try {
         request.result = work();
         request.onsuccess?.();
+        if (complete) queueMicrotask(complete);
       } catch (error) {
         request.error = error;
         request.onerror?.();
@@ -31,13 +32,13 @@ function createFakeIndexedDb() {
     return request;
   }
 
-  function makeObjectStore(name: string) {
+  function makeObjectStore(name: string, complete?: () => void) {
     if (!stores.has(name)) stores.set(name, new Map());
     const map = stores.get(name)!;
     return {
-      get: (key: string) => makeRequest(() => map.get(key)),
-      put: (value: unknown, key: string) => makeRequest(() => { map.set(key, value); return key; }),
-      delete: (key: string) => makeRequest<undefined>(() => { map.delete(key); return undefined; }),
+      get: (key: string) => makeRequest(() => map.get(key), complete),
+      put: (value: unknown, key: string) => makeRequest(() => { map.set(key, value); return key; }, complete),
+      delete: (key: string) => makeRequest<undefined>(() => { map.delete(key); return undefined; }, complete),
     };
   }
 
@@ -45,7 +46,12 @@ function createFakeIndexedDb() {
     return {
       objectStoreNames: { contains: (name: string) => stores.has(name) },
       createObjectStore: (name: string) => { stores.set(name, new Map()); return makeObjectStore(name); },
-      transaction: (name: string) => ({ objectStore: () => makeObjectStore(name) }),
+      transaction: (name: string) => {
+        const transaction: { oncomplete?: () => void; onabort?: () => void; objectStore: () => ReturnType<typeof makeObjectStore> } = {
+          objectStore: () => makeObjectStore(name, () => transaction.oncomplete?.()),
+        };
+        return transaction;
+      },
     };
   }
 

@@ -1,0 +1,57 @@
+
+Running 9 tests using 1 worker
+
+(node:43143) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 e2e/ui-batch2-routes.spec.ts:4:33 › Batch 2 routes 320px (1.1m)
+(node:43640) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 e2e/ui-batch2-routes.spec.ts:4:33 › Batch 2 routes 375px (1.1m)
+  ✓  3 e2e/ui-batch2-routes.spec.ts:4:33 › Batch 2 routes 390px (1.1m)
+  ✓  4 e2e/ui-batch2-routes.spec.ts:4:33 › Batch 2 routes 430px (1.1m)
+  ✓  5 e2e/ui-batch2-routes.spec.ts:4:33 › Batch 2 routes 768px (1.2m)
+  ✓  6 e2e/ui-batch2-routes.spec.ts:4:33 › Batch 2 routes 1024px (1.1m)
+  ✓  7 e2e/ui-batch2-routes.spec.ts:4:33 › Batch 2 routes 1280px (1.1m)
+  ✓  8 e2e/ui-batch2-routes.spec.ts:4:33 › Batch 2 routes 1440px (1.1m)
+  ✓  9 e2e/ui-batch2-routes.spec.ts:4:33 › Batch 2 routes 1920px (1.1m)
+
+
+  1) e2e/ui-batch2-routes.spec.ts:4:33 › Batch 2 routes 320px › /settings/roles ────────────────────
+
+    Error: 320-55
+
+    expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 321
+    Received:    813
+
+       at ui-batch2-helpers.ts:57
+
+      55 |   const bad=g.documentWidth>g.width+1||g.outside.length||g.unnamed.length||g.headerOverflow;
+      56 |   if(bad||representative)await page.screenshot({path:info.outputPath(`${name}.png`),fullPage:await page.locator('[role="dialog"]').count()===0,animations:"disabled"});
+    > 57 |   expect.soft(g.documentWidth,name).toBeLessThanOrEqual(g.width+1);
+         |                                     ^
+      58 |   expect.soft(g.outside,`${name}: clipped controls/headings`).toEqual([]);
+      59 |   expect.soft(g.unnamed,`${name}: unnamed buttons`).toEqual([]);
+      60 |   expect.soft(g.headerOverflow,`${name}: breadcrumbs exceed header`).toBe(false);
+        at state (/Users/rumesh-9634/Projects/Ops/e2e/ui-batch2-helpers.ts:57:37)
+        at /Users/rumesh-9634/Projects/Ops/e2e/ui-batch2-routes.spec.ts:15:13
+        at /Users/rumesh-9634/Projects/Ops/e2e/ui-batch2-routes.spec.ts:10:47
+
+    attachment #96: screenshot (image/png) ─────────────────────────────────────────────────────────
+    test-results/ui-batch2-routes-final/ui-batch2-routes-Batch-2-routes-320px/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/ui-batch2-routes-final/ui-batch2-routes-Batch-2-routes-320px/error-context.md
+
+    attachment #98: trace (application/zip) ────────────────────────────────────────────────────────
+    test-results/ui-batch2-routes-final/ui-batch2-routes-Batch-2-routes-320px/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/ui-batch2-routes-final/ui-batch2-routes-Batch-2-routes-320px/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    e2e/ui-batch2-routes.spec.ts:4:33 › Batch 2 routes 320px ───────────────────────────────────────
+  8 passed (10.1m)

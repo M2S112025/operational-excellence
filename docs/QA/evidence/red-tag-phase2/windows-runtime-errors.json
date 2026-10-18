@@ -1,0 +1,93 @@
+{
+  "observedStack": "TypeError: Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.\n    at flushComponentPerformance (webpack-internal:///(app-pages-browser)/../../../Users/rumesh-9634/Projects/Ops/node_modules/next/dist/compiled/react-server-dom-webpack/cjs/react-server-dom-webpack-client.browser.development.js:3907:35)\n    at flushComponentPerformance (webpack-internal:///(app-pages-browser)/../../../Users/rumesh-9634/Projects/Ops/node_modules/next/dist/compiled/react-server-dom-webpack/cjs/react-server-dom-webpack-client.browser.development.js:3822:27)\n    at flushInitialRenderPerformance (webpack-internal:///(app-pages-browser)/../../../Users/rumesh-9634/Projects/Ops/node_modules/next/dist/compiled/react-server-dom-webpack/cjs/react-server-dom-webpack-client.browser.development.js:4268:11)",
+  "originalTrace": "test-results/windows-red-tag-phase2-dev-final/windows-routes-Laptop-route-matrix-1093x614/trace.zip",
+  "matrixRuns": [
+    {
+      "test": "Laptop route matrix 1366x768",
+      "status": "passed",
+      "routes": 120,
+      "geometryFailures": 0,
+      "pageErrors": []
+    },
+    {
+      "test": "Laptop route matrix 1280x720",
+      "status": "passed",
+      "routes": 120,
+      "geometryFailures": 0,
+      "pageErrors": []
+    },
+    {
+      "test": "Laptop route matrix 1280x600",
+      "status": "passed",
+      "routes": 120,
+      "geometryFailures": 0,
+      "pageErrors": []
+    },
+    {
+      "test": "Laptop route matrix 1024x600",
+      "status": "passed",
+      "routes": 120,
+      "geometryFailures": 0,
+      "pageErrors": []
+    },
+    {
+      "test": "Laptop route matrix 1024x768",
+      "status": "passed",
+      "routes": 120,
+      "geometryFailures": 0,
+      "pageErrors": []
+    },
+    {
+      "test": "Laptop route matrix 1440x900",
+      "status": "passed",
+      "routes": 120,
+      "geometryFailures": 0,
+      "pageErrors": []
+    },
+    {
+      "test": "Laptop route matrix 1093x614",
+      "status": "failed",
+      "routes": 120,
+      "geometryFailures": 0,
+      "pageErrors": [
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp."
+      ]
+    },
+    {
+      "test": "Laptop route matrix 911x512",
+      "status": "failed",
+      "routes": 120,
+      "geometryFailures": 0,
+      "pageErrors": [
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp.",
+        "Failed to execute 'measure' on 'Performance': '\u200bPage' cannot have a negative time stamp."
+      ]
+    }
+  ]
+}

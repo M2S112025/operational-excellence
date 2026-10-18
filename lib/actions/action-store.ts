@@ -1,8 +1,10 @@
 "use client";
 
+import { prepareActionEvidenceCompaction } from "./action-evidence-storage";
 import { resetImportedRedTagData } from "@/lib/five-s/red-tag-reset";
 
 import { useSyncExternalStore } from "react";
+import { getCurrentDemoUser } from "@/lib/current-user";
 import { getAdminUser } from "@/features/five-s/administration/store";
 
 import {
@@ -12,6 +14,7 @@ import {
 import type {
   MyAction,
   MyActionActivity,
+  MyActionSubmissionRevision,
 } from "@/features/five-s/types/my-actions";
 import { createNotification } from "@/lib/notifications/notification-store";
 import { getFiveSZoneConfiguration, getPriorityDueDate } from "@/lib/five-s/configuration";
@@ -27,7 +30,7 @@ export interface ActionActor {
 
 type CreateActionInput = Omit<
   MyAction,
-  "id" | "createdAt" | "completedAt" | "evidence"
+  "id" | "createdAt" | "completedAt" | "evidence" | "submissionRevisions"
 >;
 
 type ActionEvidence =
@@ -220,6 +223,7 @@ export function createAction(
 
   const action: MyAction = normalizeEvidence({
     ...input,
+    submissionRevisions: [],
 
     id: actionId,
 
@@ -405,7 +409,7 @@ function activeActionActor(action: MyAction, actor?: ActionActor) {
 
 export function canEditActionContent(action: MyAction, actor?: ActionActor) {
   const user = activeActionActor(action, actor);
-  return Boolean(user && user.permissions.includes("actions.work") && isResponsible(action, user)
+  return Boolean(user && (user.permissions.includes("actions.work") || isZoneLeader(action, user)) && isResponsible(action, user)
     && ["Assigned", "Open", "In Progress", "Rework Required"].includes(action.status)
     && (user.roles.includes("Admin") || user.zoneMemberships.some(membership => membership.zone === action.area)));
 }
@@ -425,8 +429,46 @@ export function startAssignedAction(actionId: string, actor: ActionActor) {
   if (!action || !canEditActionContent(action, actor) || !["Assigned", "Open", "Rework Required"].includes(action.status)) return undefined;
   return updateActionInternal(actionId, {
     status: "In Progress",
-    activityHistory: appendActivity(action, createActivity("started", getAdminUser(actor.id)!)),
+    activityHistory: appendActivity(action, createActivity("started", getAdminUser(actor.id)!, `Previous status: ${action.status}`)),
   });
+}
+
+export function canUndoActionStart(action: MyAction, actor: ActionActor) {
+  const started = [...(action.activityHistory ?? [])].reverse().find(event => event.type === "started");
+  return action.status === "In Progress" && getCurrentDemoUser().id === actor.id
+    && canEditActionContent(action, actor) && started?.actorId === actor.id;
+}
+
+export function undoActionStart(actionId: string, actor: ActionActor, draft?: { observation: string; category: string; costSaving?: number }) {
+  const action = getActionById(actionId);
+  if (!action || !canUndoActionStart(action, actor)) return undefined;
+  if (draft?.costSaving !== undefined && (!Number.isFinite(draft.costSaving) || draft.costSaving < 0)) return undefined;
+  const events = action.activityHistory ?? [];
+  const startIndex = events.findLastIndex(event => event.type === "started");
+  const previous = events[startIndex].remark?.replace("Previous status: ", "");
+  const priorEvent = events.slice(0, startIndex).reverse().find(event => ["assigned", "reassigned", "sent_back", "submitted", "resubmitted"].includes(event.type));
+  const status = previous === "Open" || previous === "Assigned" || previous === "Rework Required"
+    ? previous : priorEvent?.type === "sent_back" ? "Rework Required" : "Assigned";
+  return updateActionInternal(actionId, {
+    status,
+    ...(draft ? { actionTakenDescription: draft.observation, resolutionObservation: draft.observation,
+      correctiveActionCategory: draft.category || undefined, costSaving: draft.costSaving } : {}),
+    activityHistory: appendActivity(action, createActivity("start_undone", getAdminUser(actor.id)!, `Start Work undone; returned to ${status}. Saved details and evidence retained.`)),
+  });
+}
+
+/** Compact legacy binaries before the revision snapshot duplicates their references. */
+export async function submitActionForReviewWithEvidenceStorage(
+  actionId: string,
+  actor: ActionActor,
+  resolution: Parameters<typeof submitActionForReview>[2]
+) {
+  const action = getActionById(actionId);
+  if (!action || !canEditActionContent(action, actor)) return undefined;
+  if (!resolution.observation.trim() || !resolution.correctiveActionCategory || action.evidence.length === 0 || !Number.isFinite(resolution.costSaving) || resolution.costSaving < 0) return undefined;
+  await compactActionEvidenceStorage();
+  // The synchronous command rechecks current permissions and status after the async write.
+  return submitActionForReview(actionId, actor, resolution);
 }
 
 export function submitActionForReview(
@@ -439,6 +481,15 @@ export function submitActionForReview(
   if (!resolution.observation.trim() || !resolution.correctiveActionCategory || action.evidence.length === 0 || !Number.isFinite(resolution.costSaving) || resolution.costSaving < 0) return undefined;
   const isResubmission = action.status === "Rework Required" || (action.reviewHistory?.length ?? 0) > 0;
   const now = new Date().toISOString();
+  const owner = getAdminUser(actor.id)!;
+  const submitted = createActivity(isResubmission ? "resubmitted" : "submitted", owner);
+  const revision: MyActionSubmissionRevision = {
+    id: submitted.id, number: (action.submissionRevisions?.length ?? 0) + 1, submittedAt: now,
+    submittedByUserId: owner.id, submittedByName: owner.name,
+    observation: resolution.observation.trim(), correctiveActionCategory: resolution.correctiveActionCategory,
+    costSaving: resolution.costSaving, currency: action.currency ?? "INR",
+    evidence: structuredClone(action.evidence), progressEvidence: structuredClone(action.progressEvidence ?? []),
+  };
   const updated = updateActionInternal(actionId, {
     status: "Pending Auditor Review",
     actionTakenDescription: resolution.observation.trim(),
@@ -448,7 +499,8 @@ export function submitActionForReview(
     currency: action.currency ?? "INR",
     submittedForReviewAt: now,
     completedAt: undefined,
-    activityHistory: appendActivity(action, createActivity(isResubmission ? "resubmitted" : "submitted", getAdminUser(actor.id)!)),
+    activityHistory: appendActivity(action, submitted),
+    submissionRevisions: [...(action.submissionRevisions ?? []), revision],
   });
   if (updated && reviewerRecipientId(action)) createNotification({
     recipientUserId: reviewerRecipientId(action)!,
@@ -462,7 +514,7 @@ export function submitActionForReview(
 export function sendActionBack(actionId: string, actor: ActionActor, remark: string) {
   const action = getActionById(actionId);
   if (!action || !canReviewAction(action, actor) || !["Pending Review", "Pending Auditor Review", "Awaiting Review"].includes(action.status) || !remark.trim()) return undefined;
-  const review = createActivity("sent_back", actor, remark.trim());
+  const review = createActivity("sent_back", getAdminUser(actor.id)!, remark.trim());
   const updated = updateActionInternal(actionId, {
     status: "Rework Required",
     reviewedAt: undefined,
@@ -470,6 +522,7 @@ export function sendActionBack(actionId: string, actor: ActionActor, remark: str
     completedAt: undefined,
     reviewHistory: [...(action.reviewHistory ?? []), review],
     activityHistory: appendActivity(action, review),
+    submissionRevisions: reviewSubmissionRevision(action, review),
   });
   if (updated) createNotification({
     recipientUserId: responsibleId(action),
@@ -478,6 +531,21 @@ export function sendActionBack(actionId: string, actor: ActionActor, remark: str
     href: `/5s/actions/${encodeURIComponent(action.id)}`,
   });
   return updated;
+}
+
+/** Capture only the existing latest legacy package, with provenance; never fabricate lost revisions. */
+function reviewSubmissionRevision(action: MyAction, review: MyActionActivity) {
+  let revisions = action.submissionRevisions ?? [];
+  if (!revisions.length && action.submittedForReviewAt) {
+    const submitted = [...(action.activityHistory ?? [])].reverse().find(event => ["submitted", "resubmitted"].includes(event.type));
+    revisions = [{ id: submitted?.id ?? crypto.randomUUID(), number: 1, submittedAt: action.submittedForReviewAt,
+      submittedByUserId: submitted?.actorId, submittedByName: submitted?.actorName,
+      observation: action.resolutionObservation ?? action.actionTakenDescription ?? "",
+      correctiveActionCategory: action.correctiveActionCategory, costSaving: action.costSaving, currency: action.currency,
+      evidence: structuredClone(action.evidence), progressEvidence: structuredClone(action.progressEvidence ?? []), legacyCapturedAt: review.createdAt }];
+  }
+  return revisions.map((revision, index) => index === revisions.length - 1 && !revision.reviewEventId
+    ? { ...revision, reviewEventId: review.id } : revision);
 }
 
 export function closeReviewedAction(actionId: string, actor: ActionActor, closureRemark?: string) {
@@ -499,6 +567,7 @@ export function closeReviewedAction(actionId: string, actor: ActionActor, closur
     completedByUserId: action.responsiblePersonId,
     completedByName: action.responsiblePersonName ?? action.assignedTo,
     reviewHistory: [...(action.reviewHistory ?? []), reviewedActivity, closedActivity],
+    submissionRevisions: reviewSubmissionRevision(action, reviewedActivity),
     activityHistory: [...(action.activityHistory ?? []), reviewedActivity, closedActivity],
   });
   if (updated) createNotification({
@@ -579,6 +648,19 @@ function updateActionInternal(
   listeners.forEach((listener) => listener());
 
   return updatedAction;
+}
+
+/** Rebase onto current records after asynchronous asset writes; preserve concurrent workflow changes. */
+export async function compactActionEvidenceStorage() {
+  loadFromStorage();
+  const apply = await prepareActionEvidenceCompaction(actions);
+  const previous = actions;
+  const next = apply(previous);
+  if (next.every((action, index) => action === previous[index])) return;
+  actions = next;
+  const result = saveToStorage();
+  if (!result?.success) { actions = previous; throw new Error(result && !result.success ? result.message : "Unable to save Action evidence references."); }
+  listeners.forEach(listener => listener());
 }
 
 export function canEditActionPriority(action: MyAction, actor: ActionActor) {

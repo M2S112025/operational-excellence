@@ -1,0 +1,15 @@
+
+Running 8 tests using 1 worker
+
+(node:66669) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 e2e/windows-operations.spec.ts:25:6 › Laptop reports and filters 1366x768 (27.2s)
+  ✓  2 e2e/windows-operations.spec.ts:25:6 › Laptop reports and filters 1280x720 (28.5s)
+  ✓  3 e2e/windows-operations.spec.ts:25:6 › Laptop reports and filters 1280x600 (29.5s)
+  ✓  4 e2e/windows-operations.spec.ts:25:6 › Laptop reports and filters 1024x600 (23.0s)
+  ✓  5 e2e/windows-operations.spec.ts:25:6 › Laptop reports and filters 1024x768 (27.9s)
+  ✓  6 e2e/windows-operations.spec.ts:25:6 › Laptop reports and filters 1440x900 (26.8s)
+  ✓  7 e2e/windows-operations.spec.ts:25:6 › Laptop reports and filters 1093x614 (25.2s)
+  ✓  8 e2e/windows-operations.spec.ts:25:6 › Laptop reports and filters 911x512 (21.9s)
+
+  8 passed (3.5m)

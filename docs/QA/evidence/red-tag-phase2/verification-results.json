@@ -1,0 +1,91 @@
+{
+  "branch": "feat/audit-admin-question-management",
+  "baseCommit": "e5e9950121bf7a89d2c1700a748b5534f28dd3c3",
+  "newPhase2UnitTests": 26,
+  "focusedUnitTests": {
+    "passed": 174,
+    "failed": 0
+  },
+  "fullUnitSuite": {
+    "passed": 1109,
+    "failed": 2,
+    "total": 1111,
+    "failures": [
+      "P0 unresolved authorization acceptance P0-AUTH-ENT rejects organization entitlement changes by an ordinary member",
+      "P0 unresolved authorization acceptance P0-AUTH-ACT rejects direct canonical Action creation by a member without creation permission"
+    ]
+  },
+  "browser": {
+    "phase2": {
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "resultsFile": "test-results/red-tag-phase2-geometry-results.json"
+    },
+    "batch1": {
+      "passed": 38,
+      "failed": 0
+    },
+    "batch2": {
+      "passed": 63,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "resultsFile": "test-results/ui-batch2-red-tag-phase2-dev-final-results.json"
+    },
+    "windows": {
+      "passed": 52,
+      "failed": 2,
+      "skipped": 0,
+      "flaky": 0,
+      "resultsFile": "test-results/windows-red-tag-phase2-dev-final-results.json",
+      "geometryFailures": 0,
+      "routeViewportCombinations": 960,
+      "freshServerRerun": {
+        "passed": 0,
+        "failed": 2,
+        "resultsFile": "test-results/windows-red-tag-phase2-fresh-rerun-results.json",
+        "reason": "net::ERR_NETWORK_IO_SUSPENDED"
+      },
+      "finalUserRequestedRetry": {
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0,
+        "flaky": 0,
+        "viewports": [
+          "1093x614",
+          "911x512"
+        ],
+        "resultsFile": "test-results/windows-red-tag-phase2-retry-now-results.json"
+      }
+    },
+    "p0": {
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "resultsFile": "test-results/p0-red-tag-phase2-results.json"
+    },
+    "existingDecisionForms": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "resultsFile": "test-results/red-tag-phase2-decisions-results.json"
+    }
+  },
+  "typeScript": {
+    "exitCode": 0
+  },
+  "lint": {
+    "exitCode": 0,
+    "warnings": 13,
+    "errors": 0
+  },
+  "webpackBuild": {
+    "exitCode": 0,
+    "environment": "isolated temporary source copy without .env files"
+  },
+  "completion": "READY WITH GAPS"
+}

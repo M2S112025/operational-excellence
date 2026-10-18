@@ -153,7 +153,7 @@ export default function FiveSAuditCreate({ onBack, onStart }: FiveSAuditCreatePr
 
   return (
     <div className="min-h-full w-full">
-      <div className="sticky top-0 z-30 -mx-6 border-b border-border bg-background/95 px-6 pt-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 lg:-mx-8 lg:px-8">
+      <div className="sticky top-(--app-header-height) z-30 border-b border-border bg-background/95 pt-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <FiveSPageHeader
           eyebrow=""
           title="Create 5S Audit"

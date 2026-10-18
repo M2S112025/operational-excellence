@@ -48,7 +48,7 @@ describe("5S Red Tag identity and compatibility", () => {
     const store = await import("@/features/five-s/red-tag/store");
     const actor = DEMO_USERS.auditor;
     const tag = store.createRedTag({ plant: actor.plant, zone: "Zone A", section: "Production", itemName: "Fixture", quantity: 1, reason: "Undefined Items", remarks: "Unused", imageUrl: "data:image/jpeg;base64,before", requiredAction: "Remove", responsiblePersonId: "USR-SIVA-KUMAR", responsiblePersonName: "Siva Kumar", targetDate: "2026-09-20", createdById: actor.id, createdByName: actor.name }, actor);
-    const baseAction: MyAction = { id: "ACT-RT-002", title: "Remove fixture", description: "Remove", source: "Red Tag", sourceTitle: tag.id, sourceModule: "redTag", sourceId: tag.id, plant: tag.plant, department: "Production", area: tag.zone, assignedTo: "Siva Kumar", status: "Completed", priority: "Medium", dueDate: tag.targetDate, createdAt: "2026-09-16", evidence: [] };
+    const baseAction = (await import("@/lib/actions/action-store")).createAction({ title: "Remove fixture", description: "Remove", source: "Red Tag", sourceTitle: tag.id, sourceModule: "redTag", sourceId: tag.id, plant: tag.plant, department: "Production", area: tag.zone, assignedTo: "Siva Kumar", status: "Completed", priority: "Medium", dueDate: tag.targetDate });
     store.linkRedTagAction(tag.id, baseAction.id, actor); store.reconcileRedTagActions([baseAction]);
     expect(store.verifyRedTag(tag.id, { ...baseAction, status: "In Progress" }, { disposition: "Dispose", verificationRemark: "Cleared" }, actor)).toBeUndefined();
     expect(store.verifyRedTag(tag.id, baseAction, { disposition: "Dispose", verificationRemark: "Cleared" }, actor)).toBeUndefined();
@@ -68,11 +68,11 @@ describe("5S Red Tag identity and compatibility", () => {
     expect(source).not.toContain('title="Red Flags"');
   });
 
-  it("allows Red Tag creation only for active users with red_tag.create", () => {
+  it("allows active authorized creators including Zone Leaders", () => {
     const member = ADMIN_USER_SEEDS.find((user) => user.id === DEMO_USERS.responsible.id)!;
     const leader = ADMIN_USER_SEEDS.find((user) => user.id === DEMO_USERS.leader.id)!;
     expect(canCreateRedTag(member)).toBe(true);
-    expect(canCreateRedTag(leader)).toBe(false);
+    expect(canCreateRedTag(leader)).toBe(true);
     expect(canCreateRedTag({ ...member, status: "Inactive" })).toBe(false);
   });
 

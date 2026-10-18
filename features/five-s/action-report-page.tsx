@@ -9,6 +9,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useActionEvidenceUrl } from "@/lib/actions/use-action-evidence-url";
 import { useI18n } from "@/components/preferences/use-i18n";
 import type { MyAction, MyActionActivity, MyActionEvidence } from "./types/my-actions";
 import { getActionSourceDefinition } from "@/lib/actions/action-config";
@@ -19,7 +20,7 @@ interface Props { action: MyAction; beforeEvidence: ResolvedActionSourceEvidence
 
 const ACTIVITY_LABELS: Record<MyActionActivity["type"], string> = {
   created: "Action created", awaiting_assignment: "Awaiting assignment",
-  assigned: "Assigned", started: "Work started", submitted: "Submitted for review",
+  assigned: "Assigned", started: "Work started", start_undone: "Start Work undone", submitted: "Submitted for review",
   evidence_uploaded: "Evidence uploaded",
   due_date_changed: "Due date changed",
   resubmitted: "Resubmitted for review", reviewed: "Reviewed", verified: "Verified", sent_back: "Sent back for rework", closed: "Approved & closed",
@@ -160,9 +161,15 @@ function ReportMetadata({ action, completedAt }: { action: MyAction; completedAt
 }
 
 function EvidencePanel({ tone, label, evidence, description, empty }: { tone: "before" | "after"; label: string; evidence: MyActionEvidence[]; description: string; empty: string }) {
-  const primary = evidence.find((item) => item.type === "image" && item.url);
+  const primary = evidence.find((item) => item.type === "image" && (item.url || item.storageKey));
+  const primaryUrl = useActionEvidenceUrl(primary);
   const before = tone === "before";
-  return <div className="overflow-hidden rounded-lg border border-blue-100 bg-white dark:border-slate-700 dark:bg-slate-900"><div className="flex justify-center px-3 py-1.5"><Badge className={before ? "border border-red-600 bg-red-600 px-4 py-1 text-white shadow-sm hover:bg-red-600" : "border border-green-600 bg-green-600 px-4 py-1 text-white shadow-sm hover:bg-green-600"}>{label}</Badge></div>{primary ? <div className="mx-3 aspect-[4/3] overflow-hidden rounded-md border border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-800"><img src={primary.url} alt={primary.name} className="size-full object-cover" /></div> : <div className="mx-3 flex aspect-[4/3] items-center justify-center rounded-md bg-slate-50 dark:bg-slate-800"><div className="text-center"><FileText className="mx-auto size-7 text-slate-400" /><p className="mt-2 text-xs text-slate-500">{empty}</p></div></div>}<p className="min-h-14 px-4 py-2.5 text-center text-xs font-semibold leading-5 text-slate-700 dark:text-slate-200">{description}</p>{evidence.length > 1 && <div className="flex gap-1.5 border-t border-slate-200 p-2 dark:border-slate-700">{evidence.slice(1).map((item) => item.url && <img key={item.id} src={item.url} alt={item.name} className="size-9 rounded object-cover" />)}</div>}</div>;
+  return <div className="overflow-hidden rounded-lg border border-blue-100 bg-white dark:border-slate-700 dark:bg-slate-900"><div className="flex justify-center px-3 py-1.5"><Badge className={before ? "border border-red-600 bg-red-600 px-4 py-1 text-white shadow-sm hover:bg-red-600" : "border border-green-600 bg-green-600 px-4 py-1 text-white shadow-sm hover:bg-green-600"}>{label}</Badge></div>{primary && primaryUrl ? <div className="mx-3 aspect-[4/3] overflow-hidden rounded-md border border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-800"><img src={primaryUrl} alt={primary.name} className="size-full object-cover" /></div> : <div className="mx-3 flex aspect-[4/3] items-center justify-center rounded-md bg-slate-50 dark:bg-slate-800"><div className="text-center"><FileText className="mx-auto size-7 text-slate-400" /><p className="mt-2 text-xs text-slate-500">{empty}</p></div></div>}<p className="min-h-14 px-4 py-2.5 text-center text-xs font-semibold leading-5 text-slate-700 dark:text-slate-200">{description}</p>{evidence.length > 1 && <div className="flex gap-1.5 border-t border-slate-200 p-2 dark:border-slate-700">{evidence.filter(item => item !== primary && item.type === "image").map((item) => <EvidenceThumbnail key={item.id} evidence={item} />)}</div>}</div>;
+}
+
+function EvidenceThumbnail({ evidence }: { evidence: MyActionEvidence }) {
+  const url = useActionEvidenceUrl(evidence);
+  return url ? <img src={url} alt={evidence.name} className="size-9 rounded object-cover" /> : null;
 }
 
 function CompletedByPanel({ name, department, zone, completedAt, photo }: { name: string; department: string; zone: string; completedAt?: string; photo?: string }) {

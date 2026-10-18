@@ -1799,7 +1799,7 @@ function FiveSAuditExecution({
           description={`${audit.plant} · ${audit.area} · ${audit.department} · Auditor: ${audit.auditor}`}
           className="border-b-0 pb-2 [&_h1]:text-lg md:[&_h1]:text-xl"
           leading={onBack ? (
-            <Button type="button" variant="ghost" size="icon" onClick={onBack} aria-label="Exit audit" className="-ml-2">
+            <Button type="button" variant="ghost" size="icon" onClick={onBack} aria-label="Exit audit" className="md:-ml-2">
               <ArrowLeft className="size-4" />
             </Button>
           ) : undefined}
