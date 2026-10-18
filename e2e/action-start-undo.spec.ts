@@ -1,0 +1,46 @@
+import { test, expect } from '@playwright/test';
+for (const width of [320, 1440]) test(`Undo Start Work preserves work and restores the start screen at ${width}px`, async ({ page }) => {
+  await page.setViewportSize({ width, height: 900 });
+  await page.addInitScript(() => {
+    if (location.origin !== 'http://127.0.0.1:4179' || localStorage.getItem('undo-start-seeded')) return;
+    localStorage.setItem('undo-start-seeded', '1');
+    localStorage.setItem('5s-auth-session', JSON.stringify({ authenticated: true, username: 'admin', version: 1 }));
+    localStorage.setItem('five-s-demo-role', 'responsible');
+    localStorage.setItem('ops-red-tag-original-reset-v1', 'done');
+    localStorage.setItem('standalone-5s-actions', JSON.stringify(['Assigned', 'Rework Required'].map((status, index) => ({ id: `ACT-UNDO-${index}`, title: 'Synthetic start undo', description: 'Verify safe start undo', source: 'Manual', sourceModule: 'manual', sourceTitle: 'Manual', plant: 'Egmore Plant', area: 'Zone B', department: 'Production', responsiblePersonId: 'USR-SIVA-KUMAR', responsiblePersonName: 'Siva Kumar', assignedTo: 'Siva Kumar', createdByUserId: 'USR-RUMESH', createdByName: 'Rumesh', reviewerId: 'USR-RUMESH', reviewerName: 'Rumesh', status, priority: 'Medium', dueDate: '2030-12-20', createdAt: '2026-10-18T10:00:00Z', activityHistory: [], evidence: [{ id: 'undo-evidence', name: 'Synthetic completion evidence', type: 'image', url: '/demo-5s/good-example.png', uploadedBy: 'Siva Kumar', uploadedAt: '2026-10-18T10:00:00Z' }] }))));
+  });
+  for (const [index, status] of ['Assigned', 'Rework Required'].entries()) {
+    const record = () => page.evaluate(id => JSON.parse(localStorage.getItem('standalone-5s-actions')!).find((action: { id: string }) => action.id === id), `ACT-UNDO-${index}`);
+    await page.goto(`/actions/ACT-UNDO-${index}`, { waitUntil: 'networkidle' });
+    const notes = page.getByPlaceholder('Describe the corrective work completed...');
+    await expect(notes).toBeDisabled();
+    await expect(page.locator('fieldset')).toHaveCSS('filter', 'blur(4px)');
+    await page.getByRole('button', { name: 'Start Work', exact: true }).click();
+    await expect(notes).toBeEnabled();
+    await notes.fill('Work details retained after undo');
+    await page.getByRole('combobox', { name: 'Corrective Action Category', exact: true }).click();
+    await page.getByRole('option', { name: 'Design / Equipment Modification', exact: true }).click();
+    const undo = page.getByRole('button', { name: 'Undo Start Work', exact: true });
+    await undo.scrollIntoViewIfNeeded(); await undo.click();
+    await expect(page.getByRole('button', { name: 'Start Work', exact: true })).toBeVisible();
+    await expect(notes).toBeDisabled();
+    await expect(page.locator('fieldset')).toHaveCSS('filter', 'blur(4px)');
+    await expect(notes).toHaveValue('Work details retained after undo');
+    const saved = await record();
+    expect(saved.status).toBe(status); expect(saved.evidence).toHaveLength(1);
+    expect(saved.activityHistory.filter((event: { type: string }) => event.type === 'start_undone')).toHaveLength(1);
+    await page.reload({ waitUntil: 'networkidle' });
+    await expect(notes).toHaveValue('Work details retained after undo');
+    await expect(notes).toBeDisabled();
+    await expect(page.locator('fieldset')).toHaveCSS('filter', 'blur(4px)');
+    await page.getByRole('button', { name: 'Start Work', exact: true }).click();
+    await expect(notes).toBeEnabled();
+    await page.getByRole('button', { name: 'Next: Evidence', exact: true }).click();
+    await page.getByRole('button', { name: 'Review', exact: true }).click();
+    await page.getByRole('button', { name: /^(Submit|Resubmit) for Review$/ }).click();
+    await expect.poll(async () => (await record()).status).toBe('Pending Auditor Review');
+    await page.getByRole('button', { name: 'Overview', exact: true }).click();
+    await expect(page.getByRole('button', { name: 'Undo Start Work', exact: true })).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  }
+});

@@ -1,0 +1,52 @@
+viewport {
+  visual: { top: 0, left: 0, height: 844, scale: 1 },
+  scrollY: 2010,
+  headerHit: '<h2 id="base-ui-_r_f_" data-slot="dialog-title" class="font-heading text-base leading-none font-medium">Create Action from Red Tag</h2>',
+  footerHit: '<button type="button" tabindex="0" data-slot="button" class="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium outline-none transition-[background-color,border-color,color,opacity,transform] duration-150 ease-out motion-reduce:transition-none active:scale-[0.985] disabled:active:scale-100 focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 active:bg-primary/85 h-9 gap-2 px-4 has-[&gt;svg]:px-3">Create Action</button>'
+}
+visible-dialog-count 1
+dialog-scroll {
+  top: 42.203125,
+  scrollTop: 0,
+  scrollHeight: 760,
+  clientHeight: 760,
+  header: {
+    x: 32,
+    y: 58.203125,
+    width: 256,
+    height: 96,
+    top: 58.203125,
+    right: 288,
+    bottom: 154.203125,
+    left: 32
+  },
+  footer: {
+    x: 16,
+    y: 672.796875,
+    width: 288,
+    height: 129,
+    top: 672.796875,
+    right: 304,
+    bottom: 801.796875,
+    left: 16
+  },
+  body: {
+    x: 16,
+    y: 154.203125,
+    width: 288,
+    height: 518.59375,
+    top: 154.203125,
+    right: 304,
+    bottom: 672.796875,
+    left: 16
+  }
+}
+{
+  "client": 288,
+  "scroll": 288,
+  "rect": {
+    "x": 16,
+    "right": 304
+  },
+  "outside": []
+}

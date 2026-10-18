@@ -1,0 +1,2847 @@
+[
+  {
+    "width": 320,
+    "routes": [
+      {
+        "route": "/dashboard",
+        "url": "http://127.0.0.1:4179/dashboard",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 288,
+            "scrollWidth": 288,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits",
+        "url": "http://127.0.0.1:4179/audits",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 288,
+            "scrollWidth": 288,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits?audit=5S-EGM-ZA-006",
+        "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/audits/5S-EGM-ZA-006/report",
+        "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 324,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings",
+        "url": "http://127.0.0.1:4179/audits/settings",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 288,
+            "scrollWidth": 288,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits/settings/standard-checklist",
+        "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings/custom-questions",
+        "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings/scoring",
+        "url": "http://127.0.0.1:4179/audits/settings/scoring",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red",
+        "url": "http://127.0.0.1:4179/5s/red",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 288,
+            "scrollWidth": 468,
+            "scrollLeft": 180
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/overview",
+        "url": "http://127.0.0.1:4179/5s/red/overview",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 288,
+            "scrollWidth": 468,
+            "scrollLeft": 180
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/create",
+        "url": "http://127.0.0.1:4179/5s/red/create",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/awaiting-closure",
+        "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 288,
+            "scrollWidth": 468,
+            "scrollLeft": 180
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/closed",
+        "url": "http://127.0.0.1:4179/5s/red/closed",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 288,
+            "scrollWidth": 468,
+            "scrollLeft": 180
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/settings",
+        "url": "http://127.0.0.1:4179/5s/red/settings",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 288,
+            "scrollWidth": 468,
+            "scrollLeft": 180
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/report",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 339,
+        "outside": [
+          {
+            "tag": "BUTTON",
+            "text": "Print / Save PDF",
+            "className": "group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium outline-none transition-[background-color,border-color,color,opacity,transform] duration-150 ease-out motion-reduce:transition-none active:scale-[0.985] disabled:active:scale-100 focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 active:bg-primary/85 h-9 gap-2 px-4 has-[>svg]:px-3",
+            "left": 182.59375,
+            "right": 338.59375
+          }
+        ],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/print",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions",
+        "url": "http://127.0.0.1:4179/actions",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 288,
+            "scrollWidth": 792,
+            "scrollLeft": 504
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 288,
+            "scrollWidth": 288,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001/report",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings",
+        "url": "http://127.0.0.1:4179/actions/settings",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 288,
+            "scrollWidth": 296,
+            "scrollLeft": 8
+          }
+        ]
+      },
+      {
+        "route": "/actions/settings/categories",
+        "url": "http://127.0.0.1:4179/actions/settings/categories",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/priority-due-dates",
+        "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/reminder-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/escalation-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+        "status": 200,
+        "width": 320,
+        "documentWidth": 320,
+        "outside": [],
+        "scrollers": []
+      }
+    ],
+    "errors": []
+  },
+  {
+    "width": 375,
+    "routes": [
+      {
+        "route": "/dashboard",
+        "url": "http://127.0.0.1:4179/dashboard",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 343,
+            "scrollWidth": 343,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits",
+        "url": "http://127.0.0.1:4179/audits",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 343,
+            "scrollWidth": 343,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits?audit=5S-EGM-ZA-006",
+        "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/audits/5S-EGM-ZA-006/report",
+        "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 379,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings",
+        "url": "http://127.0.0.1:4179/audits/settings",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 343,
+            "scrollWidth": 343,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits/settings/standard-checklist",
+        "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings/custom-questions",
+        "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings/scoring",
+        "url": "http://127.0.0.1:4179/audits/settings/scoring",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red",
+        "url": "http://127.0.0.1:4179/5s/red",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 343,
+            "scrollWidth": 468,
+            "scrollLeft": 125
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/overview",
+        "url": "http://127.0.0.1:4179/5s/red/overview",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 343,
+            "scrollWidth": 468,
+            "scrollLeft": 125
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/create",
+        "url": "http://127.0.0.1:4179/5s/red/create",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/awaiting-closure",
+        "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 343,
+            "scrollWidth": 468,
+            "scrollLeft": 125
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/closed",
+        "url": "http://127.0.0.1:4179/5s/red/closed",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 343,
+            "scrollWidth": 468,
+            "scrollLeft": 125
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/settings",
+        "url": "http://127.0.0.1:4179/5s/red/settings",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 343,
+            "scrollWidth": 468,
+            "scrollLeft": 125
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/report",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/print",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions",
+        "url": "http://127.0.0.1:4179/actions",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 343,
+            "scrollWidth": 792,
+            "scrollLeft": 449
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 343,
+            "scrollWidth": 343,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001/report",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings",
+        "url": "http://127.0.0.1:4179/actions/settings",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 343,
+            "scrollWidth": 343,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/settings/categories",
+        "url": "http://127.0.0.1:4179/actions/settings/categories",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/priority-due-dates",
+        "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/reminder-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/escalation-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+        "status": 200,
+        "width": 375,
+        "documentWidth": 375,
+        "outside": [],
+        "scrollers": []
+      }
+    ],
+    "errors": []
+  },
+  {
+    "width": 390,
+    "routes": [
+      {
+        "route": "/dashboard",
+        "url": "http://127.0.0.1:4179/dashboard",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 358,
+            "scrollWidth": 358,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits",
+        "url": "http://127.0.0.1:4179/audits",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 358,
+            "scrollWidth": 358,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits?audit=5S-EGM-ZA-006",
+        "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/audits/5S-EGM-ZA-006/report",
+        "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 394,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings",
+        "url": "http://127.0.0.1:4179/audits/settings",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 358,
+            "scrollWidth": 358,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits/settings/standard-checklist",
+        "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings/custom-questions",
+        "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings/scoring",
+        "url": "http://127.0.0.1:4179/audits/settings/scoring",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red",
+        "url": "http://127.0.0.1:4179/5s/red",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 358,
+            "scrollWidth": 468,
+            "scrollLeft": 110
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/overview",
+        "url": "http://127.0.0.1:4179/5s/red/overview",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 358,
+            "scrollWidth": 468,
+            "scrollLeft": 110
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/create",
+        "url": "http://127.0.0.1:4179/5s/red/create",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/awaiting-closure",
+        "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 358,
+            "scrollWidth": 468,
+            "scrollLeft": 110
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/closed",
+        "url": "http://127.0.0.1:4179/5s/red/closed",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 358,
+            "scrollWidth": 468,
+            "scrollLeft": 110
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/settings",
+        "url": "http://127.0.0.1:4179/5s/red/settings",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 358,
+            "scrollWidth": 468,
+            "scrollLeft": 110
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/report",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/print",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions",
+        "url": "http://127.0.0.1:4179/actions",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 358,
+            "scrollWidth": 792,
+            "scrollLeft": 434
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 358,
+            "scrollWidth": 358,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001/report",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings",
+        "url": "http://127.0.0.1:4179/actions/settings",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 358,
+            "scrollWidth": 358,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/settings/categories",
+        "url": "http://127.0.0.1:4179/actions/settings/categories",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/priority-due-dates",
+        "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/reminder-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/escalation-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+        "status": 200,
+        "width": 390,
+        "documentWidth": 390,
+        "outside": [],
+        "scrollers": []
+      }
+    ],
+    "errors": []
+  },
+  {
+    "width": 430,
+    "routes": [
+      {
+        "route": "/dashboard",
+        "url": "http://127.0.0.1:4179/dashboard",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 398,
+            "scrollWidth": 398,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits",
+        "url": "http://127.0.0.1:4179/audits",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 398,
+            "scrollWidth": 398,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits?audit=5S-EGM-ZA-006",
+        "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/audits/5S-EGM-ZA-006/report",
+        "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 434,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings",
+        "url": "http://127.0.0.1:4179/audits/settings",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 398,
+            "scrollWidth": 398,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits/settings/standard-checklist",
+        "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings/custom-questions",
+        "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings/scoring",
+        "url": "http://127.0.0.1:4179/audits/settings/scoring",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red",
+        "url": "http://127.0.0.1:4179/5s/red",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 398,
+            "scrollWidth": 468,
+            "scrollLeft": 70
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/overview",
+        "url": "http://127.0.0.1:4179/5s/red/overview",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 398,
+            "scrollWidth": 468,
+            "scrollLeft": 70
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/create",
+        "url": "http://127.0.0.1:4179/5s/red/create",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/awaiting-closure",
+        "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 398,
+            "scrollWidth": 468,
+            "scrollLeft": 70
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/closed",
+        "url": "http://127.0.0.1:4179/5s/red/closed",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 398,
+            "scrollWidth": 468,
+            "scrollLeft": 70
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/settings",
+        "url": "http://127.0.0.1:4179/5s/red/settings",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 398,
+            "scrollWidth": 468,
+            "scrollLeft": 70
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/report",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/print",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions",
+        "url": "http://127.0.0.1:4179/actions",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 398,
+            "scrollWidth": 792,
+            "scrollLeft": 394
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 398,
+            "scrollWidth": 398,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001/report",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings",
+        "url": "http://127.0.0.1:4179/actions/settings",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 398,
+            "scrollWidth": 398,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/settings/categories",
+        "url": "http://127.0.0.1:4179/actions/settings/categories",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/priority-due-dates",
+        "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/reminder-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/escalation-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+        "status": 200,
+        "width": 430,
+        "documentWidth": 430,
+        "outside": [],
+        "scrollers": []
+      }
+    ],
+    "errors": []
+  },
+  {
+    "width": 768,
+    "routes": [
+      {
+        "route": "/dashboard",
+        "url": "http://127.0.0.1:4179/dashboard",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 728,
+            "scrollWidth": 728,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits",
+        "url": "http://127.0.0.1:4179/audits",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 728,
+            "scrollWidth": 728,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits?audit=5S-EGM-ZA-006",
+        "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/audits/5S-EGM-ZA-006/report",
+        "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 772,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings",
+        "url": "http://127.0.0.1:4179/audits/settings",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 728,
+            "scrollWidth": 728,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits/settings/standard-checklist",
+        "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings/custom-questions",
+        "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings/scoring",
+        "url": "http://127.0.0.1:4179/audits/settings/scoring",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red",
+        "url": "http://127.0.0.1:4179/5s/red",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 728,
+            "scrollWidth": 728,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/overview",
+        "url": "http://127.0.0.1:4179/5s/red/overview",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 728,
+            "scrollWidth": 728,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/create",
+        "url": "http://127.0.0.1:4179/5s/red/create",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/awaiting-closure",
+        "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 728,
+            "scrollWidth": 728,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/closed",
+        "url": "http://127.0.0.1:4179/5s/red/closed",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 728,
+            "scrollWidth": 728,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/settings",
+        "url": "http://127.0.0.1:4179/5s/red/settings",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 728,
+            "scrollWidth": 728,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/report",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/print",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions",
+        "url": "http://127.0.0.1:4179/actions",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 728,
+            "scrollWidth": 792,
+            "scrollLeft": 64
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 728,
+            "scrollWidth": 728,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001/report",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings",
+        "url": "http://127.0.0.1:4179/actions/settings",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 728,
+            "scrollWidth": 728,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/settings/categories",
+        "url": "http://127.0.0.1:4179/actions/settings/categories",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/priority-due-dates",
+        "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/reminder-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/escalation-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+        "status": 200,
+        "width": 768,
+        "documentWidth": 768,
+        "outside": [],
+        "scrollers": []
+      }
+    ],
+    "errors": []
+  },
+  {
+    "width": 1024,
+    "routes": [
+      {
+        "route": "/dashboard",
+        "url": "http://127.0.0.1:4179/dashboard",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 720,
+            "scrollWidth": 720,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits",
+        "url": "http://127.0.0.1:4179/audits",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 720,
+            "scrollWidth": 720,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits?audit=5S-EGM-ZA-006",
+        "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/audits/5S-EGM-ZA-006/report",
+        "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1028,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings",
+        "url": "http://127.0.0.1:4179/audits/settings",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 720,
+            "scrollWidth": 720,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits/settings/standard-checklist",
+        "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings/custom-questions",
+        "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 670,
+            "scrollWidth": 1196,
+            "scrollLeft": 526
+          }
+        ]
+      },
+      {
+        "route": "/audits/settings/scoring",
+        "url": "http://127.0.0.1:4179/audits/settings/scoring",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red",
+        "url": "http://127.0.0.1:4179/5s/red",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 720,
+            "scrollWidth": 720,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/overview",
+        "url": "http://127.0.0.1:4179/5s/red/overview",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 720,
+            "scrollWidth": 720,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/create",
+        "url": "http://127.0.0.1:4179/5s/red/create",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/awaiting-closure",
+        "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 720,
+            "scrollWidth": 720,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/closed",
+        "url": "http://127.0.0.1:4179/5s/red/closed",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 720,
+            "scrollWidth": 720,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/settings",
+        "url": "http://127.0.0.1:4179/5s/red/settings",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 720,
+            "scrollWidth": 720,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/report",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/print",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions",
+        "url": "http://127.0.0.1:4179/actions",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [
+          {
+            "tag": "BUTTON",
+            "text": "All priorities",
+            "className": "flex items-center justify-between gap-2 whitespace-nowrap rounded-md border border-input bg-background text-sm text-foreground shadow-xs outline-none select-none transition-colors duration-150 hover:border-foreground/20 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground data-[size=default]:h-9 data-[size=default]:px-3 data-[size=sm]:h-8 data-[size=sm]:rounded-md data-[size=sm]:px-2.5 data-[size=sm]:text-[13px] *:data-[slot=select-value]:flex *:data-[slot=select-value]:min-w-0 *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 *:data-[slot=select-value]:truncate [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 dark:hover:border-foreground/25 w-full",
+            "left": 911,
+            "right": 1071
+          },
+          {
+            "tag": "BUTTON",
+            "text": "More filters",
+            "className": "group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium outline-none transition-[background-color,border-color,color,opacity,transform] duration-150 ease-out motion-reduce:transition-none active:scale-[0.985] disabled:active:scale-100 focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 border border-border bg-background text-foreground shadow-sm hover:bg-muted hover:text-foreground active:bg-muted/80 h-9 gap-2 px-4 has-[>svg]:px-3",
+            "left": 1079,
+            "right": 1203.78125
+          }
+        ],
+        "scrollers": [
+          {
+            "width": 720,
+            "scrollWidth": 792,
+            "scrollLeft": 72
+          },
+          {
+            "width": 718,
+            "scrollWidth": 1040,
+            "scrollLeft": 322
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 720,
+            "scrollWidth": 720,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001/report",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings",
+        "url": "http://127.0.0.1:4179/actions/settings",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 720,
+            "scrollWidth": 720,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/settings/categories",
+        "url": "http://127.0.0.1:4179/actions/settings/categories",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 670,
+            "scrollWidth": 699,
+            "scrollLeft": 29
+          }
+        ]
+      },
+      {
+        "route": "/actions/settings/priority-due-dates",
+        "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/reminder-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/escalation-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+        "status": 200,
+        "width": 1024,
+        "documentWidth": 1024,
+        "outside": [],
+        "scrollers": []
+      }
+    ],
+    "errors": []
+  },
+  {
+    "width": 1280,
+    "routes": [
+      {
+        "route": "/dashboard",
+        "url": "http://127.0.0.1:4179/dashboard",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 976,
+            "scrollWidth": 976,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits",
+        "url": "http://127.0.0.1:4179/audits",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 976,
+            "scrollWidth": 976,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits?audit=5S-EGM-ZA-006",
+        "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/audits/5S-EGM-ZA-006/report",
+        "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1288,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings",
+        "url": "http://127.0.0.1:4179/audits/settings",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 976,
+            "scrollWidth": 976,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits/settings/standard-checklist",
+        "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings/custom-questions",
+        "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 926,
+            "scrollWidth": 1196,
+            "scrollLeft": 270
+          }
+        ]
+      },
+      {
+        "route": "/audits/settings/scoring",
+        "url": "http://127.0.0.1:4179/audits/settings/scoring",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red",
+        "url": "http://127.0.0.1:4179/5s/red",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 976,
+            "scrollWidth": 976,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/overview",
+        "url": "http://127.0.0.1:4179/5s/red/overview",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 976,
+            "scrollWidth": 976,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/create",
+        "url": "http://127.0.0.1:4179/5s/red/create",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/awaiting-closure",
+        "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 976,
+            "scrollWidth": 976,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/closed",
+        "url": "http://127.0.0.1:4179/5s/red/closed",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 976,
+            "scrollWidth": 976,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/settings",
+        "url": "http://127.0.0.1:4179/5s/red/settings",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 976,
+            "scrollWidth": 976,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/report",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/print",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions",
+        "url": "http://127.0.0.1:4179/actions",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 976,
+            "scrollWidth": 976,
+            "scrollLeft": 0
+          },
+          {
+            "width": 974,
+            "scrollWidth": 1040,
+            "scrollLeft": 66
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 976,
+            "scrollWidth": 976,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001/report",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings",
+        "url": "http://127.0.0.1:4179/actions/settings",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 976,
+            "scrollWidth": 976,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/settings/categories",
+        "url": "http://127.0.0.1:4179/actions/settings/categories",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 926,
+            "scrollWidth": 926,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/settings/priority-due-dates",
+        "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/reminder-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/escalation-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+        "status": 200,
+        "width": 1280,
+        "documentWidth": 1280,
+        "outside": [],
+        "scrollers": []
+      }
+    ],
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "routes": [
+      {
+        "route": "/dashboard",
+        "url": "http://127.0.0.1:4179/dashboard",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1136,
+            "scrollWidth": 1136,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits",
+        "url": "http://127.0.0.1:4179/audits",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1136,
+            "scrollWidth": 1136,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits?audit=5S-EGM-ZA-006",
+        "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/audits/5S-EGM-ZA-006/report",
+        "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1448,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings",
+        "url": "http://127.0.0.1:4179/audits/settings",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1136,
+            "scrollWidth": 1136,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits/settings/standard-checklist",
+        "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings/custom-questions",
+        "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1086,
+            "scrollWidth": 1196,
+            "scrollLeft": 110
+          }
+        ]
+      },
+      {
+        "route": "/audits/settings/scoring",
+        "url": "http://127.0.0.1:4179/audits/settings/scoring",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red",
+        "url": "http://127.0.0.1:4179/5s/red",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1136,
+            "scrollWidth": 1136,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/overview",
+        "url": "http://127.0.0.1:4179/5s/red/overview",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1136,
+            "scrollWidth": 1136,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/create",
+        "url": "http://127.0.0.1:4179/5s/red/create",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/awaiting-closure",
+        "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1136,
+            "scrollWidth": 1136,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/closed",
+        "url": "http://127.0.0.1:4179/5s/red/closed",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1136,
+            "scrollWidth": 1136,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/settings",
+        "url": "http://127.0.0.1:4179/5s/red/settings",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1136,
+            "scrollWidth": 1136,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/report",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/print",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions",
+        "url": "http://127.0.0.1:4179/actions",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1136,
+            "scrollWidth": 1136,
+            "scrollLeft": 0
+          },
+          {
+            "width": 1134,
+            "scrollWidth": 1134,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1136,
+            "scrollWidth": 1136,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001/report",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings",
+        "url": "http://127.0.0.1:4179/actions/settings",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1136,
+            "scrollWidth": 1136,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/settings/categories",
+        "url": "http://127.0.0.1:4179/actions/settings/categories",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1086,
+            "scrollWidth": 1086,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/settings/priority-due-dates",
+        "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/reminder-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/escalation-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+        "status": 200,
+        "width": 1440,
+        "documentWidth": 1440,
+        "outside": [],
+        "scrollers": []
+      }
+    ],
+    "errors": []
+  },
+  {
+    "width": 1920,
+    "routes": [
+      {
+        "route": "/dashboard",
+        "url": "http://127.0.0.1:4179/dashboard",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1600,
+            "scrollWidth": 1600,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits",
+        "url": "http://127.0.0.1:4179/audits",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1600,
+            "scrollWidth": 1600,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits?audit=5S-EGM-ZA-006",
+        "url": "http://127.0.0.1:4179/audits?audit=5S-EGM-ZA-006",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/audits/5S-EGM-ZA-006/report",
+        "url": "http://127.0.0.1:4179/5s/audits/5S-EGM-ZA-006/report",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings",
+        "url": "http://127.0.0.1:4179/audits/settings",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1600,
+            "scrollWidth": 1600,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits/settings/standard-checklist",
+        "url": "http://127.0.0.1:4179/audits/settings/standard-checklist",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/audits/settings/custom-questions",
+        "url": "http://127.0.0.1:4179/audits/settings/custom-questions",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1550,
+            "scrollWidth": 1550,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/audits/settings/scoring",
+        "url": "http://127.0.0.1:4179/audits/settings/scoring",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red",
+        "url": "http://127.0.0.1:4179/5s/red",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1600,
+            "scrollWidth": 1600,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/overview",
+        "url": "http://127.0.0.1:4179/5s/red/overview",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1600,
+            "scrollWidth": 1600,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/create",
+        "url": "http://127.0.0.1:4179/5s/red/create",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/awaiting-closure",
+        "url": "http://127.0.0.1:4179/5s/red/awaiting-closure",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1600,
+            "scrollWidth": 1600,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/closed",
+        "url": "http://127.0.0.1:4179/5s/red/closed",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1600,
+            "scrollWidth": 1600,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/settings",
+        "url": "http://127.0.0.1:4179/5s/red/settings",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1600,
+            "scrollWidth": 1600,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/report",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/report",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/RT-EGM-ZA-001/print",
+        "url": "http://127.0.0.1:4179/5s/red/RT-EGM-ZA-001/print",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "url": "http://127.0.0.1:4179/5s/red/create-qr/print?plant=PLANT-EGM&quantity=3",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions",
+        "url": "http://127.0.0.1:4179/actions",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1600,
+            "scrollWidth": 1600,
+            "scrollLeft": 0
+          },
+          {
+            "width": 1598,
+            "scrollWidth": 1598,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1600,
+            "scrollWidth": 1600,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/ACT-VM-001/report",
+        "url": "http://127.0.0.1:4179/actions/ACT-VM-001/report",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings",
+        "url": "http://127.0.0.1:4179/actions/settings",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1600,
+            "scrollWidth": 1600,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/settings/categories",
+        "url": "http://127.0.0.1:4179/actions/settings/categories",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": [
+          {
+            "width": 1550,
+            "scrollWidth": 1550,
+            "scrollLeft": 0
+          }
+        ]
+      },
+      {
+        "route": "/actions/settings/priority-due-dates",
+        "url": "http://127.0.0.1:4179/actions/settings/priority-due-dates",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/reminder-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/reminder-rules",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": []
+      },
+      {
+        "route": "/actions/settings/escalation-rules",
+        "url": "http://127.0.0.1:4179/actions/settings/escalation-rules",
+        "status": 200,
+        "width": 1920,
+        "documentWidth": 1920,
+        "outside": [],
+        "scrollers": []
+      }
+    ],
+    "errors": []
+  }
+]

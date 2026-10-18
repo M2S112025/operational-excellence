@@ -1,0 +1,549 @@
+{
+  "branch": "feat/audit-admin-question-management",
+  "head": "e5e9950121bf7a89d2c1700a748b5534f28dd3c3",
+  "browser": "Chrome for Testing 156.0.8078.4 / Playwright 1.64.1 on macOS ARM64",
+  "viewports": [
+    {
+      "width": 1366,
+      "height": 768
+    },
+    {
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "width": 1280,
+      "height": 600
+    },
+    {
+      "width": 1024,
+      "height": 600
+    },
+    {
+      "width": 1024,
+      "height": 768
+    },
+    {
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "width": 1093,
+      "height": 614
+    },
+    {
+      "width": 911,
+      "height": 512
+    }
+  ],
+  "additionalAuditActionViewports": [
+    {
+      "width": 768,
+      "height": 512
+    },
+    {
+      "width": 600,
+      "height": 512
+    }
+  ],
+  "routeStateEntries": 120,
+  "distinctRequestedPathnames": 116,
+  "routeViewportCombinations": 960,
+  "browserTests": {
+    "passed": 62,
+    "failed": 0,
+    "skipped": 0
+  },
+  "geometryCaptures": 1562,
+  "popupHeightChecks": 1562,
+  "focusedReachabilityChecks": 368,
+  "printSheetContexts": 24,
+  "uniqueLaptopScenarios": 54,
+  "targetedPrintRetests": 8,
+  "issues": {
+    "confirmed": 4,
+    "fixed": 4,
+    "remainingP0UI": 0,
+    "remainingP1UI": 0
+  },
+  "jobs": [
+    {
+      "phase": "laptop-complete",
+      "selectedTests": 54,
+      "rawRunnerStats": {
+        "startTime": "2026-10-18T12:25:57.650Z",
+        "duration": 1683225.8839999998,
+        "expected": 54,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    {
+      "phase": "print-content-after",
+      "selectedTests": 8,
+      "rawRunnerStats": {
+        "startTime": "2026-10-18T12:36:38.819Z",
+        "duration": 212350.276,
+        "expected": 8,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    }
+  ],
+  "tests": [
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop Audit, Actions and shell 1366x768",
+      "status": "passed",
+      "durationMs": 36400
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop Audit, Actions and shell 1280x720",
+      "status": "passed",
+      "durationMs": 36443
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop Audit, Actions and shell 1280x600",
+      "status": "passed",
+      "durationMs": 27641
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop Audit, Actions and shell 1024x600",
+      "status": "passed",
+      "durationMs": 27561
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop Audit, Actions and shell 1024x768",
+      "status": "passed",
+      "durationMs": 25240
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop Audit, Actions and shell 1440x900",
+      "status": "passed",
+      "durationMs": 25216
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop Audit, Actions and shell 1093x614",
+      "status": "passed",
+      "durationMs": 27389
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop Audit, Actions and shell 911x512",
+      "status": "passed",
+      "durationMs": 29041
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop Audit, Actions and shell 768x512",
+      "status": "passed",
+      "durationMs": 29096
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop Audit, Actions and shell 600x512",
+      "status": "passed",
+      "durationMs": 31161
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "All seven decision forms, Back and submission at 1280x600",
+      "status": "passed",
+      "durationMs": 39330
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "All seven decision forms, Back and submission at 1024x600",
+      "status": "passed",
+      "durationMs": 40858
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "All seven decision forms, Back and submission at 911x512",
+      "status": "passed",
+      "durationMs": 42274
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "All seven decision forms, Back and submission at 1440x900",
+      "status": "passed",
+      "durationMs": 43078
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop physical disposition 1366x768",
+      "status": "passed",
+      "durationMs": 5353
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop physical disposition 1280x720",
+      "status": "passed",
+      "durationMs": 3859
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop physical disposition 1280x600",
+      "status": "passed",
+      "durationMs": 4559
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop physical disposition 1024x600",
+      "status": "passed",
+      "durationMs": 4944
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop physical disposition 1024x768",
+      "status": "passed",
+      "durationMs": 6108
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop physical disposition 1440x900",
+      "status": "passed",
+      "durationMs": 4081
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop physical disposition 1093x614",
+      "status": "passed",
+      "durationMs": 3738
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop physical disposition 911x512",
+      "status": "passed",
+      "durationMs": 5723
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop VM and linked forms 1366x768",
+      "status": "passed",
+      "durationMs": 14619
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop VM and linked forms 1280x720",
+      "status": "passed",
+      "durationMs": 14499
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop VM and linked forms 1280x600",
+      "status": "passed",
+      "durationMs": 14220
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop VM and linked forms 1024x600",
+      "status": "passed",
+      "durationMs": 14385
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop VM and linked forms 1024x768",
+      "status": "passed",
+      "durationMs": 15599
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop VM and linked forms 1440x900",
+      "status": "passed",
+      "durationMs": 14974
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop VM and linked forms 1093x614",
+      "status": "passed",
+      "durationMs": 10728
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop VM and linked forms 911x512",
+      "status": "passed",
+      "durationMs": 10928
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop operational forms 1366x768",
+      "status": "passed",
+      "durationMs": 22948
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop reports and filters 1366x768",
+      "status": "passed",
+      "durationMs": 12779
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop operational forms 1280x720",
+      "status": "passed",
+      "durationMs": 23088
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop reports and filters 1280x720",
+      "status": "passed",
+      "durationMs": 13093
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop operational forms 1280x600",
+      "status": "passed",
+      "durationMs": 26102
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop reports and filters 1280x600",
+      "status": "passed",
+      "durationMs": 13487
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop operational forms 1024x600",
+      "status": "passed",
+      "durationMs": 36791
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop reports and filters 1024x600",
+      "status": "passed",
+      "durationMs": 19520
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop operational forms 1024x768",
+      "status": "passed",
+      "durationMs": 35832
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop reports and filters 1024x768",
+      "status": "passed",
+      "durationMs": 25388
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop operational forms 1440x900",
+      "status": "passed",
+      "durationMs": 35306
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop reports and filters 1440x900",
+      "status": "passed",
+      "durationMs": 17232
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop operational forms 1093x614",
+      "status": "passed",
+      "durationMs": 29411
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop reports and filters 1093x614",
+      "status": "passed",
+      "durationMs": 22646
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop operational forms 911x512",
+      "status": "passed",
+      "durationMs": 27330
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop reports and filters 911x512",
+      "status": "passed",
+      "durationMs": 14168
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop route matrix 1366x768",
+      "status": "passed",
+      "durationMs": 337515
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop route matrix 1280x720",
+      "status": "passed",
+      "durationMs": 355003
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop route matrix 1280x600",
+      "status": "passed",
+      "durationMs": 289250
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop route matrix 1024x600",
+      "status": "passed",
+      "durationMs": 279289
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop route matrix 1024x768",
+      "status": "passed",
+      "durationMs": 282114
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop route matrix 1440x900",
+      "status": "passed",
+      "durationMs": 280139
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop route matrix 1093x614",
+      "status": "passed",
+      "durationMs": 268843
+    },
+    {
+      "phase": "laptop-complete",
+      "test": "Laptop route matrix 911x512",
+      "status": "passed",
+      "durationMs": 271559
+    },
+    {
+      "phase": "print-content-after",
+      "test": "Laptop reports and filters 1366x768",
+      "status": "passed",
+      "durationMs": 27215
+    },
+    {
+      "phase": "print-content-after",
+      "test": "Laptop reports and filters 1280x720",
+      "status": "passed",
+      "durationMs": 28489
+    },
+    {
+      "phase": "print-content-after",
+      "test": "Laptop reports and filters 1280x600",
+      "status": "passed",
+      "durationMs": 29480
+    },
+    {
+      "phase": "print-content-after",
+      "test": "Laptop reports and filters 1024x600",
+      "status": "passed",
+      "durationMs": 23038
+    },
+    {
+      "phase": "print-content-after",
+      "test": "Laptop reports and filters 1024x768",
+      "status": "passed",
+      "durationMs": 27888
+    },
+    {
+      "phase": "print-content-after",
+      "test": "Laptop reports and filters 1440x900",
+      "status": "passed",
+      "durationMs": 26782
+    },
+    {
+      "phase": "print-content-after",
+      "test": "Laptop reports and filters 1093x614",
+      "status": "passed",
+      "durationMs": 25193
+    },
+    {
+      "phase": "print-content-after",
+      "test": "Laptop reports and filters 911x512",
+      "status": "passed",
+      "durationMs": 21873
+    }
+  ],
+  "preservation": {
+    "checkedBaselineFiles": 739,
+    "unexpectedChanges": []
+  },
+  "knownAuthorizationAcceptanceFailures": [
+    "P0-AUTH-RT",
+    "P0-AUTH-ENT",
+    "P0-AUTH-ACT"
+  ],
+  "productChanges": [
+    "components/ops/ops-searchable-select.tsx",
+    "features/five-s/components/FiveSAuditExecution.tsx",
+    "features/visual-management/print/visual-management-print.module.css"
+  ],
+  "productSHA256": {
+    "features/visual-management/print/visual-management-print.module.css": "4ed2df8651120fb50f05b4ba69ad8cb9817b1567978b3554a90bd9daa2509d90",
+    "components/ops/ops-searchable-select.tsx": "241b8e7da4650de11e0213c7fd3980fcee68739c1a0a85288871c395c9a396d6",
+    "features/five-s/components/FiveSAuditExecution.tsx": "f43ba1090e882bdc3755c4d7f94ac1d5a9b160116586d71b8c7e651cbf4c949c"
+  },
+  "webpackBuild": "passed; isolated copy has identical product source",
+  "limitations": [
+    "macOS Chromium does not certify Windows fonts, Edge, OS scaling or hardware",
+    "Production-server network-idle probes timed out during background prefetch; final browser runs use isolated dev server",
+    "No physical camera/printer or comprehensive screen-reader certification"
+  ],
+  "intermediateResults": [
+    "Original menu overflow reproduced at 911x512 and 1024x600, before patch",
+    "Initial dev hot reloads interrupted navigation; isolated environment warmed before final regression",
+    "Hidden checkbox/listbox focus/sidebar-padding/table-fit/image-accessible-name harness corrections documented in issue register",
+    "Earlier jobs were interrupted when UI defects were found. The complete 54-test laptop run passed; all eight affected report/print cases were repeated after the final preview fix with expanded full-table and A3/A4 print assertions."
+  ],
+  "validationTiming": "The complete laptop run and Batch 2 overlapped the final print CSS changes. All affected report/print cases were rerun after the final CSS; Batch 1 and the fresh P0 run started after all four fixes.",
+  "regressionSuites": {
+    "Batch 1": {
+      "startTime": "2026-10-18T12:45:24.358Z",
+      "duration": 555934.896,
+      "expected": 38,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "Batch 2": {
+      "startTime": "2026-10-18T12:22:08.190Z",
+      "duration": 1393064.588,
+      "expected": 63,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "p0Browser": {
+    "passed": 15,
+    "failed": 0
+  },
+  "unitTests": {
+    "passed": 156,
+    "failed": 0,
+    "files": 15
+  },
+  "authorizationAcceptance": {
+    "passed": 0,
+    "failed": 3,
+    "unchanged": true
+  },
+  "typeScript": "passed",
+  "lint": {
+    "errors": 0,
+    "existingWarnings": 13
+  },
+  "readiness": "READY WITH GAPS",
+  "gitWorkingTree": "Dirty; existing work preserved, no commits/pushes/merges/deployments",
+  "printMedia": {
+    "sizes": [
+      "A3",
+      "A4"
+    ],
+    "viewports": 8,
+    "physicalPrintingCertified": false
+  },
+  "totalFinalBrowserExecutions": 178
+}

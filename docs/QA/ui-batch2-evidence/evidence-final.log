@@ -1,0 +1,16 @@
+
+Running 9 tests using 1 worker
+
+(node:45091) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 e2e/ui-batch2-evidence.spec.ts:4:31 › Batch 2 upload and long content 320px (7.8s)
+  ✓  2 e2e/ui-batch2-evidence.spec.ts:4:31 › Batch 2 upload and long content 375px (7.7s)
+  ✓  3 e2e/ui-batch2-evidence.spec.ts:4:31 › Batch 2 upload and long content 390px (7.6s)
+  ✓  4 e2e/ui-batch2-evidence.spec.ts:4:31 › Batch 2 upload and long content 430px (7.7s)
+  ✓  5 e2e/ui-batch2-evidence.spec.ts:4:31 › Batch 2 upload and long content 768px (7.1s)
+  ✓  6 e2e/ui-batch2-evidence.spec.ts:4:31 › Batch 2 upload and long content 1024px (7.5s)
+  ✓  7 e2e/ui-batch2-evidence.spec.ts:4:31 › Batch 2 upload and long content 1280px (7.3s)
+  ✓  8 e2e/ui-batch2-evidence.spec.ts:4:31 › Batch 2 upload and long content 1440px (8.4s)
+  ✓  9 e2e/ui-batch2-evidence.spec.ts:4:31 › Batch 2 upload and long content 1920px (7.1s)
+
+  9 passed (1.2m)

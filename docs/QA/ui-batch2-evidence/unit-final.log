@@ -1,0 +1,66 @@
+
+> manufacturing-qms@0.1.0 test
+> vitest run
+
+
+ RUN  v4.1.11 /Users/rumesh-9634/Projects/Ops
+
+ ❯ tests/p0-authorization-gaps.test.ts (3 tests | 3 failed) 516ms
+     × P0-AUTH-RT rejects creation by an unknown actor at the store boundary 102ms
+     × P0-AUTH-ENT rejects organization entitlement changes by an ordinary member 409ms
+     × P0-AUTH-ACT rejects direct canonical Action creation by a member without creation permission 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/p0-authorization-gaps.test.ts > P0 unresolved authorization acceptance > P0-AUTH-RT rejects creation by an unknown actor at the store boundary
+AssertionError: Unknown actors must not create Red Tags via direct store commands: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/p0-authorization-gaps.test.ts:23:91
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/p0-authorization-gaps.test.ts > P0 unresolved authorization acceptance > P0-AUTH-ENT rejects organization entitlement changes by an ordinary member
+AssertionError: Only authorized platform administrators may mutate module entitlements: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/p0-authorization-gaps.test.ts:31:96
+     29|     let rejected = false;
+     30|     try { rejected = store.saveOrganizationAccess("xyz-components", { …
+     31|     expect(rejected, "Only authorized platform administrators may muta…
+       |                                                                                                ^
+     32|     expect(store.getOrganizationAccess("xyz-components")).toEqual(befo…
+     33|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/p0-authorization-gaps.test.ts > P0 unresolved authorization acceptance > P0-AUTH-ACT rejects direct canonical Action creation by a member without creation permission
+AssertionError: Canonical Action creation must enforce current actor authority: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/p0-authorization-gaps.test.ts:39:88
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed | 115 passed (116)
+      Tests  3 failed | 1054 passed (1057)
+   Start at  16:51:31
+   Duration  5.30s (transform 9.86s, setup 0ms, import 26.14s, tests 19.33s, environment 9ms)

@@ -1,0 +1,10 @@
+320 {
+  shell: { top: 0, bottom: 64 },
+  create: { top: 0, bottom: 135 },
+  overlap: true
+}
+1024 {
+  shell: { top: 0, bottom: 64 },
+  create: { top: 0, bottom: 79 },
+  overlap: true
+}

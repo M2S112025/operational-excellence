@@ -1,0 +1,12 @@
+
+> manufacturing-qms@0.1.0 test
+> vitest run tests/audit-question-management.test.ts tests/standard-audit-checklist.test.ts tests/custom-audit-question-authorization.test.ts tests/action-store.characterization.test.ts tests/action-integration-hardening.test.ts tests/red-tag-reset.test.ts tests/red-tag-v2-create-review-decision.characterization.test.ts tests/red-tag-v2-disposition-closure.characterization.test.ts tests/red-tag-v2-qr-print.characterization.test.ts tests/gemba-red-tag-phase5a.characterization.test.ts tests/module-entitlements.characterization.test.ts tests/audit-independent-action-closure.test.ts tests/p0-data-integrity.test.ts tests/p0-dashboard-red-tag.test.ts
+
+
+ RUN  v4.1.11 /Users/rumesh-9634/Projects/Ops
+
+
+ Test Files  14 passed (14)
+      Tests  148 passed (148)
+   Start at  14:39:27
+   Duration  754ms (transform 1.28s, setup 0ms, import 1.36s, tests 2.41s, environment 1ms)

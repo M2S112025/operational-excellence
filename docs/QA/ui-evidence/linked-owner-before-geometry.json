@@ -1,0 +1,52 @@
+{
+  "client": 288,
+  "scroll": 412,
+  "rect": {
+    "x": 16,
+    "right": 304
+  },
+  "outside": [
+    {
+      "tag": "DIV",
+      "class": "grid gap-1.5",
+      "text": "Assign to meSelect Responsible person",
+      "right": 427.5
+    },
+    {
+      "tag": "DIV",
+      "class": "flex gap-2",
+      "text": "Assign to meSelect Responsible person",
+      "right": 427.5
+    },
+    {
+      "tag": "DIV",
+      "class": "min-w-0 w-full",
+      "text": "Select Responsible person",
+      "right": 427.5
+    },
+    {
+      "tag": "BUTTON",
+      "class": "flex min-h-10 w-full min-w-0 items-center justify-between gap-2 rounded-md border border-input bg-background px-3 py-2 text-left text-sm shadow-xs outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+      "text": "Select Responsible person",
+      "right": 427.5
+    },
+    {
+      "tag": "SPAN",
+      "class": "min-w-0 flex-1 truncate",
+      "text": "Select Responsible person",
+      "right": 390.5
+    },
+    {
+      "tag": "svg",
+      "class": {},
+      "text": "",
+      "right": 414.5
+    },
+    {
+      "tag": "path",
+      "class": {},
+      "text": "",
+      "right": 410.5
+    }
+  ]
+}

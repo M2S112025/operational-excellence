@@ -1,0 +1,16 @@
+
+Running 9 tests using 1 worker
+
+(node:46074) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 e2e/ui-batch2-settings.spec.ts:3:31 › Batch 2 settings and secondary views 320px (6.1s)
+  ✓  2 e2e/ui-batch2-settings.spec.ts:3:31 › Batch 2 settings and secondary views 375px (5.9s)
+  ✓  3 e2e/ui-batch2-settings.spec.ts:3:31 › Batch 2 settings and secondary views 390px (5.8s)
+  ✓  4 e2e/ui-batch2-settings.spec.ts:3:31 › Batch 2 settings and secondary views 430px (6.0s)
+  ✓  5 e2e/ui-batch2-settings.spec.ts:3:31 › Batch 2 settings and secondary views 768px (5.7s)
+  ✓  6 e2e/ui-batch2-settings.spec.ts:3:31 › Batch 2 settings and secondary views 1024px (5.9s)
+  ✓  7 e2e/ui-batch2-settings.spec.ts:3:31 › Batch 2 settings and secondary views 1280px (5.8s)
+  ✓  8 e2e/ui-batch2-settings.spec.ts:3:31 › Batch 2 settings and secondary views 1440px (6.6s)
+  ✓  9 e2e/ui-batch2-settings.spec.ts:3:31 › Batch 2 settings and secondary views 1920px (6.0s)
+
+  9 passed (54.6s)

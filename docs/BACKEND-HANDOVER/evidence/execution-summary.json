@@ -1,0 +1,618 @@
+{
+  "gitBranch": "feat/audit-admin-question-management",
+  "baselineCommit": "e5e9950121bf7a89d2c1700a748b5534f28dd3c3",
+  "validationIncludesUncommittedP0Changes": true,
+  "finishedAtIST": "2026-10-18T14:46:32.835474+05:30",
+  "browser": "Playwright 1.64.1 / Chrome for Testing 156.0.8078.4",
+  "mode": "task-owned Next dev server at http://127.0.0.1:4179; fresh contexts",
+  "stats": {
+    "startTime": "2026-10-18T09:15:00.798Z",
+    "duration": 39406.931,
+    "expected": 15,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "specs": [
+    {
+      "title": "critical route geometry at 320px",
+      "status": "passed",
+      "durationMs": 3203
+    },
+    {
+      "title": "question dialog controls and dropdown at 320px",
+      "status": "passed",
+      "durationMs": 3165
+    },
+    {
+      "title": "critical route geometry at 375px",
+      "status": "passed",
+      "durationMs": 3161
+    },
+    {
+      "title": "question dialog controls and dropdown at 375px",
+      "status": "passed",
+      "durationMs": 3190
+    },
+    {
+      "title": "critical route geometry at 768px",
+      "status": "passed",
+      "durationMs": 3114
+    },
+    {
+      "title": "question dialog controls and dropdown at 768px",
+      "status": "passed",
+      "durationMs": 3146
+    },
+    {
+      "title": "critical route geometry at 1024px",
+      "status": "passed",
+      "durationMs": 2713
+    },
+    {
+      "title": "question dialog controls and dropdown at 1024px",
+      "status": "passed",
+      "durationMs": 2509
+    },
+    {
+      "title": "critical route geometry at 1440px",
+      "status": "passed",
+      "durationMs": 2945
+    },
+    {
+      "title": "question dialog controls and dropdown at 1440px",
+      "status": "passed",
+      "durationMs": 2539
+    },
+    {
+      "title": "Admin edits standard question, reloads and retains identity",
+      "status": "passed",
+      "durationMs": 1774
+    },
+    {
+      "title": "Super Admin isolates XYZ standard override from Admin ABC and member is read-only",
+      "status": "passed",
+      "durationMs": 2231
+    },
+    {
+      "title": "reference photo upload persists through reload and explicit removal stays removed",
+      "status": "passed",
+      "durationMs": 3195
+    },
+    {
+      "title": "disabled module direct route and ordinary Super Admin route are denied",
+      "status": "passed",
+      "durationMs": 816
+    },
+    {
+      "title": "original OPS reusable QR batch prints 100 labels without allocating records",
+      "status": "passed",
+      "durationMs": 856
+    }
+  ],
+  "geometry": [
+    {
+      "width": 320,
+      "results": [
+        {
+          "route": "/dashboard",
+          "status": 200,
+          "width": 320,
+          "scrollWidth": 320,
+          "bodyWidth": 320,
+          "tables": []
+        },
+        {
+          "route": "/audits",
+          "status": 200,
+          "width": 320,
+          "scrollWidth": 320,
+          "bodyWidth": 320,
+          "tables": []
+        },
+        {
+          "route": "/actions",
+          "status": 200,
+          "width": 320,
+          "scrollWidth": 320,
+          "bodyWidth": 320,
+          "tables": []
+        },
+        {
+          "route": "/5s/red",
+          "status": 200,
+          "width": 320,
+          "scrollWidth": 320,
+          "bodyWidth": 320,
+          "tables": []
+        },
+        {
+          "route": "/5s/red/create",
+          "status": 200,
+          "width": 320,
+          "scrollWidth": 320,
+          "bodyWidth": 320,
+          "tables": []
+        },
+        {
+          "route": "/5s/red/overview",
+          "status": 200,
+          "width": 320,
+          "scrollWidth": 320,
+          "bodyWidth": 320,
+          "tables": []
+        },
+        {
+          "route": "/gemba",
+          "status": 200,
+          "width": 320,
+          "scrollWidth": 320,
+          "bodyWidth": 320,
+          "tables": []
+        },
+        {
+          "route": "/continuous-improvement",
+          "status": 200,
+          "width": 320,
+          "scrollWidth": 320,
+          "bodyWidth": 320,
+          "tables": []
+        },
+        {
+          "route": "/audits/settings/standard-checklist",
+          "status": 200,
+          "width": 320,
+          "scrollWidth": 320,
+          "bodyWidth": 320,
+          "tables": []
+        },
+        {
+          "route": "/audits/settings/custom-questions",
+          "status": 200,
+          "width": 320,
+          "scrollWidth": 320,
+          "bodyWidth": 320,
+          "tables": []
+        },
+        {
+          "route": "/settings/users",
+          "status": 200,
+          "width": 320,
+          "scrollWidth": 320,
+          "bodyWidth": 320,
+          "tables": []
+        }
+      ],
+      "pageErrors": [],
+      "consoleMessages": []
+    },
+    {
+      "width": 375,
+      "results": [
+        {
+          "route": "/dashboard",
+          "status": 200,
+          "width": 375,
+          "scrollWidth": 375,
+          "bodyWidth": 375,
+          "tables": []
+        },
+        {
+          "route": "/audits",
+          "status": 200,
+          "width": 375,
+          "scrollWidth": 375,
+          "bodyWidth": 375,
+          "tables": []
+        },
+        {
+          "route": "/actions",
+          "status": 200,
+          "width": 375,
+          "scrollWidth": 375,
+          "bodyWidth": 375,
+          "tables": []
+        },
+        {
+          "route": "/5s/red",
+          "status": 200,
+          "width": 375,
+          "scrollWidth": 375,
+          "bodyWidth": 375,
+          "tables": []
+        },
+        {
+          "route": "/5s/red/create",
+          "status": 200,
+          "width": 375,
+          "scrollWidth": 375,
+          "bodyWidth": 375,
+          "tables": []
+        },
+        {
+          "route": "/5s/red/overview",
+          "status": 200,
+          "width": 375,
+          "scrollWidth": 375,
+          "bodyWidth": 375,
+          "tables": []
+        },
+        {
+          "route": "/gemba",
+          "status": 200,
+          "width": 375,
+          "scrollWidth": 375,
+          "bodyWidth": 375,
+          "tables": []
+        },
+        {
+          "route": "/continuous-improvement",
+          "status": 200,
+          "width": 375,
+          "scrollWidth": 375,
+          "bodyWidth": 375,
+          "tables": []
+        },
+        {
+          "route": "/audits/settings/standard-checklist",
+          "status": 200,
+          "width": 375,
+          "scrollWidth": 375,
+          "bodyWidth": 375,
+          "tables": []
+        },
+        {
+          "route": "/audits/settings/custom-questions",
+          "status": 200,
+          "width": 375,
+          "scrollWidth": 375,
+          "bodyWidth": 375,
+          "tables": []
+        },
+        {
+          "route": "/settings/users",
+          "status": 200,
+          "width": 375,
+          "scrollWidth": 375,
+          "bodyWidth": 375,
+          "tables": []
+        }
+      ],
+      "pageErrors": [],
+      "consoleMessages": []
+    },
+    {
+      "width": 768,
+      "results": [
+        {
+          "route": "/dashboard",
+          "status": 200,
+          "width": 768,
+          "scrollWidth": 768,
+          "bodyWidth": 768,
+          "tables": []
+        },
+        {
+          "route": "/audits",
+          "status": 200,
+          "width": 768,
+          "scrollWidth": 768,
+          "bodyWidth": 768,
+          "tables": []
+        },
+        {
+          "route": "/actions",
+          "status": 200,
+          "width": 768,
+          "scrollWidth": 768,
+          "bodyWidth": 768,
+          "tables": []
+        },
+        {
+          "route": "/5s/red",
+          "status": 200,
+          "width": 768,
+          "scrollWidth": 768,
+          "bodyWidth": 768,
+          "tables": []
+        },
+        {
+          "route": "/5s/red/create",
+          "status": 200,
+          "width": 768,
+          "scrollWidth": 768,
+          "bodyWidth": 768,
+          "tables": []
+        },
+        {
+          "route": "/5s/red/overview",
+          "status": 200,
+          "width": 768,
+          "scrollWidth": 768,
+          "bodyWidth": 768,
+          "tables": []
+        },
+        {
+          "route": "/gemba",
+          "status": 200,
+          "width": 768,
+          "scrollWidth": 768,
+          "bodyWidth": 768,
+          "tables": []
+        },
+        {
+          "route": "/continuous-improvement",
+          "status": 200,
+          "width": 768,
+          "scrollWidth": 768,
+          "bodyWidth": 768,
+          "tables": []
+        },
+        {
+          "route": "/audits/settings/standard-checklist",
+          "status": 200,
+          "width": 768,
+          "scrollWidth": 768,
+          "bodyWidth": 768,
+          "tables": []
+        },
+        {
+          "route": "/audits/settings/custom-questions",
+          "status": 200,
+          "width": 768,
+          "scrollWidth": 768,
+          "bodyWidth": 768,
+          "tables": []
+        },
+        {
+          "route": "/settings/users",
+          "status": 200,
+          "width": 768,
+          "scrollWidth": 768,
+          "bodyWidth": 768,
+          "tables": []
+        }
+      ],
+      "pageErrors": [],
+      "consoleMessages": []
+    },
+    {
+      "width": 1024,
+      "results": [
+        {
+          "route": "/dashboard",
+          "status": 200,
+          "width": 1024,
+          "scrollWidth": 1024,
+          "bodyWidth": 1024,
+          "tables": []
+        },
+        {
+          "route": "/audits",
+          "status": 200,
+          "width": 1024,
+          "scrollWidth": 1024,
+          "bodyWidth": 1024,
+          "tables": []
+        },
+        {
+          "route": "/actions",
+          "status": 200,
+          "width": 1024,
+          "scrollWidth": 1024,
+          "bodyWidth": 1024,
+          "tables": [
+            {
+              "clientWidth": 718,
+              "scrollWidth": 1040,
+              "scrollLeft": 322
+            }
+          ]
+        },
+        {
+          "route": "/5s/red",
+          "status": 200,
+          "width": 1024,
+          "scrollWidth": 1024,
+          "bodyWidth": 1024,
+          "tables": []
+        },
+        {
+          "route": "/5s/red/create",
+          "status": 200,
+          "width": 1024,
+          "scrollWidth": 1024,
+          "bodyWidth": 1024,
+          "tables": []
+        },
+        {
+          "route": "/5s/red/overview",
+          "status": 200,
+          "width": 1024,
+          "scrollWidth": 1024,
+          "bodyWidth": 1024,
+          "tables": []
+        },
+        {
+          "route": "/gemba",
+          "status": 200,
+          "width": 1024,
+          "scrollWidth": 1024,
+          "bodyWidth": 1024,
+          "tables": []
+        },
+        {
+          "route": "/continuous-improvement",
+          "status": 200,
+          "width": 1024,
+          "scrollWidth": 1024,
+          "bodyWidth": 1024,
+          "tables": []
+        },
+        {
+          "route": "/audits/settings/standard-checklist",
+          "status": 200,
+          "width": 1024,
+          "scrollWidth": 1024,
+          "bodyWidth": 1024,
+          "tables": []
+        },
+        {
+          "route": "/audits/settings/custom-questions",
+          "status": 200,
+          "width": 1024,
+          "scrollWidth": 1024,
+          "bodyWidth": 1024,
+          "tables": [
+            {
+              "clientWidth": 670,
+              "scrollWidth": 1196,
+              "scrollLeft": 526
+            }
+          ]
+        },
+        {
+          "route": "/settings/users",
+          "status": 200,
+          "width": 1024,
+          "scrollWidth": 1024,
+          "bodyWidth": 1024,
+          "tables": []
+        }
+      ],
+      "pageErrors": [],
+      "consoleMessages": []
+    },
+    {
+      "width": 1440,
+      "results": [
+        {
+          "route": "/dashboard",
+          "status": 200,
+          "width": 1440,
+          "scrollWidth": 1440,
+          "bodyWidth": 1440,
+          "tables": []
+        },
+        {
+          "route": "/audits",
+          "status": 200,
+          "width": 1440,
+          "scrollWidth": 1440,
+          "bodyWidth": 1440,
+          "tables": []
+        },
+        {
+          "route": "/actions",
+          "status": 200,
+          "width": 1440,
+          "scrollWidth": 1440,
+          "bodyWidth": 1440,
+          "tables": [
+            {
+              "clientWidth": 1134,
+              "scrollWidth": 1134,
+              "scrollLeft": 0
+            }
+          ]
+        },
+        {
+          "route": "/5s/red",
+          "status": 200,
+          "width": 1440,
+          "scrollWidth": 1440,
+          "bodyWidth": 1440,
+          "tables": []
+        },
+        {
+          "route": "/5s/red/create",
+          "status": 200,
+          "width": 1440,
+          "scrollWidth": 1440,
+          "bodyWidth": 1440,
+          "tables": []
+        },
+        {
+          "route": "/5s/red/overview",
+          "status": 200,
+          "width": 1440,
+          "scrollWidth": 1440,
+          "bodyWidth": 1440,
+          "tables": []
+        },
+        {
+          "route": "/gemba",
+          "status": 200,
+          "width": 1440,
+          "scrollWidth": 1440,
+          "bodyWidth": 1440,
+          "tables": []
+        },
+        {
+          "route": "/continuous-improvement",
+          "status": 200,
+          "width": 1440,
+          "scrollWidth": 1440,
+          "bodyWidth": 1440,
+          "tables": []
+        },
+        {
+          "route": "/audits/settings/standard-checklist",
+          "status": 200,
+          "width": 1440,
+          "scrollWidth": 1440,
+          "bodyWidth": 1440,
+          "tables": []
+        },
+        {
+          "route": "/audits/settings/custom-questions",
+          "status": 200,
+          "width": 1440,
+          "scrollWidth": 1440,
+          "bodyWidth": 1440,
+          "tables": [
+            {
+              "clientWidth": 1086,
+              "scrollWidth": 1196,
+              "scrollLeft": 110
+            }
+          ]
+        },
+        {
+          "route": "/settings/users",
+          "status": 200,
+          "width": 1440,
+          "scrollWidth": 1440,
+          "bodyWidth": 1440,
+          "tables": []
+        }
+      ],
+      "pageErrors": [],
+      "consoleMessages": []
+    }
+  ],
+  "qr": {
+    "labels": 100,
+    "reusableTargets": 1,
+    "pdfPages": 26,
+    "storageUnchanged": true
+  },
+  "vitest": {
+    "baselinePassed": 1045,
+    "currentPassed": 1054,
+    "currentFailed": 3,
+    "knownAuthorizationFailures": [
+      "P0-AUTH-RT",
+      "P0-AUTH-ENT",
+      "P0-AUTH-ACT"
+    ],
+    "criticalSelectionPassed": 148,
+    "newVitestCases": 12
+  },
+  "screenshots": 65,
+  "limitations": [
+    "No physical camera/microphone, QR scan or physical printer validation",
+    "No independent decoding of rasterized QR symbols",
+    "No Firefox/WebKit or full-route/full-lifecycle browser certification"
+  ]
+}

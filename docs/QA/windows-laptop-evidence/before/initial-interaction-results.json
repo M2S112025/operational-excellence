@@ -1,0 +1,1173 @@
+{
+  "config": {
+    "argv": [
+      "/Users/rumesh-9634/.nvm/versions/node/v24.21.0/bin/node",
+      "/Users/rumesh-9634/Projects/Ops/node_modules/.bin/playwright",
+      "test",
+      "-c",
+      "playwright.windows.config.ts",
+      "e2e/windows-operations.spec.ts",
+      "e2e/windows-meetings.spec.ts"
+    ],
+    "configFile": "/Users/rumesh-9634/Projects/Ops/playwright.windows.config.ts",
+    "rootDir": "/Users/rumesh-9634/Projects/Ops/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/rumesh-9634/Projects/Ops/test-results/windows-before",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/Users/rumesh-9634/Projects/Ops/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "windows-*.spec.ts"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/rumesh-9634/Projects/Ops/test-results/windows-before",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "name": "",
+        "testDir": "/Users/rumesh-9634/Projects/Ops/e2e",
+        "snapshotDir": "/Users/rumesh-9634/Projects/Ops/e2e",
+        "testIgnore": [],
+        "testMatch": "windows-*.spec.ts",
+        "timeout": 120000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4179",
+          "browserName": "chromium",
+          "launchOptions": {
+            "executablePath": "/tmp/ops-p0-browsers/chromium-1248/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
+          },
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "video": "off",
+          "actionTimeout": 15000,
+          "navigationTimeout": 30000
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/windows-before-results.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report/windows-before",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 2,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "windows-meetings.spec.ts",
+      "file": "windows-meetings.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Laptop VM and linked forms 1024x600",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 15963,
+                  "error": {
+                    "message": "Error: vm-metric-nested-select: popup viewport boundaries\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 22\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"bottom\": 613,\u001b[39m\n\u001b[31m+     \"clientHeight\": 345,\u001b[39m\n\u001b[31m+     \"left\": 88,\u001b[39m\n\u001b[31m+     \"right\": 500,\u001b[39m\n\u001b[31m+     \"role\": \"dialog\",\u001b[39m\n\u001b[31m+     \"scrollHeight\": 345,\u001b[39m\n\u001b[31m+     \"text\": \"SafetyQualityCostDeliveryPeopleEnvironmentMorale5SCustom\",\u001b[39m\n\u001b[31m+     \"top\": 266,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"bottom\": 612,\u001b[39m\n\u001b[31m+     \"clientHeight\": 288,\u001b[39m\n\u001b[31m+     \"left\": 89,\u001b[39m\n\u001b[31m+     \"right\": 499,\u001b[39m\n\u001b[31m+     \"role\": \"listbox\",\u001b[39m\n\u001b[31m+     \"scrollHeight\": 368,\u001b[39m\n\u001b[31m+     \"text\": \"SafetyQualityCostDeliveryPeopleEnvironmentMorale5SCustom\",\u001b[39m\n\u001b[31m+     \"top\": 324,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: vm-metric-nested-select: popup viewport boundaries\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 22\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"bottom\": 613,\u001b[39m\n\u001b[31m+     \"clientHeight\": 345,\u001b[39m\n\u001b[31m+     \"left\": 88,\u001b[39m\n\u001b[31m+     \"right\": 500,\u001b[39m\n\u001b[31m+     \"role\": \"dialog\",\u001b[39m\n\u001b[31m+     \"scrollHeight\": 345,\u001b[39m\n\u001b[31m+     \"text\": \"SafetyQualityCostDeliveryPeopleEnvironmentMorale5SCustom\",\u001b[39m\n\u001b[31m+     \"top\": 266,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"bottom\": 612,\u001b[39m\n\u001b[31m+     \"clientHeight\": 288,\u001b[39m\n\u001b[31m+     \"left\": 89,\u001b[39m\n\u001b[31m+     \"right\": 499,\u001b[39m\n\u001b[31m+     \"role\": \"listbox\",\u001b[39m\n\u001b[31m+     \"scrollHeight\": 368,\u001b[39m\n\u001b[31m+     \"text\": \"SafetyQualityCostDeliveryPeopleEnvironmentMorale5SCustom\",\u001b[39m\n\u001b[31m+     \"top\": 324,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at state (/Users/rumesh-9634/Projects/Ops/e2e/windows-helpers.ts:19:56)\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-meetings.spec.ts:8:388",
+                    "location": {
+                      "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-helpers.ts",
+                      "column": 56,
+                      "line": 19
+                    },
+                    "snippet": "\u001b[90m   at \u001b[39mwindows-helpers.ts:19\n\n  17 |  await info.attach(`${name}-height.json`,{body:JSON.stringify({url:page.url(),viewport:size,popups}),contentType:'application/json'});\n  18 |  if(bad.length)await page.screenshot({path:info.outputPath(`${name}-height.png`),animations:'disabled'});\n> 19 |  expect.soft(bad,`${name}: popup viewport boundaries`).toEqual([]);\n     |                                                        ^\n  20 |  if(await page.getByRole('listbox').count()===0){\n  21 |   const dialog=page.getByRole('dialog').last();if(await dialog.count()){\n  22 |    const actions=dialog.locator('[data-slot=\"dialog-footer\"] button:not([disabled])').filter({visible:true});"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-helpers.ts",
+                        "column": 56,
+                        "line": 19
+                      },
+                      "message": "Error: vm-metric-nested-select: popup viewport boundaries\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 22\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"bottom\": 613,\u001b[39m\n\u001b[31m+     \"clientHeight\": 345,\u001b[39m\n\u001b[31m+     \"left\": 88,\u001b[39m\n\u001b[31m+     \"right\": 500,\u001b[39m\n\u001b[31m+     \"role\": \"dialog\",\u001b[39m\n\u001b[31m+     \"scrollHeight\": 345,\u001b[39m\n\u001b[31m+     \"text\": \"SafetyQualityCostDeliveryPeopleEnvironmentMorale5SCustom\",\u001b[39m\n\u001b[31m+     \"top\": 266,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"bottom\": 612,\u001b[39m\n\u001b[31m+     \"clientHeight\": 288,\u001b[39m\n\u001b[31m+     \"left\": 89,\u001b[39m\n\u001b[31m+     \"right\": 499,\u001b[39m\n\u001b[31m+     \"role\": \"listbox\",\u001b[39m\n\u001b[31m+     \"scrollHeight\": 368,\u001b[39m\n\u001b[31m+     \"text\": \"SafetyQualityCostDeliveryPeopleEnvironmentMorale5SCustom\",\u001b[39m\n\u001b[31m+     \"top\": 324,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n   at windows-helpers.ts:19\n\n  17 |  await info.attach(`${name}-height.json`,{body:JSON.stringify({url:page.url(),viewport:size,popups}),contentType:'application/json'});\n  18 |  if(bad.length)await page.screenshot({path:info.outputPath(`${name}-height.png`),animations:'disabled'});\n> 19 |  expect.soft(bad,`${name}: popup viewport boundaries`).toEqual([]);\n     |                                                        ^\n  20 |  if(await page.getByRole('listbox').count()===0){\n  21 |   const dialog=page.getByRole('dialog').last();if(await dialog.count()){\n  22 |    const actions=dialog.locator('[data-slot=\"dialog-footer\"] button:not([disabled])').filter({visible:true});\n    at state (/Users/rumesh-9634/Projects/Ops/e2e/windows-helpers.ts:19:56)\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-meetings.spec.ts:8:388"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-18T12:03:45.739Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "vm-meeting.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L2JvYXJkcy9WTS1aQS1UMS9tZWV0aW5nIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJab25lIEEgRGFpbHkgTWFuYWdlbWVudCIKICBdCn0="
+                    },
+                    {
+                      "name": "vm-meeting-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvYm9hcmRzL1ZNLVpBLVQxL21lZXRpbmciLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOltdfQ=="
+                    },
+                    {
+                      "name": "vm-deviation.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L2JvYXJkcy9WTS1aQS1UMS9tZWV0aW5nIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJab25lIEEgRGFpbHkgTWFuYWdlbWVudCIKICBdCn0="
+                    },
+                    {
+                      "name": "vm-deviation-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvYm9hcmRzL1ZNLVpBLVQxL21lZXRpbmciLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOltdfQ=="
+                    },
+                    {
+                      "name": "vm-guest.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L2JvYXJkcy9WTS1aQS1UMS9tZWV0aW5nIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJab25lIEEgRGFpbHkgTWFuYWdlbWVudCIKICBdCn0="
+                    },
+                    {
+                      "name": "vm-guest-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvYm9hcmRzL1ZNLVpBLVQxL21lZXRpbmciLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOlt7InJvbGUiOiJkaWFsb2ciLCJ0ZXh0IjoiQWRkIEd1ZXN0QWRkIHNvbWVvbmUgd2l0aG91dCBhbiBPUFMgYWNjb3VudC5OYW1lICpDb21wYW55IC8gUm9sZUNhbmNlbEFkZCBHdWVzdEMiLCJsZWZ0IjoyODgsInJpZ2h0Ijo3MzYsInRvcCI6MTQ5LjUsImJvdHRvbSI6NDUwLjUsInNjcm9sbEhlaWdodCI6MzAxLCJjbGllbnRIZWlnaHQiOjMwMX1dfQ=="
+                    },
+                    {
+                      "name": "vm-guest-footer-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvYm9hcmRzL1ZNLVpBLVQxL21lZXRpbmciLCJ0ZXh0IjoiQWRkIEd1ZXN0IiwibGVmdCI6NjE5LjU0Njg3NSwicmlnaHQiOjcyMCwidG9wIjozOTguNSwiYm90dG9tIjo0MzQuNSwiaGl0IjoiPGJ1dHRvbiB0eXBlPVwiYnV0dG9uXCIgdGFiaW5kZXg9XCIwXCIgZGF0YS1zbG90PVwiYnV0dG9uXCIgY2xhc3M9XCJncm91cC9idXR0b24gaW5saW5lLWZsZXggc2hyaW5rLTAgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHdoaXRlc3BhY2Utbm93cmFwIHJvdW5kZWQtbWQgdGV4dC1zbSBmb250LW1lZGl1bSBvdXRsaW5lLW5vbmUgdHJhbnNpdGlvbi1bYmFja2dyb3VuZC1jb2xvcixib3JkZXItY29sb3IsY29sb3Isb3BhY2l0eSx0cmFuc2Zvcm1dIGR1cmF0aW9uLTE1MCBlYXNlLW91dCBtb3Rpb24tcmVkdWNlOnRyYW5zaXRpb24tbiIsImZvY3VzZWQiOnRydWUsInVub2JzY3VyZWQiOnRydWV9"
+                    },
+                    {
+                      "name": "vm-completion-validation.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L2JvYXJkcy9WTS1aQS1UMS9tZWV0aW5nIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJab25lIEEgRGFpbHkgTWFuYWdlbWVudCIKICBdCn0="
+                    },
+                    {
+                      "name": "vm-completion-validation-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvYm9hcmRzL1ZNLVpBLVQxL21lZXRpbmciLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOltdfQ=="
+                    },
+                    {
+                      "name": "vm-metric-library.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L3NldHRpbmdzIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFsKICAgIHsKICAgICAgIndpZHRoIjogNzIwLAogICAgICAic2Nyb2xsV2lkdGgiOiA3MjAsCiAgICAgICJzY3JvbGxMZWZ0IjogMAogICAgfQogIF0sCiAgImhlYWRlck92ZXJmbG93IjogZmFsc2UsCiAgImhlYWRpbmdzIjogWwogICAgIlZpc3VhbCBNYW5hZ2VtZW50IFNldHRpbmdzIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "vm-metric-library-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvc2V0dGluZ3MiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOltdfQ=="
+                    },
+                    {
+                      "name": "vm-metric-dialog.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L3NldHRpbmdzIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJWaXN1YWwgTWFuYWdlbWVudCBTZXR0aW5ncyIKICBdCn0="
+                    },
+                    {
+                      "name": "vm-metric-dialog-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvc2V0dGluZ3MiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOlt7InJvbGUiOiJkaWFsb2ciLCJ0ZXh0IjoiQWRkIEtQSSBNZXRyaWNEZWZpbmUgd2hhdCBpcyBtZWFzdXJlZC4gQm9hcmQgdGFyZ2V0cyBhcmUgY29uZmlndXJlZCBzZXBhcmF0ZWx5LkMiLCJsZWZ0Ijo2NCwicmlnaHQiOjk2MCwidG9wIjo4OSwiYm90dG9tIjo1MTEsInNjcm9sbEhlaWdodCI6NDIyLCJjbGllbnRIZWlnaHQiOjQyMn1dfQ=="
+                    },
+                    {
+                      "name": "vm-metric-dialog-footer-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvc2V0dGluZ3MiLCJ0ZXh0IjoiQWRkIE1ldHJpYyIsImxlZnQiOjgzMi4xMDkzNzUsInJpZ2h0Ijo5MzYsInRvcCI6NDU5LCJib3R0b20iOjQ5NSwiaGl0IjoiPGJ1dHRvbiB0eXBlPVwiYnV0dG9uXCIgdGFiaW5kZXg9XCIwXCIgZGF0YS1zbG90PVwiYnV0dG9uXCIgY2xhc3M9XCJncm91cC9idXR0b24gaW5saW5lLWZsZXggc2hyaW5rLTAgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHdoaXRlc3BhY2Utbm93cmFwIHJvdW5kZWQtbWQgdGV4dC1zbSBmb250LW1lZGl1bSBvdXRsaW5lLW5vbmUgdHJhbnNpdGlvbi1bYmFja2dyb3VuZC1jb2xvcixib3JkZXItY29sb3IsY29sb3Isb3BhY2l0eSx0cmFuc2Zvcm1dIGR1cmF0aW9uLTE1MCBlYXNlLW91dCBtb3Rpb24tcmVkdWNlOnRyYW5zaXRpb24tbiIsImZvY3VzZWQiOnRydWUsInVub2JzY3VyZWQiOnRydWV9"
+                    },
+                    {
+                      "name": "vm-metric-nested-select.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L3NldHRpbmdzIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJWaXN1YWwgTWFuYWdlbWVudCBTZXR0aW5ncyIKICBdCn0="
+                    },
+                    {
+                      "name": "vm-metric-nested-select-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvc2V0dGluZ3MiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOlt7InJvbGUiOiJkaWFsb2ciLCJ0ZXh0IjoiQWRkIEtQSSBNZXRyaWNEZWZpbmUgd2hhdCBpcyBtZWFzdXJlZC4gQm9hcmQgdGFyZ2V0cyBhcmUgY29uZmlndXJlZCBzZXBhcmF0ZWx5LkMiLCJsZWZ0Ijo2NCwicmlnaHQiOjk2MCwidG9wIjo4OSwiYm90dG9tIjo1MTEsInNjcm9sbEhlaWdodCI6NDIyLCJjbGllbnRIZWlnaHQiOjQyMn0seyJyb2xlIjoiZGlhbG9nIiwidGV4dCI6IlNhZmV0eVF1YWxpdHlDb3N0RGVsaXZlcnlQZW9wbGVFbnZpcm9ubWVudE1vcmFsZTVTQ3VzdG9tIiwibGVmdCI6ODgsInJpZ2h0Ijo1MDAsInRvcCI6MjY2LCJib3R0b20iOjYxMywic2Nyb2xsSGVpZ2h0IjozNDUsImNsaWVudEhlaWdodCI6MzQ1fSx7InJvbGUiOiJsaXN0Ym94IiwidGV4dCI6IlNhZmV0eVF1YWxpdHlDb3N0RGVsaXZlcnlQZW9wbGVFbnZpcm9ubWVudE1vcmFsZTVTQ3VzdG9tIiwibGVmdCI6ODksInJpZ2h0Ijo0OTksInRvcCI6MzI0LCJib3R0b20iOjYxMiwic2Nyb2xsSGVpZ2h0IjozNjgsImNsaWVudEhlaWdodCI6Mjg4fV19"
+                    },
+                    {
+                      "name": "gemba-linked-action.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL0dFTS0yMDI2LTAxNS93YWxrIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJab25lIEEgwrcgT2ZmaWNlIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "gemba-linked-action-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOlt7InJvbGUiOiJkaWFsb2ciLCJ0ZXh0IjoiQ3JlYXRlIEFjdGlvbiBmcm9tIEdlbWJhVGhlIHNvdXJjZSBjb250ZXh0IGFuZCBldmlkZW5jZSBhcmUgbGlua2VkIGF1dG9tYXRpY2FsbHkiLCJsZWZ0Ijo0MiwicmlnaHQiOjk4MiwidG9wIjozMCwiYm90dG9tIjo1NzAsInNjcm9sbEhlaWdodCI6NTQwLCJjbGllbnRIZWlnaHQiOjU0MH1dfQ=="
+                    },
+                    {
+                      "name": "gemba-linked-action-footer-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ0ZXh0IjoiQ3JlYXRlIEFjdGlvbiIsImxlZnQiOjgyOC42NzE4NzUsInJpZ2h0Ijo5NTAsInRvcCI6NTAyLCJib3R0b20iOjUzOCwiaGl0IjoiPGJ1dHRvbiB0eXBlPVwiYnV0dG9uXCIgdGFiaW5kZXg9XCIwXCIgZGF0YS1zbG90PVwiYnV0dG9uXCIgY2xhc3M9XCJncm91cC9idXR0b24gaW5saW5lLWZsZXggc2hyaW5rLTAgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHdoaXRlc3BhY2Utbm93cmFwIHJvdW5kZWQtbWQgdGV4dC1zbSBmb250LW1lZGl1bSBvdXRsaW5lLW5vbmUgdHJhbnNpdGlvbi1bYmFja2dyb3VuZC1jb2xvcixib3JkZXItY29sb3IsY29sb3Isb3BhY2l0eSx0cmFuc2Zvcm1dIGR1cmF0aW9uLTE1MCBlYXNlLW91dCBtb3Rpb24tcmVkdWNlOnRyYW5zaXRpb24tbiIsImZvY3VzZWQiOnRydWUsInVub2JzY3VyZWQiOnRydWV9"
+                    },
+                    {
+                      "name": "gemba-linked-red-tag.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL0dFTS0yMDI2LTAxNS93YWxrIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJab25lIEEgwrcgT2ZmaWNlIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "gemba-linked-red-tag-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOlt7InJvbGUiOiJkaWFsb2ciLCJ0ZXh0IjoiQ3JlYXRlIFJlZCBUYWdZb3UgZG8gbm90IGhhdmUgcGVybWlzc2lvbiB0byBjcmVhdGUgUmVkIFRhZ3MuQ2xvc2VDbG9zZSIsImxlZnQiOjMyMCwicmlnaHQiOjcwNCwidG9wIjoyMzYsImJvdHRvbSI6MzY0LCJzY3JvbGxIZWlnaHQiOjEyOCwiY2xpZW50SGVpZ2h0IjoxMjh9XX0="
+                    },
+                    {
+                      "name": "gemba-evidence-preview.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL0dFTS0yMDI2LTAxNS93YWxrIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJab25lIEEgwrcgT2ZmaWNlIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "gemba-evidence-preview-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOlt7InJvbGUiOiJkaWFsb2ciLCJ0ZXh0IjoiZmlyc3QtcGllY2UtYm9hcmQuanBnR2VtYmEgb2JzZXJ2YXRpb24gZXZpZGVuY2UxMDAlQ2xvc2UiLCJsZWZ0IjoxNiwicmlnaHQiOjEwMDgsInRvcCI6MTYsImJvdHRvbSI6NTg0LCJzY3JvbGxIZWlnaHQiOjU2OCwiY2xpZW50SGVpZ2h0Ijo1Njh9XX0="
+                    },
+                    {
+                      "name": "super-admin-disable-confirmation.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3N1cGVyLWFkbWluL29yZ2FuaXphdGlvbnMvYWJjLW1hbnVmYWN0dXJpbmcvbW9kdWxlcyIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiQUJDIE1hbnVmYWN0dXJpbmciCiAgXQp9"
+                    },
+                    {
+                      "name": "super-admin-disable-confirmation-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvc3VwZXItYWRtaW4vb3JnYW5pemF0aW9ucy9hYmMtbWFudWZhY3R1cmluZy9tb2R1bGVzIiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbeyJyb2xlIjoiYWxlcnRkaWFsb2ciLCJ0ZXh0IjoiRGlzYWJsZSBHZW1iYT9Vc2VycyBpbiBBQkMgTWFudWZhY3R1cmluZyB3aWxsIG5vIGxvbmdlciBiZSBhYmxlIHRvIGFjY2VzcyBHZW1iYS4iLCJsZWZ0IjozMjAsInJpZ2h0Ijo3MDQsInRvcCI6MjE0LjUsImJvdHRvbSI6Mzg1LjUsInNjcm9sbEhlaWdodCI6MTcxLCJjbGllbnRIZWlnaHQiOjE3MX1dfQ=="
+                    },
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/rumesh-9634/Projects/Ops/test-results/windows-before/windows-meetings-Laptop-VM-and-linked-forms-1024x600/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/rumesh-9634/Projects/Ops/test-results/windows-before/windows-meetings-Laptop-VM-and-linked-forms-1024x600/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/rumesh-9634/Projects/Ops/test-results/windows-before/windows-meetings-Laptop-VM-and-linked-forms-1024x600/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-helpers.ts",
+                    "column": 56,
+                    "line": 19
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "26d76fdded05505f9f3d-a778bf4f48eb69e183d3",
+          "file": "windows-meetings.spec.ts",
+          "line": 3,
+          "column": 43
+        },
+        {
+          "title": "Laptop VM and linked forms 911x512",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "failed",
+                  "duration": 15931,
+                  "error": {
+                    "message": "Error: vm-metric-nested-select: popup viewport boundaries\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 22\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"bottom\": 566,\u001b[39m\n\u001b[31m+     \"clientHeight\": 342,\u001b[39m\n\u001b[31m+     \"left\": 48,\u001b[39m\n\u001b[31m+     \"right\": 444,\u001b[39m\n\u001b[31m+     \"role\": \"dialog\",\u001b[39m\n\u001b[31m+     \"scrollHeight\": 342,\u001b[39m\n\u001b[31m+     \"text\": \"SafetyQualityCostDeliveryPeopleEnvironmentMorale5SCustom\",\u001b[39m\n\u001b[31m+     \"top\": 222,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"bottom\": 565,\u001b[39m\n\u001b[31m+     \"clientHeight\": 285,\u001b[39m\n\u001b[31m+     \"left\": 49,\u001b[39m\n\u001b[31m+     \"right\": 443,\u001b[39m\n\u001b[31m+     \"role\": \"listbox\",\u001b[39m\n\u001b[31m+     \"scrollHeight\": 368,\u001b[39m\n\u001b[31m+     \"text\": \"SafetyQualityCostDeliveryPeopleEnvironmentMorale5SCustom\",\u001b[39m\n\u001b[31m+     \"top\": 280,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: vm-metric-nested-select: popup viewport boundaries\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 22\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"bottom\": 566,\u001b[39m\n\u001b[31m+     \"clientHeight\": 342,\u001b[39m\n\u001b[31m+     \"left\": 48,\u001b[39m\n\u001b[31m+     \"right\": 444,\u001b[39m\n\u001b[31m+     \"role\": \"dialog\",\u001b[39m\n\u001b[31m+     \"scrollHeight\": 342,\u001b[39m\n\u001b[31m+     \"text\": \"SafetyQualityCostDeliveryPeopleEnvironmentMorale5SCustom\",\u001b[39m\n\u001b[31m+     \"top\": 222,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"bottom\": 565,\u001b[39m\n\u001b[31m+     \"clientHeight\": 285,\u001b[39m\n\u001b[31m+     \"left\": 49,\u001b[39m\n\u001b[31m+     \"right\": 443,\u001b[39m\n\u001b[31m+     \"role\": \"listbox\",\u001b[39m\n\u001b[31m+     \"scrollHeight\": 368,\u001b[39m\n\u001b[31m+     \"text\": \"SafetyQualityCostDeliveryPeopleEnvironmentMorale5SCustom\",\u001b[39m\n\u001b[31m+     \"top\": 280,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at state (/Users/rumesh-9634/Projects/Ops/e2e/windows-helpers.ts:19:56)\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-meetings.spec.ts:8:388",
+                    "location": {
+                      "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-helpers.ts",
+                      "column": 56,
+                      "line": 19
+                    },
+                    "snippet": "\u001b[90m   at \u001b[39mwindows-helpers.ts:19\n\n  17 |  await info.attach(`${name}-height.json`,{body:JSON.stringify({url:page.url(),viewport:size,popups}),contentType:'application/json'});\n  18 |  if(bad.length)await page.screenshot({path:info.outputPath(`${name}-height.png`),animations:'disabled'});\n> 19 |  expect.soft(bad,`${name}: popup viewport boundaries`).toEqual([]);\n     |                                                        ^\n  20 |  if(await page.getByRole('listbox').count()===0){\n  21 |   const dialog=page.getByRole('dialog').last();if(await dialog.count()){\n  22 |    const actions=dialog.locator('[data-slot=\"dialog-footer\"] button:not([disabled])').filter({visible:true});"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-helpers.ts",
+                        "column": 56,
+                        "line": 19
+                      },
+                      "message": "Error: vm-metric-nested-select: popup viewport boundaries\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 22\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"bottom\": 566,\u001b[39m\n\u001b[31m+     \"clientHeight\": 342,\u001b[39m\n\u001b[31m+     \"left\": 48,\u001b[39m\n\u001b[31m+     \"right\": 444,\u001b[39m\n\u001b[31m+     \"role\": \"dialog\",\u001b[39m\n\u001b[31m+     \"scrollHeight\": 342,\u001b[39m\n\u001b[31m+     \"text\": \"SafetyQualityCostDeliveryPeopleEnvironmentMorale5SCustom\",\u001b[39m\n\u001b[31m+     \"top\": 222,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+   Object {\u001b[39m\n\u001b[31m+     \"bottom\": 565,\u001b[39m\n\u001b[31m+     \"clientHeight\": 285,\u001b[39m\n\u001b[31m+     \"left\": 49,\u001b[39m\n\u001b[31m+     \"right\": 443,\u001b[39m\n\u001b[31m+     \"role\": \"listbox\",\u001b[39m\n\u001b[31m+     \"scrollHeight\": 368,\u001b[39m\n\u001b[31m+     \"text\": \"SafetyQualityCostDeliveryPeopleEnvironmentMorale5SCustom\",\u001b[39m\n\u001b[31m+     \"top\": 280,\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n   at windows-helpers.ts:19\n\n  17 |  await info.attach(`${name}-height.json`,{body:JSON.stringify({url:page.url(),viewport:size,popups}),contentType:'application/json'});\n  18 |  if(bad.length)await page.screenshot({path:info.outputPath(`${name}-height.png`),animations:'disabled'});\n> 19 |  expect.soft(bad,`${name}: popup viewport boundaries`).toEqual([]);\n     |                                                        ^\n  20 |  if(await page.getByRole('listbox').count()===0){\n  21 |   const dialog=page.getByRole('dialog').last();if(await dialog.count()){\n  22 |    const actions=dialog.locator('[data-slot=\"dialog-footer\"] button:not([disabled])').filter({visible:true});\n    at state (/Users/rumesh-9634/Projects/Ops/e2e/windows-helpers.ts:19:56)\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-meetings.spec.ts:8:388"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-18T12:03:45.755Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "vm-meeting.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L2JvYXJkcy9WTS1aQS1UMS9tZWV0aW5nIiwKICAid2lkdGgiOiA5MTEsCiAgImRvY3VtZW50V2lkdGgiOiA5MTEsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiWm9uZSBBIERhaWx5IE1hbmFnZW1lbnQiCiAgXQp9"
+                    },
+                    {
+                      "name": "vm-meeting-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvYm9hcmRzL1ZNLVpBLVQxL21lZXRpbmciLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6OTExLCJoZWlnaHQiOjUxMn0sInBvcHVwcyI6W119"
+                    },
+                    {
+                      "name": "vm-deviation.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L2JvYXJkcy9WTS1aQS1UMS9tZWV0aW5nIiwKICAid2lkdGgiOiA5MTEsCiAgImRvY3VtZW50V2lkdGgiOiA5MTEsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiWm9uZSBBIERhaWx5IE1hbmFnZW1lbnQiCiAgXQp9"
+                    },
+                    {
+                      "name": "vm-deviation-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvYm9hcmRzL1ZNLVpBLVQxL21lZXRpbmciLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6OTExLCJoZWlnaHQiOjUxMn0sInBvcHVwcyI6W119"
+                    },
+                    {
+                      "name": "vm-guest.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L2JvYXJkcy9WTS1aQS1UMS9tZWV0aW5nIiwKICAid2lkdGgiOiA5MTEsCiAgImRvY3VtZW50V2lkdGgiOiA5MTEsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiWm9uZSBBIERhaWx5IE1hbmFnZW1lbnQiCiAgXQp9"
+                    },
+                    {
+                      "name": "vm-guest-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvYm9hcmRzL1ZNLVpBLVQxL21lZXRpbmciLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6OTExLCJoZWlnaHQiOjUxMn0sInBvcHVwcyI6W3sicm9sZSI6ImRpYWxvZyIsInRleHQiOiJBZGQgR3Vlc3RBZGQgc29tZW9uZSB3aXRob3V0IGFuIE9QUyBhY2NvdW50Lk5hbWUgKkNvbXBhbnkgLyBSb2xlQ2FuY2VsQWRkIEd1ZXN0QyIsImxlZnQiOjIzMS41LCJyaWdodCI6Njc5LjUsInRvcCI6MTA1LjUsImJvdHRvbSI6NDA2LjUsInNjcm9sbEhlaWdodCI6MzAxLCJjbGllbnRIZWlnaHQiOjMwMX1dfQ=="
+                    },
+                    {
+                      "name": "vm-guest-footer-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvYm9hcmRzL1ZNLVpBLVQxL21lZXRpbmciLCJ0ZXh0IjoiQWRkIEd1ZXN0IiwibGVmdCI6NTYzLjA0Njg3NSwicmlnaHQiOjY2My41LCJ0b3AiOjM1NC41LCJib3R0b20iOjM5MC41LCJoaXQiOiI8YnV0dG9uIHR5cGU9XCJidXR0b25cIiB0YWJpbmRleD1cIjBcIiBkYXRhLXNsb3Q9XCJidXR0b25cIiBjbGFzcz1cImdyb3VwL2J1dHRvbiBpbmxpbmUtZmxleCBzaHJpbmstMCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgd2hpdGVzcGFjZS1ub3dyYXAgcm91bmRlZC1tZCB0ZXh0LXNtIGZvbnQtbWVkaXVtIG91dGxpbmUtbm9uZSB0cmFuc2l0aW9uLVtiYWNrZ3JvdW5kLWNvbG9yLGJvcmRlci1jb2xvcixjb2xvcixvcGFjaXR5LHRyYW5zZm9ybV0gZHVyYXRpb24tMTUwIGVhc2Utb3V0IG1vdGlvbi1yZWR1Y2U6dHJhbnNpdGlvbi1uIiwiZm9jdXNlZCI6dHJ1ZSwidW5vYnNjdXJlZCI6dHJ1ZX0="
+                    },
+                    {
+                      "name": "vm-completion-validation.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L2JvYXJkcy9WTS1aQS1UMS9tZWV0aW5nIiwKICAid2lkdGgiOiA5MTEsCiAgImRvY3VtZW50V2lkdGgiOiA5MTEsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiWm9uZSBBIERhaWx5IE1hbmFnZW1lbnQiCiAgXQp9"
+                    },
+                    {
+                      "name": "vm-completion-validation-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvYm9hcmRzL1ZNLVpBLVQxL21lZXRpbmciLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6OTExLCJoZWlnaHQiOjUxMn0sInBvcHVwcyI6W119"
+                    },
+                    {
+                      "name": "vm-metric-library.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L3NldHRpbmdzIiwKICAid2lkdGgiOiA5MTEsCiAgImRvY3VtZW50V2lkdGgiOiA5MTEsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbCiAgICB7CiAgICAgICJ3aWR0aCI6IDg3MSwKICAgICAgInNjcm9sbFdpZHRoIjogODcxLAogICAgICAic2Nyb2xsTGVmdCI6IDAKICAgIH0KICBdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJWaXN1YWwgTWFuYWdlbWVudCBTZXR0aW5ncyIKICBdCn0="
+                    },
+                    {
+                      "name": "vm-metric-library-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvc2V0dGluZ3MiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6OTExLCJoZWlnaHQiOjUxMn0sInBvcHVwcyI6W119"
+                    },
+                    {
+                      "name": "vm-metric-dialog.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L3NldHRpbmdzIiwKICAid2lkdGgiOiA5MTEsCiAgImRvY3VtZW50V2lkdGgiOiA5MTEsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiVmlzdWFsIE1hbmFnZW1lbnQgU2V0dGluZ3MiCiAgXQp9"
+                    },
+                    {
+                      "name": "vm-metric-dialog-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvc2V0dGluZ3MiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6OTExLCJoZWlnaHQiOjUxMn0sInBvcHVwcyI6W3sicm9sZSI6ImRpYWxvZyIsInRleHQiOiJBZGQgS1BJIE1ldHJpY0RlZmluZSB3aGF0IGlzIG1lYXN1cmVkLiBCb2FyZCB0YXJnZXRzIGFyZSBjb25maWd1cmVkIHNlcGFyYXRlbHkuQyIsImxlZnQiOjI0LCJyaWdodCI6ODg3LCJ0b3AiOjQ1LCJib3R0b20iOjQ2Nywic2Nyb2xsSGVpZ2h0Ijo0MjIsImNsaWVudEhlaWdodCI6NDIyfV19"
+                    },
+                    {
+                      "name": "vm-metric-dialog-footer-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvc2V0dGluZ3MiLCJ0ZXh0IjoiQWRkIE1ldHJpYyIsImxlZnQiOjc1OS4xMDkzNzUsInJpZ2h0Ijo4NjMsInRvcCI6NDE1LCJib3R0b20iOjQ1MSwiaGl0IjoiPGJ1dHRvbiB0eXBlPVwiYnV0dG9uXCIgdGFiaW5kZXg9XCIwXCIgZGF0YS1zbG90PVwiYnV0dG9uXCIgY2xhc3M9XCJncm91cC9idXR0b24gaW5saW5lLWZsZXggc2hyaW5rLTAgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHdoaXRlc3BhY2Utbm93cmFwIHJvdW5kZWQtbWQgdGV4dC1zbSBmb250LW1lZGl1bSBvdXRsaW5lLW5vbmUgdHJhbnNpdGlvbi1bYmFja2dyb3VuZC1jb2xvcixib3JkZXItY29sb3IsY29sb3Isb3BhY2l0eSx0cmFuc2Zvcm1dIGR1cmF0aW9uLTE1MCBlYXNlLW91dCBtb3Rpb24tcmVkdWNlOnRyYW5zaXRpb24tbiIsImZvY3VzZWQiOnRydWUsInVub2JzY3VyZWQiOnRydWV9"
+                    },
+                    {
+                      "name": "vm-metric-nested-select.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L3NldHRpbmdzIiwKICAid2lkdGgiOiA5MTEsCiAgImRvY3VtZW50V2lkdGgiOiA5MTEsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiVmlzdWFsIE1hbmFnZW1lbnQgU2V0dGluZ3MiCiAgXQp9"
+                    },
+                    {
+                      "name": "vm-metric-nested-select-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvc2V0dGluZ3MiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6OTExLCJoZWlnaHQiOjUxMn0sInBvcHVwcyI6W3sicm9sZSI6ImRpYWxvZyIsInRleHQiOiJBZGQgS1BJIE1ldHJpY0RlZmluZSB3aGF0IGlzIG1lYXN1cmVkLiBCb2FyZCB0YXJnZXRzIGFyZSBjb25maWd1cmVkIHNlcGFyYXRlbHkuQyIsImxlZnQiOjI0LCJyaWdodCI6ODg3LCJ0b3AiOjQ1LCJib3R0b20iOjQ2Nywic2Nyb2xsSGVpZ2h0Ijo0MjIsImNsaWVudEhlaWdodCI6NDIyfSx7InJvbGUiOiJkaWFsb2ciLCJ0ZXh0IjoiU2FmZXR5UXVhbGl0eUNvc3REZWxpdmVyeVBlb3BsZUVudmlyb25tZW50TW9yYWxlNVNDdXN0b20iLCJsZWZ0Ijo0OCwicmlnaHQiOjQ0NCwidG9wIjoyMjIsImJvdHRvbSI6NTY2LCJzY3JvbGxIZWlnaHQiOjM0MiwiY2xpZW50SGVpZ2h0IjozNDJ9LHsicm9sZSI6Imxpc3Rib3giLCJ0ZXh0IjoiU2FmZXR5UXVhbGl0eUNvc3REZWxpdmVyeVBlb3BsZUVudmlyb25tZW50TW9yYWxlNVNDdXN0b20iLCJsZWZ0Ijo0OSwicmlnaHQiOjQ0MywidG9wIjoyODAsImJvdHRvbSI6NTY1LCJzY3JvbGxIZWlnaHQiOjM2OCwiY2xpZW50SGVpZ2h0IjoyODV9XX0="
+                    },
+                    {
+                      "name": "gemba-linked-action.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL0dFTS0yMDI2LTAxNS93YWxrIiwKICAid2lkdGgiOiA5MTEsCiAgImRvY3VtZW50V2lkdGgiOiA5MTEsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiWm9uZSBBIMK3IE9mZmljZSIKICBdCn0="
+                    },
+                    {
+                      "name": "gemba-linked-action-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6OTExLCJoZWlnaHQiOjUxMn0sInBvcHVwcyI6W3sicm9sZSI6ImRpYWxvZyIsInRleHQiOiJDcmVhdGUgQWN0aW9uIGZyb20gR2VtYmFUaGUgc291cmNlIGNvbnRleHQgYW5kIGV2aWRlbmNlIGFyZSBsaW5rZWQgYXV0b21hdGljYWxseSIsImxlZnQiOjM2LjQ0NTMxMjUsInJpZ2h0Ijo4NzQuNTU0Njg3NSwidG9wIjoyNS42MDE1NjI1LCJib3R0b20iOjQ4Ni4zOTg0Mzc1LCJzY3JvbGxIZWlnaHQiOjQ2MSwiY2xpZW50SGVpZ2h0Ijo0NjF9XX0="
+                    },
+                    {
+                      "name": "gemba-linked-action-footer-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ0ZXh0IjoiQ3JlYXRlIEFjdGlvbiIsImxlZnQiOjcyMS4yMjY1NjI1LCJyaWdodCI6ODQyLjU1NDY4NzUsInRvcCI6NDE4LjM5ODQzNzUsImJvdHRvbSI6NDU0LjM5ODQzNzUsImhpdCI6IjxidXR0b24gdHlwZT1cImJ1dHRvblwiIHRhYmluZGV4PVwiMFwiIGRhdGEtc2xvdD1cImJ1dHRvblwiIGNsYXNzPVwiZ3JvdXAvYnV0dG9uIGlubGluZS1mbGV4IHNocmluay0wIGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciB3aGl0ZXNwYWNlLW5vd3JhcCByb3VuZGVkLW1kIHRleHQtc20gZm9udC1tZWRpdW0gb3V0bGluZS1ub25lIHRyYW5zaXRpb24tW2JhY2tncm91bmQtY29sb3IsYm9yZGVyLWNvbG9yLGNvbG9yLG9wYWNpdHksdHJhbnNmb3JtXSBkdXJhdGlvbi0xNTAgZWFzZS1vdXQgbW90aW9uLXJlZHVjZTp0cmFuc2l0aW9uLW4iLCJmb2N1c2VkIjp0cnVlLCJ1bm9ic2N1cmVkIjp0cnVlfQ=="
+                    },
+                    {
+                      "name": "gemba-linked-red-tag.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL0dFTS0yMDI2LTAxNS93YWxrIiwKICAid2lkdGgiOiA5MTEsCiAgImRvY3VtZW50V2lkdGgiOiA5MTEsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiWm9uZSBBIMK3IE9mZmljZSIKICBdCn0="
+                    },
+                    {
+                      "name": "gemba-linked-red-tag-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6OTExLCJoZWlnaHQiOjUxMn0sInBvcHVwcyI6W3sicm9sZSI6ImRpYWxvZyIsInRleHQiOiJDcmVhdGUgUmVkIFRhZ1lvdSBkbyBub3QgaGF2ZSBwZXJtaXNzaW9uIHRvIGNyZWF0ZSBSZWQgVGFncy5DbG9zZUNsb3NlIiwibGVmdCI6MjYzLjUsInJpZ2h0Ijo2NDcuNSwidG9wIjoxOTIsImJvdHRvbSI6MzIwLCJzY3JvbGxIZWlnaHQiOjEyOCwiY2xpZW50SGVpZ2h0IjoxMjh9XX0="
+                    },
+                    {
+                      "name": "gemba-evidence-preview.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL0dFTS0yMDI2LTAxNS93YWxrIiwKICAid2lkdGgiOiA5MTEsCiAgImRvY3VtZW50V2lkdGgiOiA5MTEsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiWm9uZSBBIMK3IE9mZmljZSIKICBdCn0="
+                    },
+                    {
+                      "name": "gemba-evidence-preview-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6OTExLCJoZWlnaHQiOjUxMn0sInBvcHVwcyI6W3sicm9sZSI6ImRpYWxvZyIsInRleHQiOiJmaXJzdC1waWVjZS1ib2FyZC5qcGdHZW1iYSBvYnNlcnZhdGlvbiBldmlkZW5jZTEwMCVDbG9zZSIsImxlZnQiOjE2LCJyaWdodCI6ODk1LCJ0b3AiOjE2LCJib3R0b20iOjQ5Niwic2Nyb2xsSGVpZ2h0Ijo0ODAsImNsaWVudEhlaWdodCI6NDgwfV19"
+                    },
+                    {
+                      "name": "super-admin-disable-confirmation.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3N1cGVyLWFkbWluL29yZ2FuaXphdGlvbnMvYWJjLW1hbnVmYWN0dXJpbmcvbW9kdWxlcyIsCiAgIndpZHRoIjogOTExLAogICJkb2N1bWVudFdpZHRoIjogOTExLAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogW10sCiAgImhlYWRlck92ZXJmbG93IjogZmFsc2UsCiAgImhlYWRpbmdzIjogWwogICAgIkFCQyBNYW51ZmFjdHVyaW5nIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "super-admin-disable-confirmation-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvc3VwZXItYWRtaW4vb3JnYW5pemF0aW9ucy9hYmMtbWFudWZhY3R1cmluZy9tb2R1bGVzIiwidmlld3BvcnQiOnsid2lkdGgiOjkxMSwiaGVpZ2h0Ijo1MTJ9LCJwb3B1cHMiOlt7InJvbGUiOiJhbGVydGRpYWxvZyIsInRleHQiOiJEaXNhYmxlIEdlbWJhP1VzZXJzIGluIEFCQyBNYW51ZmFjdHVyaW5nIHdpbGwgbm8gbG9uZ2VyIGJlIGFibGUgdG8gYWNjZXNzIEdlbWJhLiIsImxlZnQiOjI2My41LCJyaWdodCI6NjQ3LjUsInRvcCI6MTcwLjUsImJvdHRvbSI6MzQxLjUsInNjcm9sbEhlaWdodCI6MTcxLCJjbGllbnRIZWlnaHQiOjE3MX1dfQ=="
+                    },
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/rumesh-9634/Projects/Ops/test-results/windows-before/windows-meetings-Laptop-VM-and-linked-forms-911x512/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/rumesh-9634/Projects/Ops/test-results/windows-before/windows-meetings-Laptop-VM-and-linked-forms-911x512/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/rumesh-9634/Projects/Ops/test-results/windows-before/windows-meetings-Laptop-VM-and-linked-forms-911x512/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-helpers.ts",
+                    "column": 56,
+                    "line": 19
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "26d76fdded05505f9f3d-9d98f9636b13931ef91e",
+          "file": "windows-meetings.spec.ts",
+          "line": 3,
+          "column": 43
+        }
+      ]
+    },
+    {
+      "title": "windows-operations.spec.ts",
+      "file": "windows-operations.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Laptop operational forms 1024x600",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 28975,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-18T12:04:02.959Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "gemba-schedule.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL25ldyIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiU3RhcnQgYSBHZW1iYSBXYWxrIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "gemba-schedule-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvbmV3Iiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbXX0="
+                    },
+                    {
+                      "name": "gemba-validation.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL25ldyIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiU3RhcnQgYSBHZW1iYSBXYWxrIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "gemba-validation-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvbmV3Iiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbXX0="
+                    },
+                    {
+                      "name": "gemba-member-empty.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL25ldyIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiU3RhcnQgYSBHZW1iYSBXYWxrIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "gemba-member-empty-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvbmV3Iiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbeyJyb2xlIjoiZGlhbG9nIiwidGV4dCI6IkFkZCBvdGhlciBtZW1iZXJTZWFyY2ggcmVnaXN0ZXJlZCBPUFMgdXNlcnMgZnJvbSBvdGhlciB6b25lcyB0byBhZGQgdGhlbSB0byB0aGlzIiwibGVmdCI6MzIwLCJyaWdodCI6NzA0LCJ0b3AiOjE3MiwiYm90dG9tIjo0MjgsInNjcm9sbEhlaWdodCI6MjU2LCJjbGllbnRIZWlnaHQiOjI1Nn1dfQ=="
+                    },
+                    {
+                      "name": "gemba-observation.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL0dFTS0yMDI2LTAxNS93YWxrIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJab25lIEEgwrcgT2ZmaWNlIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "gemba-observation-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOlt7InJvbGUiOiJkaWFsb2ciLCJ0ZXh0IjoiQWRkIE9ic2VydmF0aW9uQ2FwdHVyZSB0aGUgZXNzZW50aWFsIGRldGFpbCBub3cuIEV2ZXJ5dGhpbmcgZWxzZSBpcyBvcHRpb25hbC5Qb3MiLCJsZWZ0IjozMiwicmlnaHQiOjk5MiwidG9wIjozMCwiYm90dG9tIjo1NzAsInNjcm9sbEhlaWdodCI6NTQwLCJjbGllbnRIZWlnaHQiOjU0MH1dfQ=="
+                    },
+                    {
+                      "name": "gemba-observation-footer-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ0ZXh0IjoiQ2FuY2VsIiwibGVmdCI6NzI1LjA5Mzc1LCJyaWdodCI6ODA0LjY3MTg3NSwidG9wIjo1MDIsImJvdHRvbSI6NTM4LCJoaXQiOiI8YnV0dG9uIHR5cGU9XCJidXR0b25cIiB0YWJpbmRleD1cIjBcIiBkYXRhLXNsb3Q9XCJidXR0b25cIiBjbGFzcz1cImdyb3VwL2J1dHRvbiBpbmxpbmUtZmxleCBzaHJpbmstMCBpdGVtcy1jZW50ZXIganVzdGlmeS1jZW50ZXIgd2hpdGVzcGFjZS1ub3dyYXAgcm91bmRlZC1tZCB0ZXh0LXNtIGZvbnQtbWVkaXVtIG91dGxpbmUtbm9uZSB0cmFuc2l0aW9uLVtiYWNrZ3JvdW5kLWNvbG9yLGJvcmRlci1jb2xvcixjb2xvcixvcGFjaXR5LHRyYW5zZm9ybV0gZHVyYXRpb24tMTUwIGVhc2Utb3V0IG1vdGlvbi1yZWR1Y2U6dHJhbnNpdGlvbi1uIiwiZm9jdXNlZCI6dHJ1ZSwidW5vYnNjdXJlZCI6dHJ1ZX0="
+                    },
+                    {
+                      "name": "gemba-evidence-validation.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL0dFTS0yMDI2LTAxNS93YWxrIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJab25lIEEgwrcgT2ZmaWNlIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "gemba-evidence-validation-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOlt7InJvbGUiOiJkaWFsb2ciLCJ0ZXh0IjoiQWRkIE9ic2VydmF0aW9uQ2FwdHVyZSB0aGUgZXNzZW50aWFsIGRldGFpbCBub3cuIEV2ZXJ5dGhpbmcgZWxzZSBpcyBvcHRpb25hbC5Qb3MiLCJsZWZ0IjozMiwicmlnaHQiOjk5MiwidG9wIjozMCwiYm90dG9tIjo1NzAsInNjcm9sbEhlaWdodCI6NTQwLCJjbGllbnRIZWlnaHQiOjU0MH1dfQ=="
+                    },
+                    {
+                      "name": "gemba-evidence-validation-footer-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ0ZXh0IjoiU2F2ZSBPYnNlcnZhdGlvbiIsImxlZnQiOjgxMi42NzE4NzUsInJpZ2h0Ijo5NjAsInRvcCI6NTAyLCJib3R0b20iOjUzOCwiaGl0IjoiPGJ1dHRvbiB0eXBlPVwiYnV0dG9uXCIgdGFiaW5kZXg9XCIwXCIgZGF0YS1zbG90PVwiYnV0dG9uXCIgY2xhc3M9XCJncm91cC9idXR0b24gaW5saW5lLWZsZXggc2hyaW5rLTAgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHdoaXRlc3BhY2Utbm93cmFwIHJvdW5kZWQtbWQgdGV4dC1zbSBmb250LW1lZGl1bSBvdXRsaW5lLW5vbmUgdHJhbnNpdGlvbi1bYmFja2dyb3VuZC1jb2xvcixib3JkZXItY29sb3IsY29sb3Isb3BhY2l0eSx0cmFuc2Zvcm1dIGR1cmF0aW9uLTE1MCBlYXNlLW91dCBtb3Rpb24tcmVkdWNlOnRyYW5zaXRpb24tbiIsImZvY3VzZWQiOnRydWUsInVub2JzY3VyZWQiOnRydWV9"
+                    },
+                    {
+                      "name": "gemba-complete-review.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL0dFTS0yMDI2LTAxNS93YWxrIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJab25lIEEgwrcgT2ZmaWNlIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "gemba-complete-review-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOlt7InJvbGUiOiJkaWFsb2ciLCJ0ZXh0IjoiUmV2aWV3IGFuZCBjb21wbGV0ZSB3YWxrQ29uZmlybSB0aGUgY2FwdHVyZWQgcmVjb3JkIGJlZm9yZSBjbG9zaW5nIHRoaXMgR2VtYmEgd2EiLCJsZWZ0IjozMjAsInJpZ2h0Ijo3MDQsInRvcCI6MzEuOTM3NSwiYm90dG9tIjo1NjguMDYyNSwic2Nyb2xsSGVpZ2h0Ijo1MzYsImNsaWVudEhlaWdodCI6NTM2fV19"
+                    },
+                    {
+                      "name": "gemba-complete-review-footer-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ0ZXh0IjoiQ29tcGxldGUgV2FsayIsImxlZnQiOjU1NS45Njg3NSwicmlnaHQiOjY4OCwidG9wIjo1MTYuMDYyNSwiYm90dG9tIjo1NTIuMDYyNSwiaGl0IjoiPGJ1dHRvbiB0eXBlPVwiYnV0dG9uXCIgdGFiaW5kZXg9XCIwXCIgZGF0YS1zbG90PVwiYnV0dG9uXCIgY2xhc3M9XCJncm91cC9idXR0b24gaW5saW5lLWZsZXggc2hyaW5rLTAgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHdoaXRlc3BhY2Utbm93cmFwIHJvdW5kZWQtbWQgdGV4dC1zbSBmb250LW1lZGl1bSBvdXRsaW5lLW5vbmUgdHJhbnNpdGlvbi1bYmFja2dyb3VuZC1jb2xvcixib3JkZXItY29sb3IsY29sb3Isb3BhY2l0eSx0cmFuc2Zvcm1dIGR1cmF0aW9uLTE1MCBlYXNlLW91dCBtb3Rpb24tcmVkdWNlOnRyYW5zaXRpb24tbiIsImZvY3VzZWQiOnRydWUsInVub2JzY3VyZWQiOnRydWV9"
+                    },
+                    {
+                      "name": "ci-validation.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2NvbnRpbnVvdXMtaW1wcm92ZW1lbnQvbmV3IiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJOZXcgSW1wcm92ZW1lbnQiCiAgXQp9"
+                    },
+                    {
+                      "name": "ci-validation-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvY29udGludW91cy1pbXByb3ZlbWVudC9uZXciLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOltdfQ=="
+                    },
+                    {
+                      "name": "ci-long-proposal.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2NvbnRpbnVvdXMtaW1wcm92ZW1lbnQvbmV3IiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJOZXcgSW1wcm92ZW1lbnQiCiAgXQp9"
+                    },
+                    {
+                      "name": "ci-long-proposal-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvY29udGludW91cy1pbXByb3ZlbWVudC9uZXciLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOltdfQ=="
+                    },
+                    {
+                      "name": "ci-related-picker.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2NvbnRpbnVvdXMtaW1wcm92ZW1lbnQvbmV3IiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFsKICAgIHsKICAgICAgIndpZHRoIjogMzUyLAogICAgICAic2Nyb2xsV2lkdGgiOiAzNTIsCiAgICAgICJzY3JvbGxMZWZ0IjogMAogICAgfQogIF0sCiAgImhlYWRlck92ZXJmbG93IjogZmFsc2UsCiAgImhlYWRpbmdzIjogWwogICAgIk5ldyBJbXByb3ZlbWVudCIKICBdCn0="
+                    },
+                    {
+                      "name": "ci-related-picker-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvY29udGludW91cy1pbXByb3ZlbWVudC9uZXciLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOlt7InJvbGUiOiJkaWFsb2ciLCJ0ZXh0IjoiQ29ubmVjdCBPcGVyYXRpb25hbCBSZWNvcmRTZWxlY3QgYW4gZXhpc3RpbmcgcmVjb3JkLiBUaGlzIGFkZHMgdHJhY2VhYmlsaXR5IG9ubHkiLCJsZWZ0IjozMjAsInJpZ2h0Ijo3MDQsInRvcCI6MjYuNSwiYm90dG9tIjo1NzMuNSwic2Nyb2xsSGVpZ2h0Ijo1NDcsImNsaWVudEhlaWdodCI6NTQ3fV19"
+                    },
+                    {
+                      "name": "ci-related-picker-footer-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvY29udGludW91cy1pbXByb3ZlbWVudC9uZXciLCJ0ZXh0IjoiQ2FuY2VsIiwibGVmdCI6NjA4LjQyMTg3NSwicmlnaHQiOjY4OCwidG9wIjo1MjEuNSwiYm90dG9tIjo1NTcuNSwiaGl0IjoiPGJ1dHRvbiB0eXBlPVwiYnV0dG9uXCIgdGFiaW5kZXg9XCIwXCIgZGF0YS1zbG90PVwiYnV0dG9uXCIgY2xhc3M9XCJncm91cC9idXR0b24gaW5saW5lLWZsZXggc2hyaW5rLTAgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHdoaXRlc3BhY2Utbm93cmFwIHJvdW5kZWQtbWQgdGV4dC1zbSBmb250LW1lZGl1bSBvdXRsaW5lLW5vbmUgdHJhbnNpdGlvbi1bYmFja2dyb3VuZC1jb2xvcixib3JkZXItY29sb3IsY29sb3Isb3BhY2l0eSx0cmFuc2Zvcm1dIGR1cmF0aW9uLTE1MCBlYXNlLW91dCBtb3Rpb24tcmVkdWNlOnRyYW5zaXRpb24tbiIsImZvY3VzZWQiOnRydWUsInVub2JzY3VyZWQiOnRydWV9"
+                    },
+                    {
+                      "name": "ci-review.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2NvbnRpbnVvdXMtaW1wcm92ZW1lbnQvQ0ktMjAyNi0wMTQ/dGFiPXJldmlldyIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbCiAgICB7CiAgICAgICJ3aWR0aCI6IDcyMCwKICAgICAgInNjcm9sbFdpZHRoIjogNzIwLAogICAgICAic2Nyb2xsTGVmdCI6IDAKICAgIH0KICBdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJSZWR1Y2UgbWF0ZXJpYWwgbW92ZW1lbnQgaW4gcGFja2luZyBhcmVhIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "ci-review-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvY29udGludW91cy1pbXByb3ZlbWVudC9DSS0yMDI2LTAxND90YWI9cmV2aWV3Iiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbXX0="
+                    },
+                    {
+                      "name": "ci-completion-validation.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2NvbnRpbnVvdXMtaW1wcm92ZW1lbnQvQ0ktMjAyNi0wMTM/dGFiPWltcGxlbWVudGF0aW9uIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFsKICAgIHsKICAgICAgIndpZHRoIjogNzIwLAogICAgICAic2Nyb2xsV2lkdGgiOiA3MjAsCiAgICAgICJzY3JvbGxMZWZ0IjogMAogICAgfQogIF0sCiAgImhlYWRlck92ZXJmbG93IjogZmFsc2UsCiAgImhlYWRpbmdzIjogWwogICAgIkludHJvZHVjZSBlcmdvbm9taWMgbGlmdCB0YWJsZSBhdCBzdWItYXNzZW1ibHkiCiAgXQp9"
+                    },
+                    {
+                      "name": "ci-completion-validation-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvY29udGludW91cy1pbXByb3ZlbWVudC9DSS0yMDI2LTAxMz90YWI9aW1wbGVtZW50YXRpb24iLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOltdfQ=="
+                    },
+                    {
+                      "name": "ci-completion-review.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2NvbnRpbnVvdXMtaW1wcm92ZW1lbnQvQ0ktMjAyNi0wMTI/dGFiPXJldmlldyIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbCiAgICB7CiAgICAgICJ3aWR0aCI6IDcyMCwKICAgICAgInNjcm9sbFdpZHRoIjogNzIwLAogICAgICAic2Nyb2xsTGVmdCI6IDAKICAgIH0KICBdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJTdGFuZGFyZGl6ZSBjaGFuZ2VvdmVyIHRvb2wgcHJlcGFyYXRpb24iCiAgXQp9"
+                    },
+                    {
+                      "name": "ci-completion-review-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvY29udGludW91cy1pbXByb3ZlbWVudC9DSS0yMDI2LTAxMj90YWI9cmV2aWV3Iiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbXX0="
+                    },
+                    {
+                      "name": "vm-board-editor.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L3NldHRpbmdzIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJWaXN1YWwgTWFuYWdlbWVudCBTZXR0aW5ncyIKICBdCn0="
+                    },
+                    {
+                      "name": "vm-board-editor-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvc2V0dGluZ3MiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOlt7InJvbGUiOiJkaWFsb2ciLCJ0ZXh0IjoiQ3JlYXRlIEJvYXJkQ29uZmlndXJlIHRoZSBib2FyZCBhbmQgbWV0cmljcyB1c2VkIGluIG1lZXRpbmdzLkJvYXJkIE5hbWUgKlpvbmUgLyAiLCJsZWZ0IjozMiwicmlnaHQiOjk5MiwidG9wIjoyNCwiYm90dG9tIjo1NzYsInNjcm9sbEhlaWdodCI6NTUyLCJjbGllbnRIZWlnaHQiOjU1Mn1dfQ=="
+                    },
+                    {
+                      "name": "vm-board-editor-footer-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvc2V0dGluZ3MiLCJ0ZXh0IjoiQ3JlYXRlIEJvYXJkIiwibGVmdCI6ODQ5LjY4NzUsInJpZ2h0Ijo5NjgsInRvcCI6NTI0LCJib3R0b20iOjU2MCwiaGl0IjoiPGJ1dHRvbiB0eXBlPVwiYnV0dG9uXCIgdGFiaW5kZXg9XCIwXCIgZGF0YS1zbG90PVwiYnV0dG9uXCIgY2xhc3M9XCJncm91cC9idXR0b24gaW5saW5lLWZsZXggc2hyaW5rLTAgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHdoaXRlc3BhY2Utbm93cmFwIHJvdW5kZWQtbWQgdGV4dC1zbSBmb250LW1lZGl1bSBvdXRsaW5lLW5vbmUgdHJhbnNpdGlvbi1bYmFja2dyb3VuZC1jb2xvcixib3JkZXItY29sb3IsY29sb3Isb3BhY2l0eSx0cmFuc2Zvcm1dIGR1cmF0aW9uLTE1MCBlYXNlLW91dCBtb3Rpb24tcmVkdWNlOnRyYW5zaXRpb24tbiIsImZvY3VzZWQiOnRydWUsInVub2JzY3VyZWQiOnRydWV9"
+                    },
+                    {
+                      "name": "admin-user-validation.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3NldHRpbmdzL3VzZXJzIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJVc2VycyIKICBdCn0="
+                    },
+                    {
+                      "name": "admin-user-validation-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvc2V0dGluZ3MvdXNlcnMiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOlt7InJvbGUiOiJkaWFsb2ciLCJ0ZXh0IjoiQWRkIFVzZXJDb25maWd1cmUgdGhlIHVzZXIgcHJvZmlsZSwgZml4ZWQgcm9sZSBjYXBhYmlsaXRpZXMsIGFuZCBjdXJyZW50IG9yZ2FuaXoiLCJsZWZ0IjoxMjgsInJpZ2h0Ijo4OTYsInRvcCI6MTYsImJvdHRvbSI6NTg0LCJzY3JvbGxIZWlnaHQiOjYzMSwiY2xpZW50SGVpZ2h0Ijo1Njh9XX0="
+                    },
+                    {
+                      "name": "admin-user-validation-footer-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvc2V0dGluZ3MvdXNlcnMiLCJ0ZXh0IjoiU2F2ZSBVc2VyIiwibGVmdCI6NzgxLjgyODEyNSwicmlnaHQiOjg4MCwidG9wIjo1MzEuNzAzMTI1LCJib3R0b20iOjU2Ny43MDMxMjUsImhpdCI6IjxidXR0b24gdHlwZT1cImJ1dHRvblwiIHRhYmluZGV4PVwiMFwiIGRhdGEtc2xvdD1cImJ1dHRvblwiIGNsYXNzPVwiZ3JvdXAvYnV0dG9uIGlubGluZS1mbGV4IHNocmluay0wIGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlciB3aGl0ZXNwYWNlLW5vd3JhcCByb3VuZGVkLW1kIHRleHQtc20gZm9udC1tZWRpdW0gb3V0bGluZS1ub25lIHRyYW5zaXRpb24tW2JhY2tncm91bmQtY29sb3IsYm9yZGVyLWNvbG9yLGNvbG9yLG9wYWNpdHksdHJhbnNmb3JtXSBkdXJhdGlvbi0xNTAgZWFzZS1vdXQgbW90aW9uLXJlZHVjZTp0cmFuc2l0aW9uLW4iLCJmb2N1c2VkIjp0cnVlLCJ1bm9ic2N1cmVkIjp0cnVlfQ=="
+                    },
+                    {
+                      "name": "admin-zone-validation.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3NldHRpbmdzL29yZ2FuaXphdGlvbi96b25lcyIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiWm9uZXMiCiAgXQp9"
+                    },
+                    {
+                      "name": "admin-zone-validation-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvc2V0dGluZ3Mvb3JnYW5pemF0aW9uL3pvbmVzIiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbeyJyb2xlIjoiZGlhbG9nIiwidGV4dCI6IkFkZCBab25lTWFuYWdlIG93bmVyc2hpcCBhbmQgY3VycmVudCBtZW1iZXJzaGlwLiBIaXN0b3JpY2FsIHJlY29yZHMga2VlcCB0aGVpciBvIiwibGVmdCI6MzIwLCJyaWdodCI6NzA0LCJ0b3AiOjgsImJvdHRvbSI6NTkyLCJzY3JvbGxIZWlnaHQiOjc3OSwiY2xpZW50SGVpZ2h0Ijo1ODR9XX0="
+                    },
+                    {
+                      "name": "admin-zone-validation-footer-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvc2V0dGluZ3Mvb3JnYW5pemF0aW9uL3pvbmVzIiwidGV4dCI6IlNhdmUgWm9uZSIsImxlZnQiOjU4OC42MjUsInJpZ2h0Ijo2ODgsInRvcCI6NTQwLCJib3R0b20iOjU3NiwiaGl0IjoiPGJ1dHRvbiB0eXBlPVwiYnV0dG9uXCIgdGFiaW5kZXg9XCIwXCIgZGF0YS1zbG90PVwiYnV0dG9uXCIgY2xhc3M9XCJncm91cC9idXR0b24gaW5saW5lLWZsZXggc2hyaW5rLTAgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHdoaXRlc3BhY2Utbm93cmFwIHJvdW5kZWQtbWQgdGV4dC1zbSBmb250LW1lZGl1bSBvdXRsaW5lLW5vbmUgdHJhbnNpdGlvbi1bYmFja2dyb3VuZC1jb2xvcixib3JkZXItY29sb3IsY29sb3Isb3BhY2l0eSx0cmFuc2Zvcm1dIGR1cmF0aW9uLTE1MCBlYXNlLW91dCBtb3Rpb24tcmVkdWNlOnRyYW5zaXRpb24tbiIsImZvY3VzZWQiOnRydWUsInVub2JzY3VyZWQiOnRydWV9"
+                    },
+                    {
+                      "name": "profile-preferences-dropdown.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Byb2ZpbGU/dGFiPXByZWZlcmVuY2VzIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFsKICAgIHsKICAgICAgIndpZHRoIjogNTEyLAogICAgICAic2Nyb2xsV2lkdGgiOiA1MTIsCiAgICAgICJzY3JvbGxMZWZ0IjogMAogICAgfQogIF0sCiAgImhlYWRlck92ZXJmbG93IjogZmFsc2UsCiAgImhlYWRpbmdzIjogWwogICAgIlByb2ZpbGUgU2V0dGluZ3MiCiAgXQp9"
+                    },
+                    {
+                      "name": "profile-preferences-dropdown-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvcHJvZmlsZT90YWI9cHJlZmVyZW5jZXMiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOlt7InJvbGUiOiJsaXN0Ym94IiwidGV4dCI6IkVuZ2xpc2jinJTvuI/gpLngpL/gpKjgpY3gpKbgpYDgrqTgrq7grr/grrTgr43gpqzgpr7gpoLgprLgpr7ml6XmnKzoqp4iLCJsZWZ0IjozMDYsInJpZ2h0Ijo2MzMsInRvcCI6MzczLCJib3R0b20iOjU1Mywic2Nyb2xsSGVpZ2h0IjoxODAsImNsaWVudEhlaWdodCI6MTgwfV19"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f0fc774b442c634fae19-23c169614698b60464fd",
+          "file": "windows-operations.spec.ts",
+          "line": 4,
+          "column": 6
+        },
+        {
+          "title": "Laptop reports and filters 1024x600",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 18223,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-18T12:04:02.992Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "gemba?tab=observations-empty.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhP3RhYj1vYnNlcnZhdGlvbnMiLAogICJ3aWR0aCI6IDEwMjQsCiAgImRvY3VtZW50V2lkdGgiOiAxMDI0LAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogWwogICAgewogICAgICAid2lkdGgiOiA3MjAsCiAgICAgICJzY3JvbGxXaWR0aCI6IDcyMCwKICAgICAgInNjcm9sbExlZnQiOiAwCiAgICB9LAogICAgewogICAgICAid2lkdGgiOiA3MjAsCiAgICAgICJzY3JvbGxXaWR0aCI6IDcyMCwKICAgICAgInNjcm9sbExlZnQiOiAwCiAgICB9CiAgXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiR2VtYmEiCiAgXQp9"
+                    },
+                    {
+                      "name": "gemba?tab=observations-empty-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmE/dGFiPW9ic2VydmF0aW9ucyIsInZpZXdwb3J0Ijp7IndpZHRoIjoxMDI0LCJoZWlnaHQiOjYwMH0sInBvcHVwcyI6W119"
+                    },
+                    {
+                      "name": "gemba?tab=observations-filter.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhP3RhYj1vYnNlcnZhdGlvbnMiLAogICJ3aWR0aCI6IDEwMjQsCiAgImRvY3VtZW50V2lkdGgiOiAxMDI0LAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogWwogICAgewogICAgICAid2lkdGgiOiA3MjAsCiAgICAgICJzY3JvbGxXaWR0aCI6IDcyMCwKICAgICAgInNjcm9sbExlZnQiOiAwCiAgICB9LAogICAgewogICAgICAid2lkdGgiOiA3MjAsCiAgICAgICJzY3JvbGxXaWR0aCI6IDcyMCwKICAgICAgInNjcm9sbExlZnQiOiAwCiAgICB9CiAgXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiR2VtYmEiCiAgXQp9"
+                    },
+                    {
+                      "name": "gemba?tab=observations-filter-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmE/dGFiPW9ic2VydmF0aW9ucyIsInZpZXdwb3J0Ijp7IndpZHRoIjoxMDI0LCJoZWlnaHQiOjYwMH0sInBvcHVwcyI6W3sicm9sZSI6ImRpYWxvZyIsInRleHQiOiJBbGwgcGxhbnRzRWdtb3JlIFBsYW50IiwibGVmdCI6NjQ0LCJyaWdodCI6OTc1LCJ0b3AiOjM3NSwiYm90dG9tIjo1MjIsInNjcm9sbEhlaWdodCI6MTQ1LCJjbGllbnRIZWlnaHQiOjE0NX0seyJyb2xlIjoibGlzdGJveCIsInRleHQiOiJBbGwgcGxhbnRzRWdtb3JlIFBsYW50IiwibGVmdCI6NjQ1LCJyaWdodCI6OTc0LCJ0b3AiOjQzMywiYm90dG9tIjo1MjEsInNjcm9sbEhlaWdodCI6ODgsImNsaWVudEhlaWdodCI6ODh9XX0="
+                    },
+                    {
+                      "name": "continuous-improvement?tab=improvements-empty.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2NvbnRpbnVvdXMtaW1wcm92ZW1lbnQ/dGFiPWltcHJvdmVtZW50cyIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbCiAgICB7CiAgICAgICJ3aWR0aCI6IDcyMCwKICAgICAgInNjcm9sbFdpZHRoIjogNzIwLAogICAgICAic2Nyb2xsTGVmdCI6IDAKICAgIH0KICBdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJDb250aW51YWwgSW1wcm92ZW1lbnQiCiAgXQp9"
+                    },
+                    {
+                      "name": "continuous-improvement?tab=improvements-empty-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvY29udGludW91cy1pbXByb3ZlbWVudD90YWI9aW1wcm92ZW1lbnRzIiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbXX0="
+                    },
+                    {
+                      "name": "continuous-improvement?tab=improvements-filter.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2NvbnRpbnVvdXMtaW1wcm92ZW1lbnQ/dGFiPWltcHJvdmVtZW50cyIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbCiAgICB7CiAgICAgICJ3aWR0aCI6IDcyMCwKICAgICAgInNjcm9sbFdpZHRoIjogNzIwLAogICAgICAic2Nyb2xsTGVmdCI6IDAKICAgIH0KICBdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJDb250aW51YWwgSW1wcm92ZW1lbnQiCiAgXQp9"
+                    },
+                    {
+                      "name": "continuous-improvement?tab=improvements-filter-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvY29udGludW91cy1pbXByb3ZlbWVudD90YWI9aW1wcm92ZW1lbnRzIiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbeyJyb2xlIjoiZGlhbG9nIiwidGV4dCI6IkFsbCBzdGFnZXNEcmFmdFN1Ym1pdHRlZFVuZGVyIFJldmlld0FwcHJvdmVkT24gSG9sZFJlamVjdGVkSW4gUHJvZ3Jlc3NBd2FpdGluZyBDIiwibGVmdCI6NjQ0LCJyaWdodCI6OTc1LCJ0b3AiOjEzOSwiYm90dG9tIjo0ODYsInNjcm9sbEhlaWdodCI6MzQ1LCJjbGllbnRIZWlnaHQiOjM0NX0seyJyb2xlIjoibGlzdGJveCIsInRleHQiOiJBbGwgc3RhZ2VzRHJhZnRTdWJtaXR0ZWRVbmRlciBSZXZpZXdBcHByb3ZlZE9uIEhvbGRSZWplY3RlZEluIFByb2dyZXNzQXdhaXRpbmcgQyIsImxlZnQiOjY0NSwicmlnaHQiOjk3NCwidG9wIjoxOTcsImJvdHRvbSI6NDg1LCJzY3JvbGxIZWlnaHQiOjQwOCwiY2xpZW50SGVpZ2h0IjoyODh9XX0="
+                    },
+                    {
+                      "name": "reports-empty.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3JlcG9ydHMiLAogICJ3aWR0aCI6IDEwMjQsCiAgImRvY3VtZW50V2lkdGgiOiAxMDI0LAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogWwogICAgewogICAgICAid2lkdGgiOiA3MjAsCiAgICAgICJzY3JvbGxXaWR0aCI6IDcyMCwKICAgICAgInNjcm9sbExlZnQiOiAwCiAgICB9CiAgXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiUmVwb3J0cyIKICBdCn0="
+                    },
+                    {
+                      "name": "reports-empty-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvcmVwb3J0cyIsInZpZXdwb3J0Ijp7IndpZHRoIjoxMDI0LCJoZWlnaHQiOjYwMH0sInBvcHVwcyI6W119"
+                    },
+                    {
+                      "name": "reports-filter.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3JlcG9ydHMiLAogICJ3aWR0aCI6IDEwMjQsCiAgImRvY3VtZW50V2lkdGgiOiAxMDI0LAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogWwogICAgewogICAgICAid2lkdGgiOiA3MjAsCiAgICAgICJzY3JvbGxXaWR0aCI6IDcyMCwKICAgICAgInNjcm9sbExlZnQiOiAwCiAgICB9CiAgXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiUmVwb3J0cyIKICBdCn0="
+                    },
+                    {
+                      "name": "reports-filter-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvcmVwb3J0cyIsInZpZXdwb3J0Ijp7IndpZHRoIjoxMDI0LCJoZWlnaHQiOjYwMH0sInBvcHVwcyI6W3sicm9sZSI6Imxpc3Rib3giLCJ0ZXh0IjoiQWxsIG1vZHVsZXPinJTvuI9HZW1iYUNvbnRpbnVhbCBJbXByb3ZlbWVudFJlZCBUYWdBdWRpdEFjdGlvbnNWaXN1YWwgTWFuYWdlbWVudCIsImxlZnQiOjMwMiwicmlnaHQiOjQ2NiwidG9wIjo0MjgsImJvdHRvbSI6NTg5LCJzY3JvbGxIZWlnaHQiOjI1MiwiY2xpZW50SGVpZ2h0IjoxNjF9XX0="
+                    },
+                    {
+                      "name": "report-summary.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3JlcG9ydHMvc3VtbWFyeS9nZW1iYU9ic2VydmF0aW9uU3VtbWFyeSIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiUmVwb3J0IFByZXZpZXciCiAgXQp9"
+                    },
+                    {
+                      "name": "report-summary-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvcmVwb3J0cy9zdW1tYXJ5L2dlbWJhT2JzZXJ2YXRpb25TdW1tYXJ5Iiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbXX0="
+                    },
+                    {
+                      "name": "report-print.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3JlcG9ydHMvc3VtbWFyeS9nZW1iYU9ic2VydmF0aW9uU3VtbWFyeSIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiUmVwb3J0IFByZXZpZXciCiAgXQp9"
+                    },
+                    {
+                      "name": "report-print-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvcmVwb3J0cy9zdW1tYXJ5L2dlbWJhT2JzZXJ2YXRpb25TdW1tYXJ5Iiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbXX0="
+                    },
+                    {
+                      "name": "role-matrix.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3NldHRpbmdzL3JvbGVzIiwKICAid2lkdGgiOiAxMDI0LAogICJkb2N1bWVudFdpZHRoIjogMTAyNCwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFtdLAogICJoZWFkZXJPdmVyZmxvdyI6IGZhbHNlLAogICJoZWFkaW5ncyI6IFsKICAgICJSb2xlcyAmIFBlcm1pc3Npb25zIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "role-matrix-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvc2V0dGluZ3Mvcm9sZXMiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6MTAyNCwiaGVpZ2h0Ijo2MDB9LCJwb3B1cHMiOltdfQ=="
+                    },
+                    {
+                      "name": "vm-print-workspace.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3Zpc3VhbC1tYW5hZ2VtZW50L2JvYXJkcy9WTS1aQS1UMS9wcmludCIsCiAgIndpZHRoIjogMTAyNCwKICAiZG9jdW1lbnRXaWR0aCI6IDEwMjQsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiUHJpbnQgRGFpbHkgTWFuYWdlbWVudCBCb2FyZCIKICBdCn0="
+                    },
+                    {
+                      "name": "vm-print-workspace-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvdmlzdWFsLW1hbmFnZW1lbnQvYm9hcmRzL1ZNLVpBLVQxL3ByaW50Iiwidmlld3BvcnQiOnsid2lkdGgiOjEwMjQsImhlaWdodCI6NjAwfSwicG9wdXBzIjpbXX0="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f0fc774b442c634fae19-b083a54c91c3dbf09cbb",
+          "file": "windows-operations.spec.ts",
+          "line": 24,
+          "column": 6
+        },
+        {
+          "title": "Laptop operational forms 911x512",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5218,
+                  "error": {
+                    "message": "Error: page.evaluate: Execution context was destroyed, most likely because of a navigation",
+                    "stack": "Error: page.evaluate: Execution context was destroyed, most likely because of a navigation\n    at geometry (/Users/rumesh-9634/Projects/Ops/e2e/ui-batch2-helpers.ts:23:15)\n    at state (/Users/rumesh-9634/Projects/Ops/e2e/ui-batch2-helpers.ts:53:11)\n    at state (/Users/rumesh-9634/Projects/Ops/e2e/windows-helpers.ts:14:10)\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts:11:320",
+                    "location": {
+                      "file": "/Users/rumesh-9634/Projects/Ops/e2e/ui-batch2-helpers.ts",
+                      "column": 15,
+                      "line": 23
+                    },
+                    "snippet": "\u001b[90m   at \u001b[39mui-batch2-helpers.ts:23\n\n  21 | export async function geometry(page: Page) {\n  22 |   await settle(page);\n> 23 |   return page.evaluate(() => {\n     |               ^\n  24 |     const outside: Array<{text:string;tag:string;left:number;right:number;cause:string;className:string}> = [];\n  25 |     const unnamed: string[] = [];\n  26 |     for (const el of document.querySelectorAll<HTMLElement>('h1,h2,h3,button,input,textarea,[role=\"combobox\"]')) {"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/rumesh-9634/Projects/Ops/e2e/ui-batch2-helpers.ts",
+                        "column": 15,
+                        "line": 23
+                      },
+                      "message": "Error: page.evaluate: Execution context was destroyed, most likely because of a navigation\n\n   at ui-batch2-helpers.ts:23\n\n  21 | export async function geometry(page: Page) {\n  22 |   await settle(page);\n> 23 |   return page.evaluate(() => {\n     |               ^\n  24 |     const outside: Array<{text:string;tag:string;left:number;right:number;cause:string;className:string}> = [];\n  25 |     const unnamed: string[] = [];\n  26 |     for (const el of document.querySelectorAll<HTMLElement>('h1,h2,h3,button,input,textarea,[role=\"combobox\"]')) {\n    at geometry (/Users/rumesh-9634/Projects/Ops/e2e/ui-batch2-helpers.ts:23:15)\n    at state (/Users/rumesh-9634/Projects/Ops/e2e/ui-batch2-helpers.ts:53:11)\n    at state (/Users/rumesh-9634/Projects/Ops/e2e/windows-helpers.ts:14:10)\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts:11:320"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-18T12:04:21.482Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "gemba-schedule.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL25ldyIsCiAgIndpZHRoIjogOTExLAogICJkb2N1bWVudFdpZHRoIjogOTExLAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogW10sCiAgImhlYWRlck92ZXJmbG93IjogZmFsc2UsCiAgImhlYWRpbmdzIjogWwogICAgIlN0YXJ0IGEgR2VtYmEgV2FsayIKICBdCn0="
+                    },
+                    {
+                      "name": "gemba-schedule-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvbmV3Iiwidmlld3BvcnQiOnsid2lkdGgiOjkxMSwiaGVpZ2h0Ijo1MTJ9LCJwb3B1cHMiOltdfQ=="
+                    },
+                    {
+                      "name": "gemba-validation.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL25ldyIsCiAgIndpZHRoIjogOTExLAogICJkb2N1bWVudFdpZHRoIjogOTExLAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogW10sCiAgImhlYWRlck92ZXJmbG93IjogZmFsc2UsCiAgImhlYWRpbmdzIjogWwogICAgIlN0YXJ0IGEgR2VtYmEgV2FsayIKICBdCn0="
+                    },
+                    {
+                      "name": "gemba-validation-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvbmV3Iiwidmlld3BvcnQiOnsid2lkdGgiOjkxMSwiaGVpZ2h0Ijo1MTJ9LCJwb3B1cHMiOltdfQ=="
+                    },
+                    {
+                      "name": "gemba-member-empty.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL25ldyIsCiAgIndpZHRoIjogOTExLAogICJkb2N1bWVudFdpZHRoIjogOTExLAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogW10sCiAgImhlYWRlck92ZXJmbG93IjogZmFsc2UsCiAgImhlYWRpbmdzIjogWwogICAgIlN0YXJ0IGEgR2VtYmEgV2FsayIKICBdCn0="
+                    },
+                    {
+                      "name": "gemba-member-empty-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvbmV3Iiwidmlld3BvcnQiOnsid2lkdGgiOjkxMSwiaGVpZ2h0Ijo1MTJ9LCJwb3B1cHMiOlt7InJvbGUiOiJkaWFsb2ciLCJ0ZXh0IjoiQWRkIG90aGVyIG1lbWJlclNlYXJjaCByZWdpc3RlcmVkIE9QUyB1c2VycyBmcm9tIG90aGVyIHpvbmVzIHRvIGFkZCB0aGVtIHRvIHRoaXMiLCJsZWZ0IjoyNjMuNSwicmlnaHQiOjY0Ny41LCJ0b3AiOjEyOCwiYm90dG9tIjozODQsInNjcm9sbEhlaWdodCI6MjU2LCJjbGllbnRIZWlnaHQiOjI1Nn1dfQ=="
+                    },
+                    {
+                      "name": "gemba-observation.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhL0dFTS0yMDI2LTAxNS93YWxrIiwKICAid2lkdGgiOiA5MTEsCiAgImRvY3VtZW50V2lkdGgiOiA5MTEsCiAgIm91dHNpZGUiOiBbXSwKICAidW5uYW1lZCI6IFtdLAogICJzY3JvbGxlcnMiOiBbXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiWm9uZSBBIMK3IE9mZmljZSIKICBdCn0="
+                    },
+                    {
+                      "name": "gemba-observation-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ2aWV3cG9ydCI6eyJ3aWR0aCI6OTExLCJoZWlnaHQiOjUxMn0sInBvcHVwcyI6W3sicm9sZSI6ImRpYWxvZyIsInRleHQiOiJBZGQgT2JzZXJ2YXRpb25DYXB0dXJlIHRoZSBlc3NlbnRpYWwgZGV0YWlsIG5vdy4gRXZlcnl0aGluZyBlbHNlIGlzIG9wdGlvbmFsLlBvcyIsImxlZnQiOjI3LjMzNTkzNzUsInJpZ2h0Ijo4ODMuNjY0MDYyNSwidG9wIjoyNS42MDE1NjI1LCJib3R0b20iOjQ4Ni4zOTg0Mzc1LCJzY3JvbGxIZWlnaHQiOjQ2MSwiY2xpZW50SGVpZ2h0Ijo0NjF9XX0="
+                    },
+                    {
+                      "name": "gemba-observation-footer-reachability.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmEvR0VNLTIwMjYtMDE1L3dhbGsiLCJ0ZXh0IjoiQ2FuY2VsIiwibGVmdCI6NjE2Ljc1NzgxMjUsInJpZ2h0Ijo2OTYuMzM1OTM3NSwidG9wIjo0MTguMzk4NDM3NSwiYm90dG9tIjo0NTQuMzk4NDM3NSwiaGl0IjoiPGJ1dHRvbiB0eXBlPVwiYnV0dG9uXCIgdGFiaW5kZXg9XCIwXCIgZGF0YS1zbG90PVwiYnV0dG9uXCIgY2xhc3M9XCJncm91cC9idXR0b24gaW5saW5lLWZsZXggc2hyaW5rLTAgaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHdoaXRlc3BhY2Utbm93cmFwIHJvdW5kZWQtbWQgdGV4dC1zbSBmb250LW1lZGl1bSBvdXRsaW5lLW5vbmUgdHJhbnNpdGlvbi1bYmFja2dyb3VuZC1jb2xvcixib3JkZXItY29sb3IsY29sb3Isb3BhY2l0eSx0cmFuc2Zvcm1dIGR1cmF0aW9uLTE1MCBlYXNlLW91dCBtb3Rpb24tcmVkdWNlOnRyYW5zaXRpb24tbiIsImZvY3VzZWQiOnRydWUsInVub2JzY3VyZWQiOnRydWV9"
+                    },
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/rumesh-9634/Projects/Ops/test-results/windows-before/windows-operations-Laptop-operational-forms-911x512/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/rumesh-9634/Projects/Ops/test-results/windows-before/windows-operations-Laptop-operational-forms-911x512/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/rumesh-9634/Projects/Ops/test-results/windows-before/windows-operations-Laptop-operational-forms-911x512/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/rumesh-9634/Projects/Ops/e2e/ui-batch2-helpers.ts",
+                    "column": 15,
+                    "line": 23
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "f0fc774b442c634fae19-34b5e383feb2ebbe33e3",
+          "file": "windows-operations.spec.ts",
+          "line": 4,
+          "column": 6
+        },
+        {
+          "title": "Laptop reports and filters 911x512",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 10035,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts:29:238",
+                    "location": {
+                      "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts",
+                      "column": 238,
+                      "line": 29
+                    },
+                    "snippet": "  27 |   await page.goto('/reports/summary/gembaObservationSummary',{waitUntil:'networkidle'});const download=page.waitForEvent('download');await page.getByRole('button',{name:'Export CSV',exact:true}).click();expect((await download).suggestedFilename()).toMatch(/\\.csv$/);await state(page,info,'report-summary');\n  28 |   await page.emulateMedia({media:'print'});await state(page,info,'report-print');await page.emulateMedia({media:'screen'});\n> 29 |   await page.goto('/settings/roles',{waitUntil:'networkidle'});const matrix=page.getByLabel('Role capability matrix');await matrix.evaluate(el=>el.scrollLeft=el.scrollWidth);if(width<1280)expect(await matrix.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);await state(page,info,'role-matrix',width===320||width===1440);\n     |                                                                                                                                                                                                                                              ^\n  30 |   await page.goto('/visual-management/boards/VM-ZA-T1/print',{waitUntil:'networkidle'});await state(page,info,'vm-print-workspace',width===320||width===1440);\n  31 |  });\n  32 | }"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts",
+                        "column": 238,
+                        "line": 29
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m0\u001b[39m\nReceived:   \u001b[31m0\u001b[39m\n\n  27 |   await page.goto('/reports/summary/gembaObservationSummary',{waitUntil:'networkidle'});const download=page.waitForEvent('download');await page.getByRole('button',{name:'Export CSV',exact:true}).click();expect((await download).suggestedFilename()).toMatch(/\\.csv$/);await state(page,info,'report-summary');\n  28 |   await page.emulateMedia({media:'print'});await state(page,info,'report-print');await page.emulateMedia({media:'screen'});\n> 29 |   await page.goto('/settings/roles',{waitUntil:'networkidle'});const matrix=page.getByLabel('Role capability matrix');await matrix.evaluate(el=>el.scrollLeft=el.scrollWidth);if(width<1280)expect(await matrix.evaluate(el=>el.scrollLeft)).toBeGreaterThan(0);await state(page,info,'role-matrix',width===320||width===1440);\n     |                                                                                                                                                                                                                                              ^\n  30 |   await page.goto('/visual-management/boards/VM-ZA-T1/print',{waitUntil:'networkidle'});await state(page,info,'vm-print-workspace',width===320||width===1440);\n  31 |  });\n  32 | }\n    at /Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts:29:238"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-18T12:04:27.080Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "gemba?tab=observations-empty.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhP3RhYj1vYnNlcnZhdGlvbnMiLAogICJ3aWR0aCI6IDkxMSwKICAiZG9jdW1lbnRXaWR0aCI6IDkxMSwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFsKICAgIHsKICAgICAgIndpZHRoIjogODcxLAogICAgICAic2Nyb2xsV2lkdGgiOiA4NzEsCiAgICAgICJzY3JvbGxMZWZ0IjogMAogICAgfSwKICAgIHsKICAgICAgIndpZHRoIjogODcxLAogICAgICAic2Nyb2xsV2lkdGgiOiA4NzEsCiAgICAgICJzY3JvbGxMZWZ0IjogMAogICAgfQogIF0sCiAgImhlYWRlck92ZXJmbG93IjogZmFsc2UsCiAgImhlYWRpbmdzIjogWwogICAgIkdlbWJhIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "gemba?tab=observations-empty-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmE/dGFiPW9ic2VydmF0aW9ucyIsInZpZXdwb3J0Ijp7IndpZHRoIjo5MTEsImhlaWdodCI6NTEyfSwicG9wdXBzIjpbXX0="
+                    },
+                    {
+                      "name": "gemba?tab=observations-filter.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2dlbWJhP3RhYj1vYnNlcnZhdGlvbnMiLAogICJ3aWR0aCI6IDkxMSwKICAiZG9jdW1lbnRXaWR0aCI6IDkxMSwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFsKICAgIHsKICAgICAgIndpZHRoIjogODcxLAogICAgICAic2Nyb2xsV2lkdGgiOiA4NzEsCiAgICAgICJzY3JvbGxMZWZ0IjogMAogICAgfSwKICAgIHsKICAgICAgIndpZHRoIjogODcxLAogICAgICAic2Nyb2xsV2lkdGgiOiA4NzEsCiAgICAgICJzY3JvbGxMZWZ0IjogMAogICAgfQogIF0sCiAgImhlYWRlck92ZXJmbG93IjogZmFsc2UsCiAgImhlYWRpbmdzIjogWwogICAgIkdlbWJhIgogIF0KfQ=="
+                    },
+                    {
+                      "name": "gemba?tab=observations-filter-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvZ2VtYmE/dGFiPW9ic2VydmF0aW9ucyIsInZpZXdwb3J0Ijp7IndpZHRoIjo5MTEsImhlaWdodCI6NTEyfSwicG9wdXBzIjpbeyJyb2xlIjoiZGlhbG9nIiwidGV4dCI6IkFsbCBwbGFudHNFZ21vcmUgUGxhbnQiLCJsZWZ0Ijo0NjAsInJpZ2h0Ijo4NjYsInRvcCI6MzIxLCJib3R0b20iOjQ2OCwic2Nyb2xsSGVpZ2h0IjoxNDUsImNsaWVudEhlaWdodCI6MTQ1fSx7InJvbGUiOiJsaXN0Ym94IiwidGV4dCI6IkFsbCBwbGFudHNFZ21vcmUgUGxhbnQiLCJsZWZ0Ijo0NjEsInJpZ2h0Ijo4NjUsInRvcCI6Mzc5LCJib3R0b20iOjQ2Nywic2Nyb2xsSGVpZ2h0Ijo4OCwiY2xpZW50SGVpZ2h0Ijo4OH1dfQ=="
+                    },
+                    {
+                      "name": "continuous-improvement?tab=improvements-empty.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2NvbnRpbnVvdXMtaW1wcm92ZW1lbnQ/dGFiPWltcHJvdmVtZW50cyIsCiAgIndpZHRoIjogOTExLAogICJkb2N1bWVudFdpZHRoIjogOTExLAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogWwogICAgewogICAgICAid2lkdGgiOiA4NzEsCiAgICAgICJzY3JvbGxXaWR0aCI6IDg3MSwKICAgICAgInNjcm9sbExlZnQiOiAwCiAgICB9CiAgXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiQ29udGludWFsIEltcHJvdmVtZW50IgogIF0KfQ=="
+                    },
+                    {
+                      "name": "continuous-improvement?tab=improvements-empty-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvY29udGludW91cy1pbXByb3ZlbWVudD90YWI9aW1wcm92ZW1lbnRzIiwidmlld3BvcnQiOnsid2lkdGgiOjkxMSwiaGVpZ2h0Ijo1MTJ9LCJwb3B1cHMiOltdfQ=="
+                    },
+                    {
+                      "name": "continuous-improvement?tab=improvements-filter.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L2NvbnRpbnVvdXMtaW1wcm92ZW1lbnQ/dGFiPWltcHJvdmVtZW50cyIsCiAgIndpZHRoIjogOTExLAogICJkb2N1bWVudFdpZHRoIjogOTExLAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogWwogICAgewogICAgICAid2lkdGgiOiA4NzEsCiAgICAgICJzY3JvbGxXaWR0aCI6IDg3MSwKICAgICAgInNjcm9sbExlZnQiOiAwCiAgICB9CiAgXSwKICAiaGVhZGVyT3ZlcmZsb3ciOiBmYWxzZSwKICAiaGVhZGluZ3MiOiBbCiAgICAiQ29udGludWFsIEltcHJvdmVtZW50IgogIF0KfQ=="
+                    },
+                    {
+                      "name": "continuous-improvement?tab=improvements-filter-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvY29udGludW91cy1pbXByb3ZlbWVudD90YWI9aW1wcm92ZW1lbnRzIiwidmlld3BvcnQiOnsid2lkdGgiOjkxMSwiaGVpZ2h0Ijo1MTJ9LCJwb3B1cHMiOlt7InJvbGUiOiJkaWFsb2ciLCJ0ZXh0IjoiQWxsIHN0YWdlc0RyYWZ0U3VibWl0dGVkVW5kZXIgUmV2aWV3QXBwcm92ZWRPbiBIb2xkUmVqZWN0ZWRJbiBQcm9ncmVzc0F3YWl0aW5nIEMiLCJsZWZ0Ijo0NjAsInJpZ2h0Ijo4NjYsInRvcCI6MTA3LCJib3R0b20iOjQ1NCwic2Nyb2xsSGVpZ2h0IjozNDUsImNsaWVudEhlaWdodCI6MzQ1fSx7InJvbGUiOiJsaXN0Ym94IiwidGV4dCI6IkFsbCBzdGFnZXNEcmFmdFN1Ym1pdHRlZFVuZGVyIFJldmlld0FwcHJvdmVkT24gSG9sZFJlamVjdGVkSW4gUHJvZ3Jlc3NBd2FpdGluZyBDIiwibGVmdCI6NDYxLCJyaWdodCI6ODY1LCJ0b3AiOjE2NSwiYm90dG9tIjo0NTMsInNjcm9sbEhlaWdodCI6NDA4LCJjbGllbnRIZWlnaHQiOjI4OH1dfQ=="
+                    },
+                    {
+                      "name": "reports-empty.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3JlcG9ydHMiLAogICJ3aWR0aCI6IDkxMSwKICAiZG9jdW1lbnRXaWR0aCI6IDkxMSwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFsKICAgIHsKICAgICAgIndpZHRoIjogODcxLAogICAgICAic2Nyb2xsV2lkdGgiOiA4NzEsCiAgICAgICJzY3JvbGxMZWZ0IjogMAogICAgfQogIF0sCiAgImhlYWRlck92ZXJmbG93IjogZmFsc2UsCiAgImhlYWRpbmdzIjogWwogICAgIlJlcG9ydHMiCiAgXQp9"
+                    },
+                    {
+                      "name": "reports-empty-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvcmVwb3J0cyIsInZpZXdwb3J0Ijp7IndpZHRoIjo5MTEsImhlaWdodCI6NTEyfSwicG9wdXBzIjpbXX0="
+                    },
+                    {
+                      "name": "reports-filter.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3JlcG9ydHMiLAogICJ3aWR0aCI6IDkxMSwKICAiZG9jdW1lbnRXaWR0aCI6IDkxMSwKICAib3V0c2lkZSI6IFtdLAogICJ1bm5hbWVkIjogW10sCiAgInNjcm9sbGVycyI6IFsKICAgIHsKICAgICAgIndpZHRoIjogODcxLAogICAgICAic2Nyb2xsV2lkdGgiOiA4NzEsCiAgICAgICJzY3JvbGxMZWZ0IjogMAogICAgfQogIF0sCiAgImhlYWRlck92ZXJmbG93IjogZmFsc2UsCiAgImhlYWRpbmdzIjogWwogICAgIlJlcG9ydHMiCiAgXQp9"
+                    },
+                    {
+                      "name": "reports-filter-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvcmVwb3J0cyIsInZpZXdwb3J0Ijp7IndpZHRoIjo5MTEsImhlaWdodCI6NTEyfSwicG9wdXBzIjpbeyJyb2xlIjoibGlzdGJveCIsInRleHQiOiJBbGwgbW9kdWxlc+KclO+4j0dlbWJhQ29udGludWFsIEltcHJvdmVtZW50UmVkIFRhZ0F1ZGl0QWN0aW9uc1Zpc3VhbCBNYW5hZ2VtZW50IiwibGVmdCI6MzgsInJpZ2h0IjoyMzksInRvcCI6MTYwLCJib3R0b20iOjQxMiwic2Nyb2xsSGVpZ2h0IjoyNTIsImNsaWVudEhlaWdodCI6MjUyfV19"
+                    },
+                    {
+                      "name": "report-summary.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3JlcG9ydHMvc3VtbWFyeS9nZW1iYU9ic2VydmF0aW9uU3VtbWFyeSIsCiAgIndpZHRoIjogOTExLAogICJkb2N1bWVudFdpZHRoIjogOTExLAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogW10sCiAgImhlYWRlck92ZXJmbG93IjogZmFsc2UsCiAgImhlYWRpbmdzIjogWwogICAgIlJlcG9ydCBQcmV2aWV3IgogIF0KfQ=="
+                    },
+                    {
+                      "name": "report-summary-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvcmVwb3J0cy9zdW1tYXJ5L2dlbWJhT2JzZXJ2YXRpb25TdW1tYXJ5Iiwidmlld3BvcnQiOnsid2lkdGgiOjkxMSwiaGVpZ2h0Ijo1MTJ9LCJwb3B1cHMiOltdfQ=="
+                    },
+                    {
+                      "name": "report-print.json",
+                      "contentType": "application/json",
+                      "body": "ewogICJ1cmwiOiAiaHR0cDovLzEyNy4wLjAuMTo0MTc5L3JlcG9ydHMvc3VtbWFyeS9nZW1iYU9ic2VydmF0aW9uU3VtbWFyeSIsCiAgIndpZHRoIjogOTExLAogICJkb2N1bWVudFdpZHRoIjogOTExLAogICJvdXRzaWRlIjogW10sCiAgInVubmFtZWQiOiBbXSwKICAic2Nyb2xsZXJzIjogW10sCiAgImhlYWRlck92ZXJmbG93IjogZmFsc2UsCiAgImhlYWRpbmdzIjogWwogICAgIlJlcG9ydCBQcmV2aWV3IgogIF0KfQ=="
+                    },
+                    {
+                      "name": "report-print-height.json",
+                      "contentType": "application/json",
+                      "body": "eyJ1cmwiOiJodHRwOi8vMTI3LjAuMC4xOjQxNzkvcmVwb3J0cy9zdW1tYXJ5L2dlbWJhT2JzZXJ2YXRpb25TdW1tYXJ5Iiwidmlld3BvcnQiOnsid2lkdGgiOjkxMSwiaGVpZ2h0Ijo1MTJ9LCJwb3B1cHMiOltdfQ=="
+                    },
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/rumesh-9634/Projects/Ops/test-results/windows-before/windows-operations-Laptop-reports-and-filters-911x512/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/rumesh-9634/Projects/Ops/test-results/windows-before/windows-operations-Laptop-reports-and-filters-911x512/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/rumesh-9634/Projects/Ops/test-results/windows-before/windows-operations-Laptop-reports-and-filters-911x512/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/rumesh-9634/Projects/Ops/e2e/windows-operations.spec.ts",
+                    "column": 238,
+                    "line": 29
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "f0fc774b442c634fae19-176714a553570b0c69ad",
+          "file": "windows-operations.spec.ts",
+          "line": 24,
+          "column": 6
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-18T12:03:45.409Z",
+    "duration": 52187.795,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 4,
+    "flaky": 0
+  }
+}

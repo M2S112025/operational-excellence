@@ -1,0 +1,138 @@
+
+> manufacturing-qms@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.3.0 (webpack)
+✓ Running next.config.ts took 133ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 10.2s
+  Running TypeScript ...
+  Finished TypeScript in 3.0s ...
+  Collecting page data using 14 workers ...
+  Generating static pages using 14 workers (0/85) ...
+  Generating static pages using 14 workers (21/85)
+  Generating static pages using 14 workers (42/85)
+  Generating static pages using 14 workers (63/85)
+✓ Generating static pages using 14 workers (85/85) in 543ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /5s
+├ ƒ /5s/actions
+├ ƒ /5s/actions/[actionId]
+├ ƒ /5s/actions/[actionId]/report
+├ ○ /5s/audits
+├ ƒ /5s/audits/[auditId]/report
+├ ○ /5s/continuous-improvement
+├ ƒ /5s/continuous-improvement/[improvementId]
+├ ƒ /5s/continuous-improvement/[improvementId]/report
+├ ○ /5s/continuous-improvement/new
+├ ○ /5s/listing
+├ ○ /5s/red
+├ ƒ /5s/red/[tagId]
+├ ƒ /5s/red/[tagId]/print
+├ ƒ /5s/red/[tagId]/report
+├ ○ /5s/red/awaiting-closure
+├ ○ /5s/red/closed
+├ ƒ /5s/red/create
+├ ƒ /5s/red/create-qr/print
+├ ○ /5s/red/overview
+├ ○ /5s/red/settings
+├ ƒ /5s/reports
+├ ƒ /actions
+├ ƒ /actions/[actionId]
+├ ƒ /actions/[actionId]/report
+├ ○ /actions/settings
+├ ○ /actions/settings/categories
+├ ○ /actions/settings/escalation-rules
+├ ○ /actions/settings/priority-due-dates
+├ ○ /actions/settings/reminder-rules
+├ ○ /admin/users
+├ ○ /administration/users
+├ ○ /analytics/dashboards
+├ ƒ /api/gemba/voice/extract
+├ ƒ /api/gemba/voice/transcribe
+├ ƒ /api/visual-management/kpi/analyze
+├ ƒ /audits
+├ ○ /audits/settings
+├ ○ /audits/settings/custom-questions
+├ ○ /audits/settings/evidence-rules
+├ ○ /audits/settings/scoring
+├ ○ /audits/settings/standard-checklist
+├ ƒ /continuous-improvement
+├ ƒ /continuous-improvement/[id]
+├ ƒ /continuous-improvement/[id]/edit
+├ ƒ /continuous-improvement/[id]/report
+├ ○ /continuous-improvement/new
+├ ○ /continuous-improvement/settings
+├ ƒ /dashboard
+├ ƒ /gemba
+├ ƒ /gemba/[id]
+├ ƒ /gemba/[id]/report
+├ ƒ /gemba/[id]/walk
+├ ○ /gemba/new
+├ ƒ /gemba/observations/[observationId]
+├ ○ /gemba/settings
+├ ƒ /profile
+├ ○ /red-flag
+├ ƒ /red-flag/[id]
+├ ƒ /red-flag/[id]/report
+├ ○ /red-flag/new
+├ ○ /red-flag/settings
+├ ƒ /reports
+├ ƒ /reports/action/[id]
+├ ƒ /reports/summary/[type]
+├ ○ /settings
+├ ○ /settings/action/categories
+├ ○ /settings/action/escalations
+├ ○ /settings/action/priorities
+├ ○ /settings/action/reminders
+├ ○ /settings/actions/categories
+├ ○ /settings/actions/escalation-rules
+├ ○ /settings/actions/priority-due-dates
+├ ○ /settings/actions/reminder-rules
+├ ○ /settings/appearance
+├ ○ /settings/audit
+├ ○ /settings/audit/custom-questions
+├ ○ /settings/audit/evidence-rules
+├ ○ /settings/audit/scoring
+├ ○ /settings/module-access
+├ ○ /settings/notifications
+├ ○ /settings/organization/plant
+├ ○ /settings/organization/zones
+├ ○ /settings/roles
+├ ○ /settings/users
+├ ○ /settings/visual-management/boards
+├ ○ /settings/visual-management/kpi-sections
+├ ○ /settings/visual-management/tiers
+├ ○ /super-admin
+├ ○ /super-admin/organizations
+├ ƒ /super-admin/organizations/[id]
+├ ƒ /super-admin/organizations/[id]/modules
+├ ○ /super-admin/settings
+├ ƒ /visual-improvement
+├ ƒ /visual-improvement/[id]
+├ ƒ /visual-improvement/[id]/edit
+├ ƒ /visual-improvement/[id]/report
+├ ○ /visual-improvement/new
+├ ○ /visual-management
+├ ○ /visual-management/boards
+├ ƒ /visual-management/boards/[id]
+├ ƒ /visual-management/boards/[id]/meeting
+├ ƒ /visual-management/boards/[id]/print
+├ ○ /visual-management/escalations
+├ ○ /visual-management/meetings
+├ ƒ /visual-management/meetings/[id]
+├ ○ /visual-management/settings
+├ ○ /visual-management/settings/boards
+├ ○ /visual-management/settings/kpi-configuration
+├ ○ /visual-management/settings/kpi-sections
+└ ○ /visual-management/settings/tiers
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand

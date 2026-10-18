@@ -1,0 +1,566 @@
+[
+  {
+    "pattern": "/5s/actions/[actionId]",
+    "path": "/5s/actions/ACT-VM-001",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/5s/actions/[actionId]/report",
+    "path": "/5s/actions/ACT-VM-001/report",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/5s/actions",
+    "path": "/5s/actions",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/5s/audits",
+    "path": "/5s/audits",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/5s/continuous-improvement/[improvementId]",
+    "path": "/5s/continuous-improvement/CI-2026-013",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/5s/continuous-improvement/[improvementId]/report",
+    "path": "/5s/continuous-improvement/CI-2026-011/report",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/5s/continuous-improvement/new",
+    "path": "/5s/continuous-improvement/new",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/5s/continuous-improvement",
+    "path": "/5s/continuous-improvement",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/5s/listing",
+    "path": "/5s/listing",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/5s",
+    "path": "/5s",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/5s/reports",
+    "path": "/5s/reports",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/admin/users",
+    "path": "/admin/users",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/administration/users",
+    "path": "/administration/users",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/analytics/dashboards",
+    "path": "/analytics/dashboards",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/audits/settings/evidence-rules",
+    "path": "/audits/settings/evidence-rules",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/continuous-improvement/[id]/edit",
+    "path": "/continuous-improvement/CI-2026-006/edit",
+    "kind": "Render",
+    "role": "responsible"
+  },
+  {
+    "pattern": "/continuous-improvement/[id]",
+    "path": "/continuous-improvement/CI-2026-013",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/continuous-improvement/[id]/report",
+    "path": "/continuous-improvement/CI-2026-011/report",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/continuous-improvement/new",
+    "path": "/continuous-improvement/new",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/continuous-improvement",
+    "path": "/continuous-improvement",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/continuous-improvement/settings",
+    "path": "/continuous-improvement/settings",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/gemba/[id]",
+    "path": "/gemba/GEM-2026-015",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/gemba/[id]/report",
+    "path": "/gemba/GEM-2026-014/report",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/gemba/[id]/walk",
+    "path": "/gemba/GEM-2026-015/walk",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/gemba/new",
+    "path": "/gemba/new",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/gemba/observations/[observationId]",
+    "path": "/gemba/observations/GEM-2026-014-OBS-01",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/gemba",
+    "path": "/gemba",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/gemba/settings",
+    "path": "/gemba/settings",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/profile",
+    "path": "/profile",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/red-flag/[id]",
+    "path": "/red-flag/RF-2026-013",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/red-flag/[id]/report",
+    "path": "/red-flag/RF-2026-013/report",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/red-flag/new",
+    "path": "/red-flag/new",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/red-flag",
+    "path": "/red-flag",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/red-flag/settings",
+    "path": "/red-flag/settings",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/reports/action/[id]",
+    "path": "/reports/action/ACT-VM-001",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/reports",
+    "path": "/reports",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/reports/summary/[type]",
+    "path": "/reports/summary/gembaObservationSummary",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/action/categories",
+    "path": "/settings/action/categories",
+    "kind": "permanentRedirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/action/escalations",
+    "path": "/settings/action/escalations",
+    "kind": "permanentRedirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/action/priorities",
+    "path": "/settings/action/priorities",
+    "kind": "permanentRedirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/action/reminders",
+    "path": "/settings/action/reminders",
+    "kind": "permanentRedirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/actions/categories",
+    "path": "/settings/actions/categories",
+    "kind": "permanentRedirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/actions/escalation-rules",
+    "path": "/settings/actions/escalation-rules",
+    "kind": "permanentRedirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/actions/priority-due-dates",
+    "path": "/settings/actions/priority-due-dates",
+    "kind": "permanentRedirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/actions/reminder-rules",
+    "path": "/settings/actions/reminder-rules",
+    "kind": "permanentRedirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/appearance",
+    "path": "/settings/appearance",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/audit/custom-questions",
+    "path": "/settings/audit/custom-questions",
+    "kind": "permanentRedirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/audit/evidence-rules",
+    "path": "/settings/audit/evidence-rules",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/audit",
+    "path": "/settings/audit",
+    "kind": "permanentRedirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/audit/scoring",
+    "path": "/settings/audit/scoring",
+    "kind": "permanentRedirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/module-access",
+    "path": "/settings/module-access",
+    "kind": "Render",
+    "role": "superAdmin"
+  },
+  {
+    "pattern": "/settings/notifications",
+    "path": "/settings/notifications",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/organization/plant",
+    "path": "/settings/organization/plant",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/organization/zones",
+    "path": "/settings/organization/zones",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings",
+    "path": "/settings",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/roles",
+    "path": "/settings/roles",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/users",
+    "path": "/settings/users",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/visual-management/boards",
+    "path": "/settings/visual-management/boards",
+    "kind": "permanentRedirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/visual-management/kpi-sections",
+    "path": "/settings/visual-management/kpi-sections",
+    "kind": "permanentRedirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/settings/visual-management/tiers",
+    "path": "/settings/visual-management/tiers",
+    "kind": "permanentRedirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/super-admin/organizations/[id]/modules",
+    "path": "/super-admin/organizations/abc-manufacturing/modules",
+    "kind": "Render",
+    "role": "superAdmin"
+  },
+  {
+    "pattern": "/super-admin/organizations/[id]",
+    "path": "/super-admin/organizations/abc-manufacturing",
+    "kind": "Render",
+    "role": "superAdmin"
+  },
+  {
+    "pattern": "/super-admin/organizations",
+    "path": "/super-admin/organizations",
+    "kind": "Render",
+    "role": "superAdmin"
+  },
+  {
+    "pattern": "/super-admin",
+    "path": "/super-admin",
+    "kind": "redirect",
+    "role": "superAdmin"
+  },
+  {
+    "pattern": "/super-admin/settings",
+    "path": "/super-admin/settings",
+    "kind": "redirect",
+    "role": "superAdmin"
+  },
+  {
+    "pattern": "/visual-improvement/[id]/edit",
+    "path": "/visual-improvement/VI-2026-014/edit",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-improvement/[id]",
+    "path": "/visual-improvement/VI-2026-014",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-improvement/[id]/report",
+    "path": "/visual-improvement/VI-2026-012/report",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-improvement/new",
+    "path": "/visual-improvement/new",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-improvement",
+    "path": "/visual-improvement",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-management/boards/[id]/meeting",
+    "path": "/visual-management/boards/VM-ZA-T1/meeting",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-management/boards/[id]",
+    "path": "/visual-management/boards/VM-ZA-T1",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-management/boards/[id]/print",
+    "path": "/visual-management/boards/VM-ZA-T1/print",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-management/boards",
+    "path": "/visual-management/boards",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-management/escalations",
+    "path": "/visual-management/escalations",
+    "kind": "permanentRedirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-management/meetings/[id]",
+    "path": "/visual-management/meetings/VMM-2026-013",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-management/meetings",
+    "path": "/visual-management/meetings",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-management",
+    "path": "/visual-management",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-management/settings/boards",
+    "path": "/visual-management/settings/boards",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-management/settings/kpi-configuration",
+    "path": "/visual-management/settings/kpi-configuration",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-management/settings/kpi-sections",
+    "path": "/visual-management/settings/kpi-sections",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-management/settings",
+    "path": "/visual-management/settings",
+    "kind": "Render",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/visual-management/settings/tiers",
+    "path": "/visual-management/settings/tiers",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/",
+    "path": "/",
+    "kind": "redirect",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/reports/summary/nonComplianceSummary",
+    "path": "/reports/summary/nonComplianceSummary",
+    "kind": "state",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/reports/summary/beforeAfterSummary",
+    "path": "/reports/summary/beforeAfterSummary",
+    "kind": "state",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/reports/summary/overdueActionSummary",
+    "path": "/reports/summary/overdueActionSummary",
+    "kind": "state",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/reports/summary/benefitSavingsSummary",
+    "path": "/reports/summary/benefitSavingsSummary",
+    "kind": "state",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/reports/summary/gembaActionSummary",
+    "path": "/reports/summary/gembaActionSummary",
+    "kind": "state",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/profile?tab=preferences",
+    "path": "/profile?tab=preferences",
+    "kind": "state",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/profile?tab=notifications",
+    "path": "/profile?tab=notifications",
+    "kind": "state",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/continuous-improvement/CI-2026-014?tab=review",
+    "path": "/continuous-improvement/CI-2026-014?tab=review",
+    "kind": "state",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/continuous-improvement/CI-2026-012?tab=completion",
+    "path": "/continuous-improvement/CI-2026-012?tab=completion",
+    "kind": "state",
+    "role": "auditor"
+  },
+  {
+    "pattern": "/continuous-improvement/CI-2026-013?tab=implementation",
+    "path": "/continuous-improvement/CI-2026-013?tab=implementation",
+    "kind": "state",
+    "role": "auditor"
+  }
+]

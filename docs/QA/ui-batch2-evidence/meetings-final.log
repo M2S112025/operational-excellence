@@ -1,0 +1,16 @@
+
+Running 9 tests using 1 worker
+
+(node:46293) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 e2e/ui-batch2-meetings.spec.ts:3:31 › Batch 2 VM and linked forms 320px (6.3s)
+  ✓  2 e2e/ui-batch2-meetings.spec.ts:3:31 › Batch 2 VM and linked forms 375px (6.2s)
+  ✓  3 e2e/ui-batch2-meetings.spec.ts:3:31 › Batch 2 VM and linked forms 390px (6.3s)
+  ✓  4 e2e/ui-batch2-meetings.spec.ts:3:31 › Batch 2 VM and linked forms 430px (6.0s)
+  ✓  5 e2e/ui-batch2-meetings.spec.ts:3:31 › Batch 2 VM and linked forms 768px (6.1s)
+  ✓  6 e2e/ui-batch2-meetings.spec.ts:3:31 › Batch 2 VM and linked forms 1024px (6.2s)
+  ✓  7 e2e/ui-batch2-meetings.spec.ts:3:31 › Batch 2 VM and linked forms 1280px (6.1s)
+  ✓  8 e2e/ui-batch2-meetings.spec.ts:3:31 › Batch 2 VM and linked forms 1440px (6.1s)
+  ✓  9 e2e/ui-batch2-meetings.spec.ts:3:31 › Batch 2 VM and linked forms 1920px (6.1s)
+
+  9 passed (56.2s)

@@ -1,0 +1,25 @@
+{
+  "baselineCommit": "e5e9950121bf7a89d2c1700a748b5534f28dd3c3",
+  "branch": "feat/audit-admin-question-management",
+  "validatedFilesSha256": {
+    "features/analytics/analytics-data.ts": "d47cc2ef30508508bc201d3e97e76dcfb6eaf43350e5fd5c0c78ba4f4e2e26a6",
+    "tests/p0-dashboard-red-tag.test.ts": "dc00ff29b4d226261ebd116d91cbae56d12636cb739bf170f3e5d6d46d788b81",
+    "tests/p0-data-integrity.test.ts": "b604c6990cad9c1ed9156a0c62e6011aab8e9731ad9d6b65023619129bd12baf",
+    "tests/p0-authorization-gaps.test.ts": "430907c1767bca212aeed7769faeb9af3e42943cd6ccb7a938efed3dd577628a",
+    "e2e/p0-critical.spec.ts": "11ffd5a25edbd9e26d8b6c46c0ab4ac7bae1777d720453d3e7d012f587dcd5f4",
+    "playwright.config.ts": "cf0987c88b18751f97edb26317818120c71ceeae227cad8738b8bb7d35a0a572",
+    "package.json": "29b1b210aaec6a6884eaeddb68ffb9db1aca38548bbed1dc901a53018e5d8f84",
+    "package-lock.json": "7df35f512b38967fea6bf1e878421657f669b519cf9805d57e8bf3adeed3c33e",
+    "eslint.config.mjs": "02b194674b12d40f205bd82f70d524e9775e213fbc272c2a46197714f8088d0e",
+    ".gitignore": "db5b7ecad8fa40adae14d63a1b97c8b909148ae3c24d229e330f64bd0a64b9ff"
+  },
+  "coreHandoverDocuments": [
+    "API-REQUIREMENTS.md",
+    "DATA-MODELS.md",
+    "HANDOVER-OVERVIEW.md",
+    "MODULES-AND-WORKFLOWS.md",
+    "PERSISTENCE-AND-INTEGRATION.md",
+    "QA-RESULTS-AND-OPEN-ISSUES.md",
+    "ROLES-AND-PERMISSIONS.md"
+  ]
+}
