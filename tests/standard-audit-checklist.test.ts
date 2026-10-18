@@ -3,7 +3,7 @@ import type { FiveSSection } from "@/features/five-s/types/five-s";
 
 const auth = vi.hoisted(() => ({ id: "USR-OPS-SUPER-ADMIN", isSuperAdmin: true, status: "Active" }));
 vi.mock("@/lib/current-user", () => ({ getCurrentDemoUser: () => auth }));
-vi.mock("@/features/five-s/administration/store", () => ({ getAdminUser: () => ({ status: auth.status }) }));
+vi.mock("@/features/five-s/administration/store", () => ({ getAdminUser: () => ({ id: auth.id, status: auth.status, roles: [], permissions: [] }) }));
 
 beforeEach(() => {
   vi.resetModules();
@@ -46,7 +46,7 @@ describe("Super Admin standard checklist editing", () => {
     expect(later[0].questions[0]).toMatchObject({ id: "Q-1", question: "Updated requirement?", description: "Updated guidance", maxScore: 2, score: null, evidence: [], status: "Not Started", mandatory: true });
     expect(earlier[0].questions[0].question).toBe(original[0].questions[0].question);
     expect(earlier[0].questions[0].description).toBe("Original guidance");
-    expect(JSON.parse(window.localStorage.getItem("ops-standard-audit-checklist-v1")!)["Sort:0"]).toMatchObject({ updatedBy: auth.id, question: "Updated requirement?" });
+    expect(JSON.parse(window.localStorage.getItem("ops-standard-audit-checklist-v1")!).organizations["abc-manufacturing"]["Sort:0"]).toMatchObject({ updatedBy: auth.id, question: "Updated requirement?" });
     vi.resetModules();
     const reloaded = await import("@/features/settings/standard-audit-checklist/store");
     expect(reloaded.applyStandardQuestionEdit(original[0].questions[0]).question).toBe("Updated requirement?");

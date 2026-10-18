@@ -4,7 +4,8 @@ import { useSyncExternalStore } from "react";
 
 import { getAdminUser } from "@/features/five-s/administration/store";
 import { getCurrentDemoUser } from "@/lib/current-user";
-import { canManageAuditConfiguration } from "../audit-configuration-permissions";
+import { canManageAuditQuestions } from "../audit-configuration-permissions";
+import { validateAuditReferenceImage } from "../audit-reference-image";
 import { safeSetStorage } from "@/lib/browser-storage";
 import { DEMO_ORGANIZATION } from "@/lib/module-entitlements";
 import type { FiveSAuditStage } from "@/features/five-s/types/five-s";
@@ -121,7 +122,7 @@ export function getActiveCustomAuditQuestions(organizationId = ORGANIZATION_ID) 
 function requireConfigurationActor(organizationId: string) {
   const identity = getCurrentDemoUser();
   const actor = getAdminUser(identity.id);
-  if (!canManageAuditConfiguration(identity, actor, organizationId)) {
+  if (!canManageAuditQuestions(identity, actor, organizationId)) {
     throw new Error("Active configuration permission for this organization is required.");
   }
   return actor!;
@@ -148,7 +149,7 @@ function validatedFields(input: CustomAuditQuestionInput) {
   return {
     question: input.question.trim(), stage: input.stage, responseType: input.responseType,
     mandatory: input.mandatory, requireEvidenceOnNonCompliance: input.requireEvidenceOnNonCompliance,
-    instruction: input.instruction?.trim() || undefined, referenceImage: input.referenceImage,
+    instruction: input.instruction?.trim() || undefined, referenceImage: validateAuditReferenceImage(input.referenceImage),
     active: input.active, order: input.order,
   };
 }
@@ -203,8 +204,13 @@ export function moveCustomAuditQuestion(id: string, direction: -1 | 1) {
   }));
 }
 
-export function nextQuestionOrder(stage: FiveSAuditStage) {
-  return Math.max(0, ...getCustomAuditQuestions().filter((question) => question.stage === stage && (question.organizationId ?? ORGANIZATION_ID) === ORGANIZATION_ID).map((question) => question.order)) + 1;
+export function nextQuestionOrder(stage: FiveSAuditStage, organizationId = ORGANIZATION_ID) {
+  return Math.max(0, ...getCustomAuditQuestions().filter((question) => question.stage === stage && (question.organizationId ?? ORGANIZATION_ID) === organizationId).map((question) => question.order)) + 1;
 }
 
 export const DEFAULT_CUSTOM_QUESTION_ORGANIZATION_ID = ORGANIZATION_ID;
+
+/** Existing removal rule: retain configuration/history but exclude the question from new audits. */
+export function deleteCustomAuditQuestion(id: string) {
+  return setCustomAuditQuestionActive(id, false);
+}

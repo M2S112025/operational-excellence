@@ -38,10 +38,10 @@ export default function FiveSReferenceGuide({ question, questionText }: { questi
       <ImageOff className="size-9" aria-hidden="true" />
       <p className="text-sm font-medium">{t("audit.referenceUnavailable")}</p>
     </div>
-  ) : question.questionSource === "custom" ? (
+  ) : (question.questionSource === "custom" || question.referenceImage.startsWith("https://") || question.referenceImage.startsWith("data:image/")) ? (
     // Custom references may be local data URLs or organization-hosted assets.
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={question.referenceImage} alt={alt} loading="lazy" decoding="async" onError={() => setFailed(true)} className="max-h-[58vh] w-full object-contain" />
+    <img src={question.referenceImage} alt={alt} referrerPolicy="no-referrer" loading="lazy" decoding="async" onError={() => setFailed(true)} className="max-h-[58vh] w-full object-contain" />
   ) : (
     // The element only mounts after this guide opens, so none of the 39 assets are preloaded with the audit.
     <Image
@@ -127,7 +127,7 @@ export default function FiveSReferenceGuide({ question, questionText }: { questi
           <div className="flex h-full w-full items-center justify-center overflow-auto p-4 pt-16">
             {/* Custom references can be data URLs or organization-hosted assets. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            {question.questionSource === "custom" ? <img src={question.referenceImage} alt={alt} className="max-h-full max-w-full object-contain transition-transform" style={{ transform: `scale(${zoom})` }} /> : <Image src={question.referenceImage} alt={alt} width={1440} height={960} className="max-h-full max-w-full object-contain transition-transform" style={{ transform: `scale(${zoom})` }} />}
+            {(question.questionSource === "custom" || question.referenceImage.startsWith("https://") || question.referenceImage.startsWith("data:image/")) ? <img src={question.referenceImage} alt={alt} referrerPolicy="no-referrer" onError={() => { setFailed(true); setFullScreen(false); }} className="max-h-full max-w-full object-contain transition-transform" style={{ transform: `scale(${zoom})` }} /> : <Image src={question.referenceImage} alt={alt} width={1440} height={960} className="max-h-full max-w-full object-contain transition-transform" style={{ transform: `scale(${zoom})` }} />}
           </div>
         </DialogContent>
       </Dialog>
