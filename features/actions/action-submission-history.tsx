@@ -1,6 +1,7 @@
 "use client";
 /* eslint-disable @next/next/no-img-element -- historical evidence resolves local asset URLs. */
 
+import { getActionTypeLabel } from "@/lib/actions/action-config";
 import { useState } from "react";
 import { ChevronDown, Download, FileText, ImageIcon, Maximize2 } from "lucide-react";
 import type { MyAction, MyActionEvidence } from "@/features/five-s/types/my-actions";
@@ -14,12 +15,14 @@ import { formatOpsDateTime, formatOpsMoney } from "@/lib/ops-formatters";
 export function ActionSubmissionHistory({ action, beforeEvidence }: { action: MyAction; beforeEvidence?: ResolvedActionSourceEvidence }) {
   const [preview, setPreview] = useState<MyActionEvidence>();
   const previewUrl = useActionEvidenceUrl(preview);
-  if (!action.submissionRevisions?.length) return <p className="text-sm text-muted-foreground">No submission snapshots are recorded. Earlier revisions of legacy Actions cannot be reconstructed.</p>;
+
   const before = beforeEvidence ?? resolveActionSourceBeforeEvidence(action, []);
   const history = [...(action.activityHistory ?? []), ...(action.reviewHistory ?? [])];
   return <section className="grid min-w-0 gap-3" aria-label={`Submission revisions for ${action.id}`}>
-    <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-semibold">Submission History</h3><span className="text-xs text-muted-foreground">{action.submissionRevisions.length} {action.submissionRevisions.length === 1 ? "revision" : "revisions"}</span></div>
-    {action.submissionRevisions.map(revision => {
+    <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-sm font-semibold">Submission History</h3><span className="text-xs text-muted-foreground">{action.submissionRevisions?.length ?? 0} {action.submissionRevisions?.length === 1 ? "revision" : "revisions"}</span></div>
+    {(action.activityHistory ?? []).some(event => event.type === "started" || event.type === "start_undone") && <details className="rounded-xl border bg-card p-4"><summary className="cursor-pointer text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Start History</summary><ol className="mt-3 grid gap-3 text-sm">{(action.activityHistory ?? []).filter(event => event.type === "started" || event.type === "start_undone").map(event => <li key={event.id}><p>{event.type === "started" ? "Started" : "Start undone"} · {getActionTypeLabel(event.actionType)}</p><p className="text-xs text-muted-foreground">{event.actorName} · {formatOpsDateTime(event.createdAt)}</p></li>)}</ol></details>}
+    {!action.submissionRevisions?.length && <p className="text-sm text-muted-foreground">No submission snapshots are recorded. Earlier revisions of legacy Actions cannot be reconstructed.</p>}
+    {action.submissionRevisions?.map(revision => {
       const review = history.find(event => event.id === revision.reviewEventId);
       return <details key={revision.id} className="group min-w-0 rounded-xl border bg-card text-card-foreground [overflow-wrap:anywhere]">
         <summary className="flex cursor-pointer list-none flex-wrap items-center gap-3 rounded-xl px-4 py-4 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden">
@@ -30,6 +33,7 @@ export function ActionSubmissionHistory({ action, beforeEvidence }: { action: My
         <div className="grid gap-5 border-t p-4 text-sm sm:p-5">
           <dl className="grid min-w-0 gap-4 sm:grid-cols-3">
             <div><dt className="mb-1 text-xs text-muted-foreground">Submitted by</dt><dd className="font-medium">{revision.submittedByName ?? "Not recorded"}</dd></div>
+            <div><dt className="mb-1 text-xs text-muted-foreground">Action type</dt><dd>{getActionTypeLabel(revision.actionType)}</dd></div>
             <div><dt className="mb-1 text-xs text-muted-foreground">Corrective action category</dt><dd>{revision.correctiveActionCategory ?? "Not recorded"}</dd></div>
             <div><dt className="mb-1 text-xs text-muted-foreground">Cost saving</dt><dd className="font-medium">{formatOpsMoney(revision.costSaving, "Not recorded")}</dd></div>
           </dl>

@@ -7,6 +7,8 @@ import { prepareActionEvidenceCompaction } from "./action-evidence-storage";
 import { resetImportedRedTagData } from "@/lib/five-s/red-tag-reset";
 
 import { useSyncExternalStore } from "react";
+import { getAuthenticatedDemoActor } from "@/lib/demo-session";
+import { DEMO_ORGANIZATION, getOrganizationAccess } from "@/lib/module-entitlements";
 import { getCurrentDemoUser } from "@/lib/current-user";
 import { getAdminUser } from "@/features/five-s/administration/store";
 
@@ -16,13 +18,14 @@ import {
 
 import type {
   MyAction,
+  MyActionType,
   MyActionActivity,
   MyActionSubmissionRevision,
 } from "@/features/five-s/types/my-actions";
 import { createNotification } from "@/lib/notifications/notification-store";
 import { getFiveSZoneConfiguration, getPriorityDueDate } from "@/lib/five-s/configuration";
 import { safeSetStorage, safeSetStorageString } from "@/lib/browser-storage";
-import { getActionSourceDefinition, normalizeActionSource, inferActionSourceModule } from "@/lib/actions/action-config";
+import { getActionTypeLabel, isActionType, getActionSourceDefinition, normalizeActionSource, inferActionSourceModule } from "@/lib/actions/action-config";
 
 export interface ActionActor {
   id: string;
@@ -424,36 +427,64 @@ function canEditAuditFinding(action: MyAction, actor?: ActionActor) {
   return Boolean(user && action.status !== "Completed" && inferActionSourceModule(action) === "audit" && user.permissions.includes("actions.create") && isCreator(action, user));
 }
 
-export function startAssignedAction(actionId: string, actor: ActionActor) {
+/** Token for the ownership/lifecycle state shown when the selection dialog opened. */
+export function getActionStartState(action: MyAction) {
+  return JSON.stringify([action.status, action.responsiblePersonId, action.assignedTo, action.reviewerId, action.actionType,
+    action.activityHistory?.at(-1)?.id, action.submittedForReviewAt]);
+}
+function authenticatedActionWorker(action: MyAction, actor: ActionActor) {
+  const current = getAuthenticatedDemoActor(actor.id);
+  const scoped: MyAction & { organizationId?: string } = action;
+  const access = getOrganizationAccess();
+  const source = getActionSourceDefinition(action);
+  return current && (!scoped.organizationId || scoped.organizationId === DEMO_ORGANIZATION.id)
+    && access.actions && (!source.entitlement || access[source.entitlement])
+    && (source.id !== "redFlag" || access.redFlag) && canEditActionContent(action, current.user) ? current.user : undefined;
+}
+export function getActionStartError(action: MyAction, actor: ActionActor, actionType: unknown, expectedState?: string) {
+  if (!isActionType(actionType)) return "Select Immediate Action or Corrective Action.";
+  if (!authenticatedActionWorker(action, actor)) return "You are not authorized to start this Action. Check your current session, ownership and module access.";
+  if (expectedState !== undefined && expectedState !== getActionStartState(action)) return "This Action has changed. Close this dialog and refresh before starting again.";
+  if (!["Assigned", "Open", "Rework Required"].includes(action.status)) return "This Action cannot be started in its current status. Refresh to see the latest state.";
+  return "";
+}
+export function startAssignedAction(actionId: string, actor: ActionActor, actionType?: MyActionType, expectedState?: string) {
+  // Reject forged callers and missing/invalid selections before initializing any storage.
+  if (!getAuthenticatedDemoActor(actor.id) || !isActionType(actionType)) return undefined;
+  // Re-read durable state so a stale tab cannot overwrite a newer assignment/start/review.
+  hasLoadedFromStorage = false;
   const action = getActionById(actionId);
-  if (!action || !canEditActionContent(action, actor) || !["Assigned", "Open", "Rework Required"].includes(action.status)) return undefined;
+  if (!action || getActionStartError(action, actor, actionType, expectedState)) return undefined;
+  const user = getAuthenticatedDemoActor(actor.id)!.user;
   return updateActionInternal(actionId, {
-    status: "In Progress",
-    activityHistory: appendActivity(action, createActivity("started", getAdminUser(actor.id)!, `Previous status: ${action.status}`)),
+    status: "In Progress", actionType,
+    activityHistory: appendActivity(action, { ...createActivity("started", user, `Previous status: ${action.status}; Action type: ${getActionTypeLabel(actionType)}`), actionType }),
   });
 }
 
 export function canUndoActionStart(action: MyAction, actor: ActionActor) {
   const started = [...(action.activityHistory ?? [])].reverse().find(event => event.type === "started");
-  return action.status === "In Progress" && getCurrentDemoUser().id === actor.id
+  return action.status === "In Progress" && Boolean(authenticatedActionWorker(action, actor)) && getCurrentDemoUser().id === actor.id
     && canEditActionContent(action, actor) && started?.actorId === actor.id;
 }
 
 export function undoActionStart(actionId: string, actor: ActionActor, draft?: { observation: string; category: string; costSaving?: number }) {
+  if (!getAuthenticatedDemoActor(actor.id)) return undefined;
+  hasLoadedFromStorage = false;
   const action = getActionById(actionId);
   if (!action || !canUndoActionStart(action, actor)) return undefined;
   if (draft?.costSaving !== undefined && (!Number.isFinite(draft.costSaving) || draft.costSaving < 0)) return undefined;
   const events = action.activityHistory ?? [];
   const startIndex = events.findLastIndex(event => event.type === "started");
-  const previous = events[startIndex].remark?.replace("Previous status: ", "");
+  const previous = events[startIndex].remark?.replace("Previous status: ", "").split(";")[0];
   const priorEvent = events.slice(0, startIndex).reverse().find(event => ["assigned", "reassigned", "sent_back", "submitted", "resubmitted"].includes(event.type));
   const status = previous === "Open" || previous === "Assigned" || previous === "Rework Required"
     ? previous : priorEvent?.type === "sent_back" ? "Rework Required" : "Assigned";
   return updateActionInternal(actionId, {
-    status,
+    status, actionType: undefined,
     ...(draft ? { actionTakenDescription: draft.observation, resolutionObservation: draft.observation,
       correctiveActionCategory: draft.category || undefined, costSaving: draft.costSaving } : {}),
-    activityHistory: appendActivity(action, createActivity("start_undone", getAdminUser(actor.id)!, `Start Work undone; returned to ${status}. Saved details and evidence retained.`)),
+    activityHistory: appendActivity(action, { ...createActivity("start_undone", getAdminUser(actor.id)!, `Start Work undone; returned to ${status}. Saved details and evidence retained.`), actionType: action.actionType }),
   });
 }
 
@@ -486,7 +517,7 @@ export function submitActionForReview(
   const revision: MyActionSubmissionRevision = {
     id: submitted.id, number: (action.submissionRevisions?.length ?? 0) + 1, submittedAt: now,
     submittedByUserId: owner.id, submittedByName: owner.name,
-    observation: resolution.observation.trim(), correctiveActionCategory: resolution.correctiveActionCategory,
+    actionType: action.actionType, observation: resolution.observation.trim(), correctiveActionCategory: resolution.correctiveActionCategory,
     costSaving: resolution.costSaving, currency: action.currency ?? "INR",
     evidence: structuredClone(action.evidence), progressEvidence: structuredClone(action.progressEvidence ?? []),
   };
@@ -541,7 +572,7 @@ function reviewSubmissionRevision(action: MyAction, review: MyActionActivity) {
     revisions = [{ id: submitted?.id ?? crypto.randomUUID(), number: 1, submittedAt: action.submittedForReviewAt,
       submittedByUserId: submitted?.actorId, submittedByName: submitted?.actorName,
       observation: action.resolutionObservation ?? action.actionTakenDescription ?? "",
-      correctiveActionCategory: action.correctiveActionCategory, costSaving: action.costSaving, currency: action.currency,
+      actionType: action.actionType, correctiveActionCategory: action.correctiveActionCategory, costSaving: action.costSaving, currency: action.currency,
       evidence: structuredClone(action.evidence), progressEvidence: structuredClone(action.progressEvidence ?? []), legacyCapturedAt: review.createdAt }];
   }
   return revisions.map((revision, index) => index === revisions.length - 1 && !revision.reviewEventId

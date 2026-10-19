@@ -14,7 +14,7 @@ export function authorizeActionCreation(input: ActionCreationContext, existing: 
   const denied = () => { throw new Error("You are not authorized to create this Action or its source is unavailable."); };
   if (!actor || actor.identity.isSuperAdmin) return denied();
   const { user, identity } = actor;
-  if (!["Open", "Assigned", "Awaiting Assignment"].includes(input.status ?? "")) return denied();
+  if (!["Open", "Assigned", "Awaiting Assignment"].includes(input.status ?? "") || input.actionType !== undefined) return denied();
   if ([input.submittedForReviewAt, input.reviewedAt, input.reviewedBy, input.completedAt, input.completedByUserId, input.completedByName, input.closedAt, input.closedByUserId, input.closedBy, input.closureRemark, input.reviewHistory, input.reassignmentHistory, input.submissionRevisions].some(value => value !== undefined)) return denied();
   if (input.assignedByUserId && input.assignedByUserId !== user.id) return denied();
   const organization = DEMO_ORGANIZATION.id;

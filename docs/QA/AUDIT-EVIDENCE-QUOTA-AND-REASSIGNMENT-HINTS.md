@@ -29,6 +29,3 @@ Evidence and logs remain under ignored `test-results/audit-quota-verified/`, `te
 ## Limits
 
 Persistence remains local to the browser. IndexedDB availability and available disk space still govern durable asset writes; failures are reported rather than falling back to unsafe embedded copies. Text-heavy metadata can still exhaust localStorage. Cross-record source linking uses existing compensation, not a backend transaction. No asset garbage collector or cross-device synchronization was introduced. The previously identified Audit status fixture assertions were not altered or skipped.
-
-
-Consolidation note: the execution-type implementation and its mixed acceptance suite are excluded from the consolidated commit. Earlier run counts above describe the original working tree. See OPS-GIT-CONSOLIDATION.md for exact index-snapshot results and retained completed-only coverage.

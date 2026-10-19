@@ -1,3 +1,5 @@
+export type MyActionType = "immediate" | "corrective";
+
 export type MyActionStatus =
   | "Awaiting Assignment"
   | "Assigned"
@@ -36,6 +38,8 @@ export interface MyActionActivity {
   actorName: string;
   createdAt: string;
   remark?: string;
+  /** Selection recorded at this event; absent on historical events. */
+  actionType?: MyActionType;
 }
 
 /** Immutable submission content; reviewEventId refers to canonical Action history. */
@@ -46,6 +50,7 @@ export interface MyActionSubmissionRevision {
   submittedByUserId?: string;
   submittedByName?: string;
   observation: string;
+  actionType?: MyActionType;
   correctiveActionCategory?: string;
   costSaving?: number;
   currency?: string;
@@ -164,6 +169,8 @@ export interface MyAction {
 
   /** Operational classification selected when the action is created. */
   actionCategory?: string;
+  /** Explicit selection made by the owner at Start Action; absent before start and on legacy records. */
+  actionType?: MyActionType;
   /** Resolution classification selected by the responsible member. */
   correctiveActionCategory?: string;
   improvementTheme?: string;

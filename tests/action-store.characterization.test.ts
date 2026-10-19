@@ -1,4 +1,6 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { authenticateDemoFixture } from "./helpers/demo-session";
+import { setDemoRole } from "@/lib/current-user";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { MyAction } from "@/features/five-s/types/my-actions";
 import {
@@ -13,6 +15,8 @@ import {
   submitActionForReview,
   updateAction,
 } from "@/lib/actions/action-store";
+
+afterEach(() => vi.unstubAllGlobals());
 
 const leader = { id: "USR-RUMESH", name: "Rumesh" };
 const responsible = { id: "USR-SIVA-KUMAR", name: "Siva Kumar" };
@@ -73,9 +77,12 @@ describe("authoritative action-store transitions", () => {
   });
 
   it("allows the responsible member, but not another actor, to start", () => {
+    const values = new Map<string,string>([["ops-red-tag-original-reset-v1","done"]]);
+    vi.stubGlobal("window", {localStorage:{getItem:(key:string)=>values.get(key)??null,setItem:(key:string,value:string)=>values.set(key,value),removeItem:(key:string)=>values.delete(key)}});
+    authenticateDemoFixture(); setDemoRole("responsible");
     setActions([action({ status: "Assigned", assignedTo: responsible.name, responsiblePersonId: responsible.id })]);
-    expect(startAssignedAction("ACT-TEST", stranger)).toBeUndefined();
-    expect(startAssignedAction("ACT-TEST", responsible)?.status).toBe("In Progress");
+    expect(startAssignedAction("ACT-TEST", stranger, "corrective")).toBeUndefined();
+    expect(startAssignedAction("ACT-TEST", responsible, "corrective")?.status).toBe("In Progress");
   });
 
   it("stores progress evidence separately and records it in the action timeline", () => {

@@ -37,8 +37,8 @@ describe('shared Action Plan creation and ownership',()=>{
   expect(m.actions.reassignActionOwner(action.id,m.leader,m.member.id,'')).toBeUndefined();
   const reassigned=m.actions.reassignActionOwner(action.id,m.leader,m.member.id,'Shift coverage')!;
   expect(reassigned).toMatchObject({status:'Assigned',responsiblePersonId:m.member.id,sourceId:m.audit.id});
-  expect(m.actions.startAssignedAction(action.id,m.leader)).toBeUndefined();m.identity.setDemoRole('responsible');
-  expect(m.actions.startAssignedAction(action.id,m.member)?.status).toBe('In Progress');
+  expect(m.actions.startAssignedAction(action.id,m.leader,'corrective')).toBeUndefined();m.identity.setDemoRole('responsible');
+  expect(m.actions.startAssignedAction(action.id,m.member,'corrective')?.status).toBe('In Progress');
  });
  it('lists a leader only once when the auditor is also the configured leader',async()=>{
   const m=await setup();const members=m.linked.getEligibleLinkedActionMembers({...m.context,zone:'Zone A'});

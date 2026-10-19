@@ -293,7 +293,7 @@ describe("approved Zone Leader self-assignment", () => {
     expect(m.actions.canEditActionContent(action, m.leader)).toBe(true);
     expect(m.actions.canEditActionContent({ ...action, area: "Zone A" }, m.leader)).toBe(false);
     expect(m.actions.canEditActionContent({ ...action, responsiblePersonId: m.actor.id }, m.leader)).toBe(false);
-    expect(m.actions.startAssignedAction(action.id, m.leader)?.status).toBe("In Progress");
+    expect(m.actions.startAssignedAction(action.id, m.leader, "corrective")?.status).toBe("In Progress");
     m.actions.addActionEvidence(action.id, evidence("LEADER-AFTER"), m.leader);
     expect(m.actions.submitActionForReview(action.id, m.leader, { observation: "Own zone work", correctiveActionCategory: "Other", costSaving: 0 })?.status).toMatch(/Pending/);
     expect(m.actions.closeReviewedAction(action.id, m.leader)).toBeUndefined();
@@ -463,7 +463,7 @@ describe("Action asset references in Red Tag disposition", () => {
     const action = m.actions.createAction({ title: "Complete disposition", description: "Repair", source: "Red Tag", sourceModule: "redTag", sourceId: tag.id, sourceTitle: tag.tagNumber, plant: tag.plant, department: tag.department!, area: tag.zone, assignedTo: m.actor.name, responsiblePersonId: m.actor.id, responsiblePersonName: m.actor.name, status: "Assigned", priority: "Medium", dueDate: "2030-12-20", createdByUserId: m.leader.id, createdByName: m.leader.name });
     expect(m.tags.setRedTagHandlingMode(tag.id, "linked_action", m.leader)).toBeDefined();
     expect(m.tags.linkRedTagAction(tag.id, action.id, m.leader)).toBeDefined();
-    m.identity.setDemoRole("responsible"); m.actions.startAssignedAction(action.id, m.actor);
+    m.identity.setDemoRole("responsible"); m.actions.startAssignedAction(action.id, m.actor, "corrective");
     m.actions.addActionEvidence(action.id, { id: "BLOB-EVIDENCE", name: "completion.jpg", type: "image", storageKey: "action-evidence-test", mimeType: "image/jpeg", uploadedAt: "2026-10-18T12:00:00Z", uploadedBy: m.actor.name }, m.actor);
     m.actions.submitActionForReview(action.id, m.actor, { observation: "Repair complete", correctiveActionCategory: "Design / Equipment Modification", costSaving: 0 });
     m.identity.setDemoRole("leader"); expect(m.actions.closeReviewedAction(action.id, m.leader)).toBeDefined();
