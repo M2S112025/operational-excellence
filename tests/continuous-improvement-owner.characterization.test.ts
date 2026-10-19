@@ -52,7 +52,8 @@ describe("Team Feedback #31 — canonical Continuous Improvement Owner", () => {
     expect(gembaDialog).toContain("selectableImprovementOwners");
     expect(gembaDialog).toContain('Field label="Owner *"');
     expect(gembaDialog).toContain("ownerId,");
-    expect(gembaDialog).toContain("linkGembaObservationToImprovement");
+    expect(gembaDialog).toContain("createImprovementFromGemba");
+    expect(readFileSync("lib/gemba/gemba-integration.ts", "utf8")).toContain("linkGembaObservationToImprovement(walkId,observationId,item.id");
   });
 
   it("creates with a distinct owner ID and preserves proposed-by identity", async () => {

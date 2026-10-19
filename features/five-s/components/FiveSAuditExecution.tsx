@@ -1,4 +1,8 @@
 "use client";
+import { useActionEvidenceUrl } from "@/lib/actions/use-action-evidence-url";
+import { persistAuditEvidence } from "@/lib/five-s/audit-evidence-storage";
+import { CanonicalLinkedRecords } from "@/components/ops/ops-linked-records";
+
 import { getAuditScoringValues, calculateAuditSectionTotals, complianceResponseForScore, questionComplianceResponse, DEFAULT_AUDIT_SCORING, type AuditScoringValues, type ComplianceResponse } from "@/lib/five-s/scoring-policy";
 import { useAuditScrollFocus } from "@/components/ops/use-audit-scroll-focus";
 import { useAuditNavigationFocus } from "@/components/ops/use-audit-navigation-focus";
@@ -83,8 +87,10 @@ import { referenceFields } from "@/lib/five-s/reference-guides";
 import { readEvidenceFile } from "@/lib/evidence-files";
 import { MAX_EVIDENCE_IMAGES } from "@/lib/evidence-images";
 
-import { createAction, getActionById, updateAction, changeActionPriority, useActionStore } from "@/lib/actions/action-store";
-import { canCompleteFiveSAudit, completeFiveSAudit, getLinkedActionsForAudit, updateFiveSAudit } from "@/lib/five-s/audit-store";
+import { CreateLinkedActionDialog, type LinkedActionContext } from "@/features/actions/create-linked-action-dialog";
+import type { MyAction } from "@/features/five-s/types/my-actions";
+import { getActionById, updateAction, changeActionPriority, useActionStore } from "@/lib/actions/action-store";
+import { compactAuditEvidenceStorage, linkAuditQuestionAction, canCompleteFiveSAudit, completeFiveSAudit, getLinkedActionsForAudit, updateFiveSAudit } from "@/lib/five-s/audit-store";
 import { AUDIT_EXECUTION_LIFECYCLE_STAGES } from "@/lib/five-s/lifecycle-status";
 import { useCurrentUser } from "@/lib/current-user";
 import {
@@ -443,6 +449,8 @@ function FiveSAuditExecution({
     previewEvidence,
     setPreviewEvidence,
   ] = useState<FiveSEvidence | null>(null);
+
+  const previewEvidenceUrl=useActionEvidenceUrl(previewEvidence ? {url:previewEvidence.dataUrl,storageKey:previewEvidence.storageKey} : null);
 
   const [previewZoom, setPreviewZoom] =
     useState(1);
@@ -851,7 +859,7 @@ function FiveSAuditExecution({
         actionCategory: existingAction.actionCategory ?? "",
         priority: existingAction.priority,
         dueDate: existingAction.dueDate,
-        evidence: (existingAction.issueEvidence ?? []).map((evidence) => ({ id: evidence.id, name: evidence.name, type: evidence.type, size: 0, dataUrl: evidence.url ?? "", uploadedAt: evidence.uploadedAt, uploadedBy: evidence.uploadedBy })),
+        evidence: (existingAction.issueEvidence ?? []).map((evidence) => ({ id: evidence.id, name: evidence.name, type: evidence.type, size: 0, dataUrl: evidence.url ?? "", storageKey: evidence.storageKey, uploadedAt: evidence.uploadedAt, uploadedBy: evidence.uploadedBy })),
       });
     }
     setActiveActionQuestion(
@@ -859,6 +867,30 @@ function FiveSAuditExecution({
     );
 
     setShowActionDialog(true);
+  }
+
+  function renderAuditActionDialog() {
+    if (!showActionDialog || !activeActionQuestion) return null;
+    const state = questionStates[activeActionQuestion.id];
+    if (!state) return null;
+    if (state.actionId) return null;
+    const section = sections.find(item=>item.questions.some(question=>question.id===activeActionQuestion.id));
+    const context: LinkedActionContext = {
+      source:"Audit",sourceModule: "audit",sourceId: audit.id,sourceTitle: audit.title,sourceObservationId: activeActionQuestion.id,
+      sourceObservation:state.observation.trim() || activeActionQuestion.question,
+      title:state.actionTitle.trim() || state.observation.trim() || `Corrective action required for ${section?.category ?? "Audit"}`,
+      description:state.actionDescription.trim() || state.observation.trim() || activeActionQuestion.question,
+      plant:audit.plant,zone:audit.area,location:audit.department,
+      defaultResponsibleId:getFiveSZoneConfiguration(audit.area)?.leaderId,defaultPriority:state.priority,defaultDueDate:state.dueDate,
+      requiresEvidence:(state.complianceResponse===0 || state.complianceResponse===1) && (activeActionQuestion.questionSource!=="custom" || Boolean(activeActionQuestion.requireEvidenceOnNonCompliance)),
+      evidence:state.evidence.map(item=>({id:item.id,name:item.name,type:item.type,evidenceType:"finding",url:item.dataUrl || undefined,storageKey:item.storageKey,uploadedAt:item.uploadedAt,uploadedBy:item.uploadedBy})),
+      auditQuestion:{auditId:audit.id,questionId:activeActionQuestion.id,questionText:activeActionQuestion.question,questionSource:activeActionQuestion.questionSource ?? "standard",customQuestionId:activeActionQuestion.customQuestionId,sectionId:section?.category,category:section?.category},
+    };
+    return <CreateLinkedActionDialog key={`audit-${activeActionQuestion.id}`} open={showActionDialog} onOpenChange={setShowActionDialog} context={context} onCreated={(action: MyAction)=>{
+      if (!linkAuditQuestionAction(audit.id,activeActionQuestion.id,action.id,currentUser)) return false;
+      updateQuestionState(activeActionQuestion.id,{actionRequired:true,actionId:action.id,actionTitle:action.title,actionDescription:action.description,actionCategory:action.actionCategory ?? "",priority:action.priority,dueDate:action.dueDate,responsiblePersonId:action.responsiblePersonId ?? "",assignedTo:action.assignedTo,evidence:(action.issueEvidence ?? []).map(item=>({id:item.id,name:item.name,type:item.type,size:0,dataUrl:item.url ?? "",storageKey:item.storageKey,uploadedAt:item.uploadedAt,uploadedBy:item.uploadedBy}))});
+      return true;
+    }} />;
   }
 
   function closeActionDialog() {
@@ -873,6 +905,7 @@ function FiveSAuditExecution({
   }
 
   async function handleCreateAction() {
+    try {
     if (
       !activeActionQuestion
     ) {
@@ -943,93 +976,19 @@ function FiveSAuditExecution({
         description,
         actionCategory: state.actionCategory,
         originalFinding: state.observation,
-        issueEvidence: state.evidence.map((evidence) => ({ id: evidence.id, actionId: state.actionId, evidenceType: "finding" as const, name: evidence.name, type: evidence.type, uploadedAt: evidence.uploadedAt, uploadedBy: evidence.uploadedBy, url: evidence.dataUrl })),
+        issueEvidence: state.evidence.map((evidence) => ({ id: evidence.id, actionId: state.actionId, evidenceType: "finding" as const, name: evidence.name, type: evidence.type, uploadedAt: evidence.uploadedAt, uploadedBy: evidence.uploadedBy, url: evidence.dataUrl || undefined, storageKey: evidence.storageKey })),
       }, currentUser);
       if (!saved) { setActionSaving(false); setUiError("Action setup could not be saved. Check your permissions and browser storage, then retry."); return; }
       window.setTimeout(() => { setUiError(""); setActionSaving(false); setShowActionDialog(false); setActiveActionQuestion(null); }, 220);
       return;
     }
 
-    const action =
-      createAction({
-        auditId: audit.id,
-        questionId: question.id,
-        questionText: question.question,
-        questionSource: question.questionSource ?? "standard",
-        customQuestionId: question.customQuestionId,
-        sectionId: section.category,
-        zoneId: audit.area,
+    setActionSaving(false);
 
-        title,
-        description,
-
-        source: "5S Audit",
-        sourceModule: "audit",
-        sourceId: audit.id,
-        sourceTitle: audit.title,
-        sourceLabel: "Audit",
-        sourceLocation: `${audit.plant} · ${audit.area}`,
-        sourceObservationId: question.id,
-        sourceObservation: state.observation.trim() || question.question,
-
-        category:
-          section.category,
-
-        plant:
-          audit.plant,
-
-        department:
-          audit.department,
-
-        area:
-          audit.area,
-
-        assignedTo: "",
-        actionCategory: state.actionCategory,
-        zoneLeaderId: getFiveSZoneConfiguration(audit.area)?.leaderId,
-        zoneLeaderName: getFiveSZoneConfiguration(audit.area)?.leader,
-        createdByUserId: currentUser.id,
-        createdByName: currentUser.name,
-
-        auditor:
-          audit.auditor,
-
-        status: "Awaiting Assignment",
-
-        priority:
-          state.priority,
-
-        dueDate:
-          state.dueDate,
-
-        issueEvidence: state.evidence.map(
-          (evidence) => ({
-            id: evidence.id,
-            evidenceType: "finding" as const,
-            name: evidence.name,
-            type: evidence.type,
-            uploadedAt: evidence.uploadedAt,
-            uploadedBy: evidence.uploadedBy,
-            url: evidence.dataUrl,
-          })
-        ),
-      });
-
-    updateQuestionState(
-      question.id,
-      {
-        actionRequired: true,
-        actionId: action.id,
-      }
-    );
-
-    window.setTimeout(() => {
-      setActionSaving(false);
-      setShowActionDialog(false);
-      setActiveActionQuestion(
-        null
-      );
-    }, 250);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to save this record. Please retry.";
+      setUiError(message); setActionSaving(false);
+    }
   }
 
   /**
@@ -1048,7 +1007,7 @@ function FiveSAuditExecution({
       const { dataUrl, size } = await readEvidenceFile(file);
 
       const evidence:
-        FiveSEvidence = {
+        FiveSEvidence = await persistAuditEvidence({
         id: `EV-${Date.now()}-${Math.random()
           .toString(36)
           .slice(2, 8)}`,
@@ -1072,7 +1031,8 @@ function FiveSAuditExecution({
 
         uploadedBy:
           currentUser.name,
-      };
+      });
+      await compactAuditEvidenceStorage();
 
       const nextEvidence = [
         ...current,
@@ -1107,7 +1067,8 @@ function FiveSAuditExecution({
                     item.uploadedAt,
                   uploadedBy:
                     item.uploadedBy,
-                  url: item.dataUrl,
+                  url: item.dataUrl || undefined,
+                  storageKey: item.storageKey,
                 })
               ),
           },
@@ -1181,7 +1142,8 @@ function FiveSAuditExecution({
                   item.uploadedAt,
                 uploadedBy:
                   item.uploadedBy,
-                url: item.dataUrl,
+                url: item.dataUrl || undefined,
+                  storageKey: item.storageKey,
               })
             ),
         },
@@ -1505,6 +1467,7 @@ function FiveSAuditExecution({
 
         <div className="min-w-0 flex-1 px-0 py-5 md:overflow-y-auto md:px-6 lg:px-8">
           <div className="w-full max-w-none space-y-5">
+            <CanonicalLinkedRecords currentRecord={{module:"audit",recordId:audit.id}} />
             <div className="grid min-w-0 gap-4 sm:grid-cols-2 2xl:grid-cols-4">
               <Card>
                 <CardContent className="p-4">
@@ -1674,14 +1637,14 @@ function FiveSAuditExecution({
                               }
                               className="rounded-lg border p-3"
                             >
-                              <div className="flex items-start justify-between gap-3">
-                                <p className="text-sm font-medium">
+                              <div className="flex min-w-0 flex-col items-start gap-3 sm:flex-row sm:justify-between">
+                                <p className="min-w-0 flex-1 break-words text-sm font-medium">
                                   {
                                     auditQuestionText(language, section.category, reviewQuestionIndex, question.question)
                                   }
                                 </p>
 
-                                <div className="flex shrink-0 items-center gap-2">
+                                <div className="flex max-w-full flex-wrap items-center gap-2 sm:shrink-0">
                                   {state?.score !==
                                     null &&
                                     state?.score !==
@@ -1732,9 +1695,7 @@ function FiveSAuditExecution({
           </div>
         </div>
 
-        {showActionDialog &&
-          activeActionQuestion && (
-            <ActionDialog
+        {showActionDialog && activeActionQuestion && questionStates[activeActionQuestion.id]?.actionId ? (<ActionDialog
             error={uiError}
               question={
                 activeActionQuestion
@@ -1762,8 +1723,7 @@ function FiveSAuditExecution({
               onEvidenceRemove={(evidenceId) => removeEvidence(activeActionQuestion.id, evidenceId)}
               onEvidencePreview={(evidence) => { setPreviewZoom(1); setPreviewEvidence(evidence); }}
               saving={actionSaving}
-            />
-          )}
+            />) : renderAuditActionDialog()}
         <CompleteAuditDialog
         error={uiError}
           open={showCompleteConfirmation}
@@ -2364,13 +2324,7 @@ function FiveSAuditExecution({
                                             aria-label={`Preview ${evidence.name}`}
                                           >
                                             {evidence.type === "image" ? (
-                                              // Evidence is a local data URL; framework image optimization is not applicable.
-                                              // eslint-disable-next-line @next/next/no-img-element
-                                              <img
-                                                src={evidence.dataUrl}
-                                                alt=""
-                                                className="size-11 shrink-0 rounded-md border border-border/70 object-cover"
-                                              />
+                                              <AuditEvidenceThumbnail evidence={evidence} />
                                             ) : (
                                               <span className="flex size-11 shrink-0 items-center justify-center rounded-md border border-border/70 bg-muted/50 text-muted-foreground">
                                                 <FileText className="size-5" />
@@ -2446,38 +2400,35 @@ function FiveSAuditExecution({
 
       {/* ACTION DIALOG */}
 
-      {showActionDialog &&
-        activeActionQuestion && (
-          <ActionDialog
+      {showActionDialog && activeActionQuestion && questionStates[activeActionQuestion.id]?.actionId ? (<ActionDialog
             error={uiError}
-            question={
-              activeActionQuestion
-            }
-            zone={audit.area}
-            state={
-              questionStates[
-                activeActionQuestion.id
-              ]
-            }
-            onClose={
-              closeActionDialog
-            }
-            onCreate={
-              handleCreateAction
-            }
-            onUpdate={(updates) =>
-              updateQuestionState(
-                activeActionQuestion.id,
-                updates
-              )
-            }
-            onEvidenceUpload={(event) => handleEvidenceUpload(activeActionQuestion.id, event)}
-            onEvidenceFile={(file) => createEvidenceFromFile(activeActionQuestion.id, file)}
-            onEvidenceRemove={(evidenceId) => removeEvidence(activeActionQuestion.id, evidenceId)}
-            onEvidencePreview={(evidence) => { setPreviewZoom(1); setPreviewEvidence(evidence); }}
-            saving={actionSaving}
-          />
-        )}
+              question={
+                activeActionQuestion
+              }
+              zone={audit.area}
+              state={
+                questionStates[
+                  activeActionQuestion.id
+                ]
+              }
+              onClose={
+                closeActionDialog
+              }
+              onCreate={
+                handleCreateAction
+              }
+              onUpdate={(updates) =>
+                updateQuestionState(
+                  activeActionQuestion.id,
+                  updates
+                )
+              }
+              onEvidenceUpload={(event) => handleEvidenceUpload(activeActionQuestion.id, event)}
+              onEvidenceFile={(file) => createEvidenceFromFile(activeActionQuestion.id, file)}
+              onEvidenceRemove={(evidenceId) => removeEvidence(activeActionQuestion.id, evidenceId)}
+              onEvidencePreview={(evidence) => { setPreviewZoom(1); setPreviewEvidence(evidence); }}
+              saving={actionSaving}
+            />) : renderAuditActionDialog()}
 
       <Dialog
         open={previewEvidence !== null}
@@ -2524,14 +2475,14 @@ function FiveSAuditExecution({
                   // Preserve the source file's natural aspect ratio in the viewer.
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={previewEvidence.dataUrl}
+                    src={previewEvidenceUrl}
                     alt={previewEvidence.name}
                     className="max-h-full max-w-full object-contain transition-transform duration-150"
                     style={{ transform: `scale(${previewZoom})` }}
                   />
                 ) : isPdfEvidence(previewEvidence) ? (
                   <iframe
-                    src={previewEvidence.dataUrl}
+                    src={previewEvidenceUrl}
                     title={`Preview ${previewEvidence.name}`}
                     className="h-full min-h-[60vh] w-full max-w-6xl rounded-md border-0 bg-white"
                   />
@@ -2546,7 +2497,7 @@ function FiveSAuditExecution({
                     </p>
                     <Button
                       nativeButton={false}
-                      render={<a href={previewEvidence.dataUrl} target="_blank" rel="noreferrer" />}
+                      render={<a href={previewEvidenceUrl} target="_blank" rel="noreferrer" />}
                       size="sm"
                       variant="secondary"
                       className="mt-5"
@@ -2614,7 +2565,7 @@ function FiveSAuditExecution({
 
                   <Button
                     nativeButton={false}
-                    render={<a href={previewEvidence.dataUrl} target="_blank" rel="noreferrer" />}
+                    render={<a href={previewEvidenceUrl} target="_blank" rel="noreferrer" />}
                     variant="ghost"
                     size="sm"
                   >
@@ -2870,7 +2821,7 @@ function ActionDialog({
                   <OpsCameraCapture fileNamePrefix="audit-action-evidence" onCapture={onEvidenceFile} trigger={(openCamera) => <Button type="button" size="sm" variant="outline" className="order-1 flex-1 sm:order-2 sm:flex-none" onClick={openCamera}><Camera className="mr-1.5 size-3.5" />Take Photo</Button>} />
                 </div>}
               </div>
-              {state.evidence.length > 0 ? <div className="mt-3 grid gap-2 sm:grid-cols-2">{state.evidence.map((evidence) => <div key={evidence.id} className="flex min-w-0 items-center gap-2 rounded-lg border bg-background p-2"><button type="button" className="flex min-w-0 flex-1 items-center gap-2 text-left" onClick={() => onEvidencePreview(evidence)}>{evidence.type === "image" ? <img src={evidence.dataUrl} alt="" className="size-11 shrink-0 rounded object-cover" /> : <span className="grid size-11 shrink-0 place-items-center rounded bg-muted"><FileText className="size-5" /></span>}<span className="min-w-0"><span className="block truncate text-xs font-medium">{evidence.name}</span><span className="text-[10px] text-muted-foreground">{getEvidenceFileLabel(evidence)} · {formatEvidenceSize(evidence.size)}</span></span></button>{canEditCreatedAction && <Button type="button" size="icon-sm" variant="ghost" onClick={() => onEvidenceRemove(evidence.id)} aria-label={`Remove ${evidence.name}`}><Trash2 className="size-3.5" /></Button>}</div>)}</div> : requiresEvidence && <p className="mt-3 text-[11px] font-medium text-destructive">At least one evidence attachment is required for Non Compliance or Partial Compliance.</p>}
+              {state.evidence.length > 0 ? <div className="mt-3 grid gap-2 sm:grid-cols-2">{state.evidence.map((evidence) => <div key={evidence.id} className="flex min-w-0 items-center gap-2 rounded-lg border bg-background p-2"><button type="button" className="flex min-w-0 flex-1 items-center gap-2 text-left" onClick={() => onEvidencePreview(evidence)}>{evidence.type === "image" ? <AuditEvidenceThumbnail evidence={evidence} /> : <span className="grid size-11 shrink-0 place-items-center rounded bg-muted"><FileText className="size-5" /></span>}<span className="min-w-0"><span className="block truncate text-xs font-medium">{evidence.name}</span><span className="text-[10px] text-muted-foreground">{getEvidenceFileLabel(evidence)} · {formatEvidenceSize(evidence.size)}</span></span></button>{canEditCreatedAction && <Button type="button" size="icon-sm" variant="ghost" onClick={() => onEvidenceRemove(evidence.id)} aria-label={`Remove ${evidence.name}`}><Trash2 className="size-3.5" /></Button>}</div>)}</div> : requiresEvidence && <p className="mt-3 text-[11px] font-medium text-destructive">At least one evidence attachment is required for Non Compliance or Partial Compliance.</p>}
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
@@ -3008,3 +2959,10 @@ function ActionDialog({
 }
 
 export default FiveSAuditExecution;
+
+function AuditEvidenceThumbnail({evidence}:{evidence:FiveSEvidence}) {
+  const url=useActionEvidenceUrl({url:evidence.dataUrl,storageKey:evidence.storageKey});
+  // Local evidence is resolved to a data/blob URL; framework optimization is not applicable.
+  // eslint-disable-next-line @next/next/no-img-element
+  return url ? <img src={url} alt="" className="size-11 shrink-0 rounded-md border border-border/70 object-cover" /> : <span className="size-11 shrink-0 rounded bg-muted" aria-label="Loading evidence" />;
+}

@@ -56,7 +56,7 @@ describe("Team Feedback #15/#33/#35 — evidence capture consistency", () => {
       expect(moduleSource).toContain("Remove");
     }
     expect(redTag).toContain("Photo Identification");
-    expect(redTag).toContain('setImageUrl(undefined)');
+    expect(redTag).toContain('setPhotos(photos.filter(item => item.id !== photo.id))');
     expect(action).toContain("onPreview={setPreview}");
   });
 
@@ -90,7 +90,7 @@ describe("Team Feedback #15/#33/#35 — evidence capture consistency", () => {
     expect(redFlag).toContain('aria-label={`View ${item.name}`}');
     expect(redFlag).toContain('aria-label={`Replace ${item.name}`}');
     expect(ci).toContain('aria-label={`Remove ${item.name}`}');
-    expect(redTag).toContain("flex flex-wrap items-center gap-2");
+    expect(redTag).toContain("flex flex-wrap gap-2");
     expect(action).toContain("grid grid-cols-2 gap-2");
   });
 

@@ -1,3 +1,4 @@
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { MyAction } from "@/features/five-s/types/my-actions";
 const leader = { id: "USR-RUMESH", name: "Rumesh" };
@@ -9,7 +10,7 @@ function fixture(overrides: Partial<MyAction> = {}): MyAction {
 async function setup(initial = fixture()) {
   vi.resetModules(); const values = new Map<string, string>();
   const localStorage = { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => { values.set(key, value); }, removeItem: (key: string) => { values.delete(key); } };
-  vi.stubGlobal("window", { localStorage }); const store = await import("@/lib/actions/action-store"); store.getActions(); store.setActions([initial]); return { store, localStorage };
+  vi.stubGlobal("window", { localStorage }); authenticateDemoFixture(); const store = await import("@/lib/actions/action-store"); store.getActions(); store.setActions([initial]); return { store, localStorage };
 }
 async function submit(store: Awaited<ReturnType<typeof setup>>["store"]) {
   store.addActionEvidence("FINAL", { id: "AFTER", name: "after.jpg", type: "image", uploadedAt: "2030-10-21", uploadedBy: owner.name, url: "data:image/jpeg;base64,after" }, owner);

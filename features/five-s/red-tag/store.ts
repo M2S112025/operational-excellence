@@ -1,5 +1,9 @@
 "use client";
 
+import { registerActionCreationSource } from "@/lib/actions/action-source-access";
+
+import { allocateModuleRecordId, registerRecordCreationStore, previewModuleRecordId } from "@/lib/records/module-records";
+
 import { resetImportedRedTagData } from "@/lib/five-s/red-tag-reset";
 
 import { useSyncExternalStore } from "react";
@@ -7,9 +11,14 @@ import { getCurrentDemoUser, type DemoUser } from "@/lib/current-user";
 import { getAdminUser } from "@/features/five-s/administration/store";
 import type { MyAction, MyActionStatus } from "@/features/five-s/types/my-actions";
 import { RED_TAG_DECISIONS, RED_TAG_REASON_GROUPS, type RedTag, type RedTagDecision, type RedTagDisposition, type RedTagEvidence, type RedTagHistoryEvent, type RedTagStatus } from "./types";
-import { canCreateRedTagInZone, canManageRedTag, canReviewRedTag, canLinkRedTagAction, getRedTagSessionActor, getRedTagZoneLeader, getRedTagDepartments } from "./access";
+import { canCreateRedTag, canAccessRedTagZone, canCreateRedTagInZone, canManageRedTag, canReviewRedTag, canLinkRedTagAction, getRedTagSessionActor, getRedTagZoneLeader, getRedTagDepartments } from "./access";
 import { getRedTagActionIds, getLinkedRedTagActions } from "./workflow";
 import { getActionById, getActions } from "@/lib/actions/action-store";
+import { MAX_EVIDENCE_IMAGES } from "@/lib/evidence-images";
+import { getOrganizationAccess } from "@/lib/module-entitlements";
+import { hasPermission } from "@/features/five-s/administration/permissions";
+import { DEMO_ORGANIZATION } from "@/lib/organizations";
+import { getOrganizationPlant, getOrganizationZone } from "@/lib/organization-store";
 import { safeSetStorage, STORAGE_FULL_MESSAGE } from "@/lib/browser-storage";
 
 export const RED_TAG_STORAGE_KEY = "five-s-red-tags-v1";
@@ -78,7 +87,7 @@ export function normalizeRedTag(tag: RedTag): RedTag {
   const legacyDispositionCanClose = getRedTagActionIds(tag).length <= 1 && tag.decisionRecord?.type !== "keep" && normalizedStatus === "Awaiting Verification" && hasRequiredDispositionSetup && Boolean(
     tag.imageUrl?.trim() && afterEvidence.length && tag.dispositionDetails?.completedAt &&
     tag.dispositionDetails.completionNotes?.trim() && tag.dispositionDetails.responsibleConfirmed,
-  );
+  ) && allLinkedActionsComplete(tag);
   const legacyDispositionCanResume = normalizedStatus === "Awaiting Verification" && !legacyDispositionCanClose && hasRequiredDispositionSetup && isPhysicalDisposition;
   return {
     ...tag,
@@ -118,22 +127,21 @@ export const RED_TAG_VALID_TRANSITIONS: Readonly<Record<RedTagStatus, readonly R
 function canTransition(from: RedTagStatus, to: RedTagStatus) {
   return RED_TAG_VALID_TRANSITIONS[from].includes(to);
 }
-export function getNextTagNumber(zoneCode = "ZA") {
+export function getNextTagNumber() {
   load();
-  const prefix = `RT-EGM-${zoneCode}-`;
-  const highest = tags.reduce((max, tag) => tag.tagNumber.startsWith(prefix) ? Math.max(max, Number(tag.tagNumber.slice(-3)) || 0) : max, 0);
-  return `${prefix}${String(highest + 1).padStart(3, "0")}`;
+  return previewModuleRecordId("redTag", tags.map(tag => tag.id));
 }
+
 function hasCreationWorkflowInput(input: Partial<RedTag>) {
   return [input.actionId, input.actionIds, input.review, input.decisionRecord, input.handlingMode, input.dispositionDetails,
-    input.keepConfirmation, input.closure, input.closedAt, input.afterEvidence, input.verifiedAt, input.removedAt].some(value => value !== undefined);
+    input.keepConfirmation, input.closure, input.closedAt, input.afterEvidence, input.verifiedAt, input.removedAt].some(value => value !== undefined) || ("organizationId" in input && input.organizationId !== DEMO_ORGANIZATION.id);
 }
 
 function buildRedTag<T extends Omit<RedTag, "id" | "tagNumber" | "status" | "createdAt" | "history">>(input: T, actor: { id: string; name: string }): RedTag & T {
-  const zoneCode = input.zone.replace("Zone ", "Z").toUpperCase();
-  const tagNumber = getNextTagNumber(zoneCode);
+  load();
+  const tagNumber = allocateModuleRecordId("redTag", tags.map(tag => tag.id));
   const createdAt = new Date().toISOString();
-  return { ...input, createdById: actor.id, createdByName: actor.name, id: tagNumber, tagNumber, status: "Open", createdAt,
+  return { ...input, plant: getOrganizationPlant(input.plant)!.name, zone: getOrganizationZone(input.zone)!.name, createdById: actor.id, createdByName: actor.name, id: tagNumber, tagNumber, status: "Open", createdAt,
     history: [history("created", "Red Tag created", actor, createdAt)],
   } as RedTag & T;
 }
@@ -153,6 +161,7 @@ function validRedTagCreation(input: CreateRedTagV2Input, user: DemoUser) {
   const actor = getRedTagSessionActor(user.id);
   if (!actor || !canCreateRedTagInZone(actor, input.plant, input.zone) || hasCreationWorkflowInput(input)) return undefined;
   if (!input.itemName?.trim() || !input.remarks?.trim() || !input.department?.trim() || !input.imageUrl?.trim()) return undefined;
+  if (input.identificationEvidence && (!input.identificationEvidence.length || input.identificationEvidence.length > MAX_EVIDENCE_IMAGES || input.identificationEvidence[0].url !== input.imageUrl || input.identificationEvidence.some(item => !item.url?.trim()) || new Set(input.identificationEvidence.map(item => item.id)).size !== input.identificationEvidence.length)) return undefined;
   if (!getRedTagDepartments(input.plant).includes(input.department.trim())) return undefined;
   if (input.reason === "Free Text" && !input.customReason?.trim()) return undefined;
   if (input.reasonCategory && !RED_TAG_REASON_GROUPS[input.reasonCategory].includes(input.reason as never)) return undefined;
@@ -171,7 +180,7 @@ export function createRedTagV2(input: CreateRedTagV2Input, user: DemoUser) {
 export function createAndSubmitRedTagV2(input: CreateRedTagV2Input, user: DemoUser, reviewer: Pick<DemoUser, "id" | "name">) {
   const actor = validRedTagCreation(input, user);
   const leader = getRedTagZoneLeader(input.plant, input.zone);
-  if (!actor || !leader || reviewer.id !== leader.id) return undefined;
+  if (!actor || !leader || reviewer.id !== leader.id || leader.id === actor.id) return undefined;
   const draft = buildRedTag(input, actor);
   const tag: RedTag = { ...draft, status: "Under Review", review: { reviewerId: leader.id, reviewerName: leader.name, submittedAt: draft.createdAt },
     history: [...draft.history, history("review_submitted", `Submitted for review to ${leader.name}`, actor, draft.createdAt)] };
@@ -232,7 +241,7 @@ export function submitRedTagForReview(id: string, input: SubmitRedTagForReviewIn
   if (!tag || !canTransition(tag.status, "Under Review") || !input.reviewerId || !input.reviewerName.trim()) return undefined;
   const user = getRedTagSessionActor(actor.id);
   const leader = getRedTagZoneLeader(tag.plant, tag.zone);
-  if (!user || !canCreateRedTagInZone(user, tag.plant, tag.zone) || !leader || input.reviewerId !== leader.id) return undefined;
+  if (!user || !canCreateRedTag(user) || !getOrganizationAccess().redTag || !canAccessRedTagZone(user, tag.plant, tag.zone) || !leader || input.reviewerId !== leader.id || leader.id === tag.createdById || !(hasPermission(leader, "red_tag.manage") || hasPermission(leader, "actions.review"))) return undefined;
   input = { ...input, reviewerName: leader.name };
   const now = new Date().toISOString();
   return updateTag(id, (current) => ({
@@ -281,7 +290,8 @@ export function amendRedTagDecision(id: string, input: RecordRedTagDecisionInput
   if (!tag || !canAmendRedTagDecision(tag, actor) || tag.decisionRecord?.decidedAt !== expectedDecisionAt
     || !RED_TAG_DECISIONS.includes(input.decision) || input.decision === "keep") return undefined;
   const comments = input.comments?.trim() || undefined;
-  if (tag.decisionRecord.type === input.decision && tag.decisionRecord.comments === comments) return undefined;
+  // An authorized unchanged edit succeeds without a write or duplicate history event.
+  if (tag.decisionRecord.type === input.decision && tag.decisionRecord.comments === comments) return tag;
   const user = getRedTagSessionActor(actor.id)!;
   const now = new Date().toISOString();
   return updateTag(id, current => ({ ...current, handlingMode: undefined,
@@ -343,7 +353,7 @@ export function completeRedTagDisposition(id: string, evidenceOrInput: RedTagEvi
   if (!tag.dispositionDetails.responsiblePersonId || !tag.dispositionDetails.responsiblePersonName.trim() || !tag.dispositionDetails.targetDate || !tag.dispositionDetails.executionNotes?.trim()) return undefined;
   const linkedIds = getRedTagActionIds(tag);
   const linked = getLinkedRedTagActions(tag, getActions());
-  if (linkedIds.some(actionId => !linked.some(action => action.id === actionId)) || linked.some(action => action.status !== "Completed")) return undefined;
+  if ((tag.handlingMode === "linked_action" && !linked.length) || linkedIds.some(actionId => !linked.some(action => action.id === actionId)) || linked.some(action => action.status !== "Completed")) return undefined;
   const input = Array.isArray(evidenceOrInput) ? { evidence: evidenceOrInput } : evidenceOrInput;
   if (!input.evidence.length || !input.completionNotes?.trim() || input.responsibleConfirmed !== true) return undefined;
   const now = new Date().toISOString();
@@ -371,8 +381,11 @@ export interface VerifyRedTagDispositionInput {
 
 export function verifyRedTagDisposition(id: string, input: VerifyRedTagDispositionInput, actor: DemoUser) {
   const tag = getRedTag(id);
+  const user = getRedTagSessionActor(actor.id);
+  if (!tag || tag.createdById === actor.id || !user || !canManageRedTag(tag, user)) return undefined;
+  actor = { ...actor, name: user.name };
   const readyForVerification = tag?.decisionRecord?.type === "keep" ? Boolean(tag.keepConfirmation) : Boolean(tag?.dispositionDetails?.completedAt);
-  if (!tag || tag.status !== "Awaiting Verification" || !readyForVerification || !input.details.trim()) return undefined;
+  if (!allLinkedActionsComplete(tag) || tag.decisionRecord?.type === "further_evaluation" || tag.status !== "Awaiting Verification" || !readyForVerification || !input.details.trim()) return undefined;
   const afterEvidence = [...(tag.afterEvidence ?? []), ...(input.evidence ?? [])];
   if (input.passed && (!tag.imageUrl?.trim() || !afterEvidence.length)) return undefined;
   const now = new Date().toISOString();
@@ -422,11 +435,14 @@ export function updateFurtherEvaluationDecision(id: string, decision: Exclude<Re
 function allLinkedActionsComplete(tag: RedTag) {
   const ids = getRedTagActionIds(tag);
   const linked = getLinkedRedTagActions(tag, getActions());
-  return ids.every(id => linked.some(action => action.id === id)) && linked.every(action => action.status === "Completed");
+  return (tag.handlingMode !== "linked_action" || linked.length > 0) && ids.every(id => linked.some(action => action.id === id)) && linked.every(action => action.status === "Completed");
 }
 
 export function closeRedTag(id: string, actor: DemoUser) {
   const tag = getRedTag(id);
+  const user = getRedTagSessionActor(actor.id);
+  if (!tag || !user || !canManageRedTag(tag, user)) return undefined;
+  actor = { ...actor, name: user.name };
   if (!tag || !allLinkedActionsComplete(tag) || tag.decisionRecord?.type === "keep" || !canTransition(tag.status, "Closed") || tag.closure?.verificationResult !== "Passed" || !tag.imageUrl?.trim() || !(tag.afterEvidence?.length)) return undefined;
   const now = new Date().toISOString();
   return updateTag(id, (current) => ({
@@ -497,9 +513,12 @@ export interface VerifyRedTagInput {
 
 export function verifyRedTag(id: string, action: MyAction | undefined, input: VerifyRedTagInput, actor: DemoUser) {
   const tag = getRedTag(id);
+  const user = getRedTagSessionActor(actor.id);
+  if (!tag || tag.createdById === actor.id || !user || !canManageRedTag(tag, user)) return undefined;
+  actor = { ...actor, name: user.name };
   // Phase 3A keeps this client-specific verifier only for legacy records. V2
   // records must use verifyRedTagDisposition(), which enforces completed disposition.
-  if (tag?.decisionRecord || tag?.dispositionDetails || (tag && getRedTagActionIds(tag).length > 1 && !allLinkedActionsComplete(tag))) return undefined;
+  if (tag?.decisionRecord || tag?.dispositionDetails || (tag && !allLinkedActionsComplete(tag))) return undefined;
   if (!tag || tag.status !== "Awaiting Verification" || !tag.actionId || action?.id !== tag.actionId || action.status !== "Completed") return undefined;
   if (!(tag.afterEvidence?.length) || !input.disposition || !input.verificationRemark.trim()) return undefined;
   if (input.disposition === "Other" && !input.dispositionNote?.trim()) return undefined;
@@ -518,8 +537,11 @@ export function verifyRedTag(id: string, action: MyAction | undefined, input: Ve
 
 export function closeRedTagAfterRemoval(id: string, action: MyAction | undefined, removalConfirmed: boolean, actor: DemoUser) {
   const tag = getRedTag(id);
+  const user = getRedTagSessionActor(actor.id);
+  if (!tag || !user || !canManageRedTag(tag, user)) return undefined;
+  actor = { ...actor, name: user.name };
   // Legacy compatibility only; V2 closure goes through closeRedTag().
-  if (tag?.decisionRecord || tag?.dispositionDetails || (tag && getRedTagActionIds(tag).length > 1 && !allLinkedActionsComplete(tag))) return undefined;
+  if (tag?.decisionRecord || tag?.dispositionDetails || (tag && !allLinkedActionsComplete(tag))) return undefined;
   if (!tag || tag.status !== "Awaiting Verification" || !tag.actionId || action?.id !== tag.actionId || action.status !== "Completed") return undefined;
   if (!tag.imageUrl?.trim() || !tag.verifiedAt || !tag.verificationRemark || !tag.disposition || !(tag.afterEvidence?.length) || !removalConfirmed) return undefined;
   const now = new Date().toISOString();
@@ -534,3 +556,10 @@ export function closeRedTagAfterRemoval(id: string, action: MyAction | undefined
     history: [...current.history, history("removed", "Physical Red Tag removal confirmed", actor), history("closed", "Red Tag closed", actor)],
   }));
 }
+
+registerRecordCreationStore(RED_TAG_STORAGE_KEY, () => { loaded = false; load(); });
+
+registerActionCreationSource("redTag", (input, user) => {
+  const tag = input.sourceId ? getRedTag(input.sourceId) : undefined;
+  return { record: tag, zone: tag?.zone, permitted: Boolean(tag && canLinkRedTagAction(tag, user)) };
+});

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { hasAuthenticatedDemoSession } from "@/lib/demo-session";
 import { safeSetStorage, safeSetStorageString } from "@/lib/browser-storage";
 
 const AUTH_KEY = "5s-auth-session";
@@ -14,13 +15,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authenticated, setAuthenticated] = React.useState(false); const [authReady, setAuthReady] = React.useState(false);
   React.useEffect(() => {
     let cancelled = false;
-    let isAuthenticated = false;
-    try {
-      const value = JSON.parse(localStorage.getItem(AUTH_KEY) ?? "null") as Partial<DemoAuthSession> | null;
-      isAuthenticated = value?.authenticated === true && value.username === "admin" && value.version === 1;
-    } catch {
-      isAuthenticated = false;
-    }
+    const isAuthenticated = hasAuthenticatedDemoSession();
     queueMicrotask(() => {
       if (cancelled) return;
       setAuthenticated(isAuthenticated);

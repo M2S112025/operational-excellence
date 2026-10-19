@@ -88,7 +88,7 @@ export default function FiveSActionReportPage({ action, beforeEvidence, onBack, 
 
           <section className="action-report-block rounded-lg border border-blue-100 bg-blue-50/[0.12] p-3 dark:border-slate-700 dark:bg-slate-900">
             <div className="improvement-comparison grid gap-3 lg:grid-cols-[minmax(0,2fr)_44px_minmax(170px,1fr)_44px_minmax(0,2fr)] lg:items-center">
-              <EvidencePanel tone="before" label="Before Evidence" evidence={beforeEvidence.evidence} description={beforeEvidence.provenance} empty={actionEvidenceEmptyText(beforeEvidence.state)} />
+              <EvidencePanel tone="before" label="Initial Evidence" evidence={beforeEvidence.evidence} description={beforeEvidence.provenance} empty={actionEvidenceEmptyText(beforeEvidence.state)} />
               <DirectionArrow />
               <CompletedByPanel name={completedPerson} department={action.department} zone={action.area} completedAt={completedAt} photo={responsiblePhoto} />
               <DirectionArrow />

@@ -1,9 +1,13 @@
 "use client";
 
+import { registerActionCreationSource } from "@/lib/actions/action-source-access";
+
+import { allocateModuleRecordId, registerRecordCreationStore } from "@/lib/records/module-records";
+
+import { canViewVisualImprovement, canCreateVisualImprovementAction } from "./visual-improvement-access";
 import { useSyncExternalStore } from "react";
 import { safeSetStorage, safeSetStorageString } from "@/lib/browser-storage";
 import { getActionById } from "@/lib/actions/action-store";
-import { generateVisualImprovementId } from "./visual-improvement-config";
 import type {
   CreateVisualImprovementInput,
   UpdateVisualImprovementInput,
@@ -156,7 +160,7 @@ export function createVisualImprovement(input: CreateVisualImprovementInput, act
   load();
   if (!input.title.trim() || !input.plant || !input.zone || !input.location.trim() || !input.beforeDescription.trim() || !input.beforeEvidence.length) throw new Error("Title, location, before description, and before evidence are required.");
   const now = new Date().toISOString();
-  const id = generateVisualImprovementId(records, new Date(now).getFullYear());
+  const id = allocateModuleRecordId("visualImprovement", records.map(item => item.id));
   const status = saveAsDraft ? "Draft" as const : "Planned" as const;
   const activity = [event("created", saveAsDraft ? "Draft improvement created" : "Improvement created", actor), event("before_evidence_added", `${input.beforeEvidence.length} before evidence photo${input.beforeEvidence.length === 1 ? "" : "s"} added`, actor)];
   if (!saveAsDraft) activity.push(event("planned", "Improvement planned", actor));
@@ -237,3 +241,10 @@ export function getVisualImprovementSummary(input: readonly VisualImprovement[],
     areasImproved: new Set(completed.map((item) => `${item.plant}/${item.zone}/${item.location}`)).size,
   };
 }
+
+registerRecordCreationStore(STORAGE_KEY, () => { loaded = false; load(); });
+
+registerActionCreationSource("visualImprovement", (input, user, identity) => {
+  const item = input.sourceId ? getVisualImprovementById(input.sourceId) : undefined;
+  return { record: item, zone: item?.zone, permitted: Boolean(item && canViewVisualImprovement(user, identity, item) && canCreateVisualImprovementAction(user, identity)), alreadyLinked: item?.actionId };
+});

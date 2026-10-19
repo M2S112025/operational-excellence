@@ -1,3 +1,4 @@
+import { configureRedTagMemberFixture } from "./helpers/red-tag-actors";
 import {afterEach,beforeEach,describe,expect,it,vi} from 'vitest';
 import type {DemoUser} from '@/lib/current-user';
 import type {RedTagDecision} from '@/features/five-s/red-tag/types';
@@ -6,8 +7,11 @@ beforeEach(()=>{vi.resetModules();values=new Map([['ops-red-tag-original-reset-v
 afterEach(()=>vi.unstubAllGlobals());
 async function setup(decision:RedTagDecision|null='keep'){
  const identity=await import('@/lib/current-user');const store=await import('@/features/five-s/red-tag/store');const actor=identity.DEMO_USERS.auditor;
- const tag=store.createRedTagV2({plant:actor.plant,zone:'Zone A',section:'Stores',department:'Production',category:'Tools',itemName:'Calibrated master',reason:'Unused',remarks:'Review retention',imageUrl:'data:image/png;base64,before',createdById:actor.id,createdByName:actor.name},actor)!;
- store.submitRedTagForReview(tag.id,{reviewerId:actor.id,reviewerName:actor.name},actor);
+ await configureRedTagMemberFixture();
+ const creator=identity.DEMO_USERS.responsible;
+ const tag=store.createRedTagV2({plant:actor.plant,zone:'Zone A',section:'Stores',department:'Production',category:'Tools',itemName:'Calibrated master',reason:'Unused',remarks:'Review retention',imageUrl:'data:image/png;base64,before',createdById:creator.id,createdByName:creator.name},creator)!;
+ store.submitRedTagForReview(tag.id,{reviewerId:actor.id,reviewerName:actor.name},creator);
+ identity.setDemoRole("auditor");
  if(decision)store.recordRedTagDecision(tag.id,{decision,comments:'Review retained'},actor);
  return {store,identity,actor,id:tag.id};
 }

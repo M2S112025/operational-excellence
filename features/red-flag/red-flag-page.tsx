@@ -1,5 +1,8 @@
 "use client";
 
+import { compareNewestCreated } from "@/lib/records/record-order";
+
+
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Activity, ArrowRight, CheckCircle2, ChevronDown, Eye, FileText, Flag, ListFilter, Plus, Search, ShieldAlert, TimerReset } from "lucide-react";
@@ -79,7 +82,7 @@ function RedFlagOverview({ flags, actions }: { flags: RedFlag[]; actions: MyActi
   const averageAge = open.length ? Math.round(open.reduce((sum, flag) => sum + redFlagAgeHours(flag), 0) / open.length) : 0;
   const maxSeverity = Math.max(1, ...severity.map((item) => item.value));
   const maxZone = Math.max(1, ...zones.map((item) => item.value));
-  const recent = [...flags].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 5);
+  const recent = [...flags].sort((a, b) => compareNewestCreated({ id: a.id, createdAt: a.raisedAt }, { id: b.id, createdAt: b.raisedAt })).slice(0, 5);
   const recurring = recurringIssues(flags);
   return <div className="grid min-w-0 gap-4 xl:grid-cols-12">
     <Card className="min-w-0 gap-0 xl:col-span-4"><CardHeader className="border-b pb-4"><CardTitle className="text-[15px]">Open by Severity</CardTitle><p className="text-xs text-muted-foreground">Urgency across unresolved Red Flags</p></CardHeader><CardContent className="grid gap-4 p-5">{severity.map((item) => <Bar key={item.label} label={item.label} value={item.value} max={maxSeverity} color={RED_FLAG_SEVERITY_CONFIG[item.label].dot} />)}</CardContent></Card>
@@ -134,13 +137,7 @@ function RedFlagLibrary({ flags, actions, tab, initialStatus, initialSeverity }:
       && (plant === "All" || flag.plant === plant) && (zone === "All" || flag.zone === zone) && (raisedBy === "All" || flag.raisedByName === raisedBy)
       && (actionStatus === "All" || (actionStatus === "No Action" ? !flag.actionId : linked?.status === actionStatus))
       && (!since || new Date(flag.raisedAt).getTime() >= since);
-  }).sort((a, b) => {
-    const aResolved = a.status === "Closed" || a.status === "Cancelled";
-    const bResolved = b.status === "Closed" || b.status === "Cancelled";
-    if (aResolved !== bResolved) return aResolved ? 1 : -1;
-    if (a.status === "Closed" && b.status === "Closed") return b.closedAt!.localeCompare(a.closedAt!);
-    return RED_FLAG_SEVERITY_CONFIG[b.severity].rank - RED_FLAG_SEVERITY_CONFIG[a.severity].rank || a.raisedAt.localeCompare(b.raisedAt);
-  });
+  }).sort((a, b) => compareNewestCreated({ id: a.id, createdAt: a.raisedAt }, { id: b.id, createdAt: b.raisedAt }));
 
   return <Card className="min-w-0 gap-0 overflow-hidden">
     <CardContent className="border-b p-3"><div className="grid gap-2 lg:grid-cols-[minmax(260px,1fr)_160px_180px_auto]"><div className="relative"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input className="pl-9" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search ID, issue, location, asset..." /></div><FilterSelect value={severity} onChange={setSeverity} all="All severities" options={[...ACTIVE_RED_FLAG_SEVERITIES, ...(hasLegacyCritical ? ["Critical"] : [])]} /><FilterSelect value={status} onChange={setStatus} all="All statuses" options={["Open", "Action Created", "In Progress", "Awaiting Closure", "Closed", "Cancelled"]} /><Button type="button" variant="outline" onClick={() => setMoreOpen((value) => !value)} aria-expanded={moreOpen}><ListFilter className="size-4" />More Filters<ChevronDown className={cn("size-3.5 transition-transform", moreOpen && "rotate-180")} /></Button></div>

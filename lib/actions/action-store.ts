@@ -1,5 +1,8 @@
 "use client";
 
+import { allocateModuleRecordId, registerRecordCreationStore } from "@/lib/records/module-records";
+
+import { authorizeActionCreation } from "./action-creation-access";
 import { prepareActionEvidenceCompaction } from "./action-evidence-storage";
 import { resetImportedRedTagData } from "@/lib/five-s/red-tag-reset";
 
@@ -45,7 +48,6 @@ let hasLoadedFromStorage = false;
 
 let actions: MyAction[] = MY_ACTIONS.map(normalizeEvidence);
 
-let fallbackActionIdSequence = 0;
 
 const listeners =
   new Set<() => void>();
@@ -216,20 +218,23 @@ export function getActionById(
 export function createAction(
   input: CreateActionInput
 ): MyAction {
+  // Reject unauthorized calls before the normal loader can initialize fixture storage.
+  authorizeActionCreation(input, actions);
   loadFromStorage();
-  const uniqueSuffix = globalThis.crypto?.randomUUID?.().slice(0, 8)
-    ?? `${(++fallbackActionIdSequence).toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-  const actionId = `ACT-${Date.now()}-${uniqueSuffix}`;
+  const { user, owner, sourceModule, sourceId } = authorizeActionCreation(input, actions);
+  const actionId = allocateModuleRecordId("actions", actions.map(item => item.id));
 
   const action: MyAction = normalizeEvidence({
     ...input,
+    sourceModule, sourceId,
+    createdByUserId: user.id, createdByName: user.name, auditor: user.name,
+    ...(owner ? { responsiblePersonId: owner.id, responsiblePersonName: owner.name, assignedTo: owner.name } : {}),
+    ...(input.assignedByUserId ? { assignedByUserId: user.id, assignedByName: user.name } : {}),
     submissionRevisions: [],
 
     id: actionId,
 
-    createdAt: new Date()
-      .toISOString()
-      .slice(0, 10),
+    createdAt: new Date().toISOString(),
 
     issueEvidence: (input.issueEvidence ?? []).map((evidence) => ({
       ...evidence,
@@ -239,12 +244,7 @@ export function createAction(
     evidence: [],
     progressEvidence: input.progressEvidence ?? [],
 
-    activityHistory: input.activityHistory ?? [
-      createActivity("created", {
-        id: input.createdByUserId ?? input.auditor ?? "legacy-auditor",
-        name: input.createdByName ?? input.auditor ?? "Auditor",
-      }),
-    ],
+    activityHistory: [createActivity("created", { id: user.id, name: user.name })],
   });
 
   const previousActions = actions;
@@ -840,3 +840,5 @@ export function clearSavedActions() {
 
   emitChange();
 }
+
+registerRecordCreationStore(STORAGE_KEY, () => { hasLoadedFromStorage = false; loadFromStorage(); });

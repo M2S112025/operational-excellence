@@ -1,4 +1,9 @@
 "use client";
+
+import { compareNewestMeetings } from "@/lib/records/record-order";
+
+
+import { withBusinessRecordCreation } from "@/lib/records/module-records";
 import { getCurrentDemoUser } from "@/lib/current-user";
 
 import { useState } from "react";
@@ -47,17 +52,29 @@ export default function MeetingsPage() {
   const calendar = listMeetingOccurrences(dateKey(gridStart), dateKey(addDays(gridStart, 41))).filter((item) => boardMap.has(item.boardId));
   const upcoming = listMeetingOccurrences(dateKey(today), dateKey(addDays(today, 45))).filter((item) => boardMap.has(item.boardId) && item.status === "Scheduled");
   const meetingFor = (item: MeetingOccurrence) => meetings.find((meeting) => meeting.scheduleId === item.scheduleId && meeting.occurrenceDate === item.occurrenceDate);
-  function start(item: MeetingOccurrence) {
+  async function start(item: MeetingOccurrence) {
+    try {
     const board = boardMap.get(item.boardId);
     if (!board || board.status !== "Active") return;
     const active = meetings.find((meeting) => meeting.boardId === board.id && meeting.status === "In Progress");
-    if (!active) startVisualManagementMeeting(board.id, getCurrentDemoUser(), { scheduleId: item.scheduleId, occurrenceDate: item.occurrenceDate, scheduledTime: item.time, durationMinutes: item.durationMinutes, attendees: item.attendees }, board.owner);
+    if (!active) await withBusinessRecordCreation(() => startVisualManagementMeeting(board.id, getCurrentDemoUser(), { scheduleId: item.scheduleId, occurrenceDate: item.occurrenceDate, scheduledTime: item.time, durationMinutes: item.durationMinutes, attendees: item.attendees }, board.owner));
     router.push(`/visual-management/boards/${board.id}/meeting`);
+
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to save this record. Please retry.";
+      setError(message);
+    }
   }
-  function cancel() {
+  async function cancel() {
+    try {
     if (!cancelling) return;
-    if (!changeMeetingSchedule(cancelling.scheduleId, cancelling.occurrenceDate, scope, {}, true, getCurrentDemoUser())) return setError("This meeting could not be cancelled. It may have already started.");
+    if (!await withBusinessRecordCreation(() => changeMeetingSchedule(cancelling.scheduleId, cancelling.occurrenceDate, scope, {}, true, getCurrentDemoUser()))) return setError("This meeting could not be cancelled. It may have already started.");
     setCancelling(null);
+
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to save this record. Please retry.";
+      setError(message);
+    }
   }
   function occurrenceRow(item: MeetingOccurrence) {
     const board = boardMap.get(item.boardId);
@@ -67,10 +84,10 @@ export default function MeetingsPage() {
     const canManage = canManageVisualManagementSchedule(board, currentUser, adminUser?.roles);
     return <div key={item.key} className="flex flex-wrap items-center justify-between gap-3 border-b py-4 last:border-b-0"><div><p className="font-medium">{board.name}</p><p className="text-sm text-muted-foreground">{displayDate(item.date)} · {item.time} · {item.durationMinutes} min · {item.attendees.length} expected</p><p className="text-xs text-muted-foreground">{board.zone ?? board.plant}{scheduleMap.get(item.scheduleId)?.recurrence.type !== "none" ? " · Recurring" : ""}</p></div><div className="flex flex-wrap gap-2">{item.status === "Cancelled" ? <span className="text-sm text-muted-foreground">Cancelled</span> : existing?.status === "Completed" ? <Button size="sm" variant="outline" nativeButton={false} render={<Link href={`/visual-management/meetings/${existing.id}`} />}>View history</Button> : <><Button size="sm" onClick={() => start(item)}>{active ? "Resume Meeting" : "Start Meeting"}</Button>{canManage && !existing ? <><Button size="sm" variant="outline" onClick={() => setEditing(item)}>Edit</Button><Button size="sm" variant="ghost" onClick={() => { setCancelling(item); setScope("single"); setError(""); }}>Cancel</Button></> : null}</>}</div></div>;
   }
-  return <PageContainer className="max-w-none"><FiveSPageHeader eyebrow="Visual Management" title="Meetings" description="Plan upcoming meetings and review completed meetings." actions={<Button onClick={() => setStartOpen(true)}><CirclePlay className="size-4" />Start Meeting</Button>} /><VisualManagementNav /><Tabs defaultValue="upcoming" className="mt-5"><TabsList><TabsTrigger value="upcoming">Upcoming</TabsTrigger><TabsTrigger value="calendar">Calendar</TabsTrigger><TabsTrigger value="history">History</TabsTrigger></TabsList>
+  return <PageContainer className="max-w-none">{error && !cancelling && <p role="alert" className="text-sm text-destructive">{error}</p>}<FiveSPageHeader eyebrow="Visual Management" title="Meetings" description="Plan upcoming meetings and review completed meetings." actions={<Button onClick={() => setStartOpen(true)}><CirclePlay className="size-4" />Start Meeting</Button>} /><VisualManagementNav /><Tabs defaultValue="upcoming" className="mt-5"><TabsList><TabsTrigger value="upcoming">Upcoming</TabsTrigger><TabsTrigger value="calendar">Calendar</TabsTrigger><TabsTrigger value="history">History</TabsTrigger></TabsList>
     <TabsContent value="upcoming" className="mt-4"><Card className="gap-0"><CardContent className="p-4 sm:px-6">{upcoming.length ? upcoming.map(occurrenceRow) : <p className="py-8 text-center text-sm text-muted-foreground">No meetings scheduled in the next 45 days.</p>}</CardContent></Card></TabsContent>
     <TabsContent value="calendar" className="mt-4"><Card className="gap-0"><CardContent className="p-4 sm:p-6"><div className="mb-4 flex items-center justify-between"><h2 className="font-semibold">{new Intl.DateTimeFormat("en-IN", { month: "long", year: "numeric" }).format(month)}</h2><div className="flex gap-1"><Button size="icon-sm" variant="outline" aria-label="Previous month" onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1))}><ChevronLeft className="size-4" /></Button><Button size="icon-sm" variant="outline" aria-label="Next month" onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1))}><ChevronRight className="size-4" /></Button></div></div><div className="grid grid-cols-7 gap-1 text-center text-xs text-muted-foreground">{["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => <span key={day}>{day}</span>)}</div><div className="mt-2 grid grid-cols-7 gap-1">{Array.from({ length: 42 }, (_, index) => { const day = addDays(gridStart, index); const key = dateKey(day); const count = calendar.filter((item) => item.date === key && item.status === "Scheduled").length; return <Button key={key} variant={selectedDay === key ? "default" : "ghost"} className={`h-14 flex-col gap-0.5 p-1 ${day.getMonth() !== month.getMonth() ? "opacity-45" : ""}`} onClick={() => setSelectedDay(key)} aria-label={`${displayDate(key)}, ${count} meetings`}><span>{day.getDate()}</span>{count ? <span className="text-[10px]">{count} meeting{count > 1 ? "s" : ""}</span> : null}</Button>; })}</div><h3 className="mt-6 border-t pt-4 text-sm font-semibold">{displayDate(selectedDay)}</h3>{calendar.filter((item) => item.date === selectedDay).length ? calendar.filter((item) => item.date === selectedDay).map(occurrenceRow) : <p className="py-4 text-sm text-muted-foreground">No meetings on this day.</p>}</CardContent></Card></TabsContent>
-    <TabsContent value="history" className="mt-4"><Card className="gap-0"><CardContent className="p-4 sm:px-6">{meetings.length ? [...meetings].sort((a, b) => b.startedAt.localeCompare(a.startedAt)).map((meeting) => <Link key={meeting.id} href={`/visual-management/meetings/${meeting.id}`} className="flex flex-wrap items-center justify-between gap-3 border-b py-4 last:border-b-0 hover:text-primary"><div><p className="font-medium">{meeting.boardName ?? boardMap.get(meeting.boardId)?.name ?? "Board"}</p><p className="text-sm text-muted-foreground">{formatVmDate(meeting.startedAt, true)} · {meeting.lead.name} · {meetingDurationMinutes(meeting)} min</p><p className="text-xs text-muted-foreground">{meeting.participants.filter((person) => person.attendance === "Present").length} present · {meeting.topicIds.length} topics · {meeting.actionIds.length} actions</p></div><MeetingStatusBadge status={meeting.status} /></Link>) : <p className="py-8 text-center text-sm text-muted-foreground">No meeting history yet.</p>}</CardContent></Card></TabsContent></Tabs>
+    <TabsContent value="history" className="mt-4"><Card className="gap-0"><CardContent className="p-4 sm:px-6">{meetings.length ? [...meetings].sort(compareNewestMeetings).map((meeting) => <Link key={meeting.id} href={`/visual-management/meetings/${meeting.id}`} className="flex flex-wrap items-center justify-between gap-3 border-b py-4 last:border-b-0 hover:text-primary"><div><p className="font-medium">{meeting.boardName ?? boardMap.get(meeting.boardId)?.name ?? "Board"}</p><p className="text-sm text-muted-foreground">{formatVmDate(meeting.startedAt, true)} · {meeting.lead.name} · {meetingDurationMinutes(meeting)} min</p><p className="text-xs text-muted-foreground">{meeting.participants.filter((person) => person.attendance === "Present").length} present · {meeting.topicIds.length} topics · {meeting.actionIds.length} actions</p></div><MeetingStatusBadge status={meeting.status} /></Link>) : <p className="py-8 text-center text-sm text-muted-foreground">No meeting history yet.</p>}</CardContent></Card></TabsContent></Tabs>
     <StartMeetingDialog open={startOpen} onOpenChange={setStartOpen} />
     {editing && boardMap.get(editing.boardId) && scheduleMap.get(editing.scheduleId) ? <ScheduleMeetingDialog open onOpenChange={(open) => { if (!open) setEditing(null); }} board={boardMap.get(editing.boardId)!} actorId={currentUser.id} schedule={scheduleMap.get(editing.scheduleId)} occurrence={editing} /> : null}
     <Dialog open={Boolean(cancelling)} onOpenChange={(open) => { if (!open) setCancelling(null); }}><DialogContent><DialogHeader><DialogTitle>Cancel Meeting</DialogTitle><DialogDescription>Completed meeting history will remain available.</DialogDescription></DialogHeader>{cancelling && scheduleMap.get(cancelling.scheduleId)?.recurrence.type !== "none" ? <Select value={scope} onValueChange={(value) => setScope(value as typeof scope)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="single">This meeting</SelectItem><SelectItem value="future">This and future meetings</SelectItem><SelectItem value="series">Entire series</SelectItem></SelectContent></Select> : null}{error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}<DialogFooter><Button variant="outline" onClick={() => setCancelling(null)}>Keep Meeting</Button><Button variant="destructive" onClick={cancel}>Cancel Meeting</Button></DialogFooter></DialogContent></Dialog>

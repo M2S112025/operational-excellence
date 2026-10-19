@@ -1,3 +1,6 @@
+import { configureRedTagMemberFixture } from "./helpers/red-tag-actors";
+let fixtureIdentity: Awaited<ReturnType<typeof configureRedTagMemberFixture>>;
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
@@ -14,8 +17,9 @@ function storage() {
 async function setup() {
   vi.resetModules();
   const localStorage = storage();
-  vi.stubGlobal("window", { localStorage, alert: vi.fn() });
+  vi.stubGlobal("window", { localStorage, alert: vi.fn() }); authenticateDemoFixture();
   vi.stubGlobal("localStorage", localStorage);
+  fixtureIdentity = await configureRedTagMemberFixture();
   let sequence = 0;
   vi.stubGlobal("crypto", { randomUUID: () => `phase-3c-${++sequence}` });
   return import("@/features/five-s/red-tag/store");
@@ -23,13 +27,15 @@ async function setup() {
 
 afterEach(() => { vi.resetModules(); vi.unstubAllGlobals(); });
 
-const creator = DEMO_USERS.auditor;
+const creator = DEMO_USERS.responsible;
 const reviewer = DEMO_USERS.auditor;
 const evidence = [{ id: "RTE-3C", name: "complete.jpg", url: "data:image/jpeg;base64,complete", uploadedBy: reviewer.name, uploadedAt: "2026-09-22T08:00:00.000Z" }];
 
 function create(store: Awaited<ReturnType<typeof setup>>, decision: "keep" | "relocate" | "return" | "repair" | "sell_reuse" | "scrap" | "further_evaluation") {
+  fixtureIdentity.setDemoRole("responsible");
   const tag = store.createRedTagV2({ plant: creator.plant, zone: "Zone A", section: "Bay 2", department: "Production", category: "Equipment", itemName: "Old fixture", quantity: 1, reason: "Undefined Items", remarks: "No longer required", imageUrl: "data:image/jpeg;base64,item", createdById: creator.id, createdByName: creator.name }, creator)!;
   store.submitRedTagForReview(tag.id, { reviewerId: reviewer.id, reviewerName: reviewer.name }, creator);
+  fixtureIdentity.setDemoRole("auditor");
   return store.recordRedTagDecision(tag.id, { decision, comments: "Reviewed" }, reviewer)!;
 }
 
@@ -63,7 +69,10 @@ describe("Red Tag V2 executable disposition", () => {
     const store = await setup();
     const tag = create(store, "repair");
     store.setRedTagHandlingMode(tag.id, "linked_action", reviewer);
-    const linked = (await import("@/lib/actions/action-store")).createAction({ ...completedAction("unused", "Completed"), sourceId: tag.id });
+    const actionStore = await import("@/lib/actions/action-store");
+    const linked = actionStore.createAction({ ...completedAction("unused", "Assigned"), sourceId: tag.id });
+    linked.status = "Completed";
+    actionStore.setActions(actionStore.getActions());
     expect(store.linkRedTagAction(tag.id, linked.id, reviewer)).toBeDefined();
     const completed = {
       ...linked,

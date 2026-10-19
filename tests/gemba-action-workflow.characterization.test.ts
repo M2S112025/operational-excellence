@@ -1,3 +1,4 @@
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -24,7 +25,7 @@ function storage() {
 async function stores() {
   vi.resetModules();
   const localStorage = storage();
-  vi.stubGlobal("window", { localStorage });
+  vi.stubGlobal("window", { localStorage }); authenticateDemoFixture();
   vi.stubGlobal("localStorage", localStorage);
   vi.stubGlobal("crypto", { randomUUID: () => "gemba-action-test" });
   const [actions, gemba] = await Promise.all([
@@ -102,7 +103,10 @@ describe("Gemba → canonical Action traceability", () => {
 
   it("prevents duplicate links and rolls back a newly-created canonical Action when linking fails", async () => {
     const { actions, gemba } = await stores();
-    const action = createGembaAction(actions, "MISSING-OBSERVATION", "High");
+    expect(() => createGembaAction(actions, "MISSING-OBSERVATION", "High")).toThrow("not authorized");
+    const observation = gemba.saveGembaObservation("GEM-2026-015", { type: "Issue", title: "Fixture", description: "Inspect fixture", location: "CNC-03", peopleInvolved: [], evidence: [] }, actor)!;
+    const action = createGembaAction(actions, observation.id, "High");
+    expect(() => createGembaAction(actions, observation.id, "High")).toThrow("not authorized");
     expect(gemba.linkGembaAction("GEM-2026-015", "MISSING-OBSERVATION", action.id, actor)).toBe(false);
     expect(actions.rollbackCreatedAction(action.id, actor)).toBe(true);
     expect(actions.getActionById(action.id)).toBeUndefined();

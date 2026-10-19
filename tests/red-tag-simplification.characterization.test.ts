@@ -40,7 +40,7 @@ describe("Change Log 2 Red Tag simplification", () => {
     expect(redTagSource).toContain('primaryType="submit"');
     expect(redTagSource).toContain('onSubmit={(e) => { e.preventDefault(); submit(); }}');
     expect(redTagSource).not.toContain("disabled={!canSubmit}");
-    expect(redTagSource).toContain("if (creatingRef.current) return");
+    expect(redTagSource).toContain("if (creatingRef.current || processingPhotosRef.current) return");
     expect(redTagSource).toContain("creatingRef.current = true");
     expect(redTagSource.match(/createAndSubmitRedTagV2\(/g)).toHaveLength(1);
   });
@@ -61,12 +61,13 @@ describe("Change Log 2 Red Tag simplification", () => {
     expect(redTagSource).toContain('reasonCategory === "Other" && <Field label="Reason *"');
     expect(redTagSource).toContain('placeholder="Describe the tagging reason..."');
     expect(redTagSource).toContain("getRedTagReasonDisplay(tag.reason, tag.customReason)");
-    expect(redTagSource).toContain("sourceEvidenceCount: tag.imageUrl?.trim() ? 1 : 0");
+    expect(redTagSource).toContain("sourceEvidenceCount: getRedTagIdentificationEvidence(tag).length");
   });
 
-  it("offers canonical linked Action handling without a new direct handling choice", () => {
+  it("offers approved direct handling alongside canonical linked Actions", () => {
     const redTagSource = source("features/five-s/red-tag/red-tag-module.tsx");
-    expect(redTagSource).not.toContain("Handle directly");
+    expect(redTagSource).toContain("Handle directly");
+    expect(redTagSource).toContain('chooseHandling("direct")');
     expect(redTagSource).toContain("Create Linked Action");
     expect(redTagSource).toContain('source: "Red Tag", sourceModule: "redTag", sourceId: tag.id');
     expect(redTagSource).toContain("incompleteLinkedAction");

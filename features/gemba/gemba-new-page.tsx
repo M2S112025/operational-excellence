@@ -1,4 +1,6 @@
 "use client";
+
+import { withBusinessRecordCreation } from "@/lib/records/module-records";
 import { OpsPersonSelect } from "@/components/ops/ops-person-select";
 import { getCurrentDemoUser } from "@/lib/current-user";
 
@@ -78,7 +80,8 @@ export default function GembaNewPage() {
   }
   function removeOutsideParticipant(id: string) { setOutsideParticipants((current) => current.filter((person) => person.id !== id)); }
 
-  function submit() {
+  async function submit() {
+    try {
     setError("");
     if (!allowed) { setError("Your current role cannot start a Gemba walk."); return; }
     if (!purpose.trim()) { setError("Add a clear purpose or focus for this walk."); return; }
@@ -90,11 +93,16 @@ export default function GembaNewPage() {
     const zoneParticipants: GembaParticipant[] = zone.members.filter((member) => participantIds.includes(member.id)).map((member) => ({ id: member.id, name: member.name, role: member.role }));
     const participants = [...zoneParticipants, ...outsideParticipants];
     const startNow = mode === "now";
-    const walk = createGembaWalk({ plant: currentPlant, zone: zone.name, leadId: currentUser.id, leadName: currentUser.name, participants, purpose: purpose.trim(), notes: notes.trim() || undefined, scheduledDate: startNow ? toLocalInputDate(new Date()) : scheduledDate, scheduledTime: startNow ? undefined : scheduledTime }, currentUser, startNow);
+    const walk = await withBusinessRecordCreation(() => createGembaWalk({ plant: currentPlant, zone: zone.name, leadId: currentUser.id, leadName: currentUser.name, participants, purpose: purpose.trim(), notes: notes.trim() || undefined, scheduledDate: startNow ? toLocalInputDate(new Date()) : scheduledDate, scheduledTime: startNow ? undefined : scheduledTime }, currentUser, startNow));
     if (!walk) { setError("The walk could not be saved. Browser storage may be full."); return; }
     const sourceTopicId = searchParams.get("topicId");
     if (meetingReference && sourceTopicId) linkTopicFollowUp(sourceTopicId, "Gemba", walk.id, getCurrentDemoUser());
     router.push(startNow ? `/gemba/${walk.id}/walk` : `/gemba/${walk.id}`);
+
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to save this record. Please retry.";
+      setError(message);
+    }
   }
 
   return <PageContainer>

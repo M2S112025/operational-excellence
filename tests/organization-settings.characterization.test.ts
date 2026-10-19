@@ -1,3 +1,4 @@
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const values = new Map<string, string>();
@@ -11,7 +12,7 @@ beforeEach(() => {
       setItem: (key: string, value: string) => values.set(key, value),
       removeItem: (key: string) => values.delete(key),
     },
-  });
+  }); authenticateDemoFixture();
   vi.stubGlobal("crypto", { randomUUID: () => "test-id" });
 });
 

@@ -1,4 +1,6 @@
 "use client";
+
+import { withBusinessRecordCreation } from "@/lib/records/module-records";
 import { OpsPersonSelect } from "@/components/ops/ops-person-select";
 
 import { useMemo, useState } from "react";
@@ -71,7 +73,7 @@ export default function VisualImprovementNewPage() {
     setParticipantIds([]);
   }
 
-  function submit(saveAsDraft: boolean) {
+  async function submit(saveAsDraft: boolean) {
     if (!mayCreate || busy) return;
     if (!title.trim()) { setError("Enter an improvement title."); return; }
     if (!location.trim()) { setError("Enter the area or location."); return; }
@@ -83,7 +85,7 @@ export default function VisualImprovementNewPage() {
     if (proposedCostSaving && (!Number.isFinite(Number(proposedCostSaving)) || Number(proposedCostSaving) < 0)) { setError("Estimated cost saving must be zero or more."); return; }
     setBusy(true); setError("");
     try {
-      const item = createVisualImprovement({ title, plant, zone, location, category, owner, participants, beforeDescription, beforeEvidence, expectedBenefit, proposedCostSaving: proposedCostSaving ? Number(proposedCostSaving) : undefined, estimatedCompletionDate: estimatedCompletionDate || undefined }, currentUser, saveAsDraft);
+      const item = await withBusinessRecordCreation(() => createVisualImprovement({ title, plant, zone, location, category, owner, participants, beforeDescription, beforeEvidence, expectedBenefit, proposedCostSaving: proposedCostSaving ? Number(proposedCostSaving) : undefined, estimatedCompletionDate: estimatedCompletionDate || undefined }, currentUser, saveAsDraft));
       if (!item) { setError("The improvement could not be saved. Check browser storage and try again."); return; }
       if (createActionWanted && mayCreateAction) { setCreated(item); setActionOpen(true); return; }
       router.push(`/visual-improvement/${encodeURIComponent(item.id)}`);

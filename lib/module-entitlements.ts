@@ -1,28 +1,17 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { getAuthenticatedDemoActor } from "@/lib/demo-session";
+import { isActivePlatformSuperAdmin } from "@/features/settings/audit-configuration-permissions";
 import { safeSetStorage } from "@/lib/browser-storage";
 import {
   DEFAULT_MODULE_ENTITLEMENTS,
   type AccessCapabilityId,
 } from "@/lib/modules";
 
-export interface Organization {
-  id: string;
-  name: string;
-  industry: string;
-  plants: number;
-  users: number;
-  status: "Active" | "Inactive";
-  lastUpdated: string;
-}
+import { DEMO_ORGANIZATION, ORGANIZATIONS } from "@/lib/organizations";
+export { DEMO_ORGANIZATION, ORGANIZATIONS, type Organization } from "@/lib/organizations";
 
-export const ORGANIZATIONS: readonly Organization[] = [
-  { id: "abc-manufacturing", name: "ABC Manufacturing", industry: "Manufacturing", plants: 3, users: 42, status: "Active", lastUpdated: "Today" },
-  { id: "xyz-components", name: "XYZ Components", industry: "Manufacturing", plants: 2, users: 18, status: "Active", lastUpdated: "Sep 12, 2026" },
-] as const;
-
-export const DEMO_ORGANIZATION = ORGANIZATIONS[0];
 export type OrganizationAccess = Record<AccessCapabilityId, boolean>;
 type OrganizationAccessMap = Record<string, OrganizationAccess>;
 
@@ -74,16 +63,19 @@ export function useOrganizationAccess(organizationId = DEMO_ORGANIZATION.id) {
 
 export function getOrganizationAccess(organizationId = DEMO_ORGANIZATION.id) {
   load();
-  return accessByOrganization[organizationId] ?? DEFAULT_MODULE_ENTITLEMENTS;
+  return { ...(accessByOrganization[organizationId] ?? DEFAULT_MODULE_ENTITLEMENTS) };
 }
 
 /** Current client organization access used by the normal OPS shell and route guards. */
 export function useModuleEntitlements() { return useOrganizationAccess(DEMO_ORGANIZATION.id); }
 
 export function saveOrganizationAccess(organizationId: string, access: OrganizationAccess) {
+  const actor = getAuthenticatedDemoActor();
+  if (!actor || !isActivePlatformSuperAdmin(actor.identity, actor.user) || !ORGANIZATIONS.some(item => item.id === organizationId)) return false;
+  if (Object.keys(DEFAULT_MODULE_ENTITLEMENTS).some(key => typeof access[key as AccessCapabilityId] !== "boolean")) return false;
   load();
   const previous = accessByOrganization;
-  accessByOrganization = { ...accessByOrganization, [organizationId]: access };
+  accessByOrganization = { ...accessByOrganization, [organizationId]: { ...access } };
   const result = safeSetStorage(STORAGE_KEY, accessByOrganization);
   if (!result.success) { accessByOrganization = previous; return false; }
   listeners.forEach((listener) => listener());

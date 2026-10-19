@@ -8,7 +8,7 @@ for (const width of [320, 1440]) test(`Edit recorded Red Tag decision before Act
     localStorage.setItem('5s-auth-session', JSON.stringify({ authenticated: true, username: 'admin', version: 1 }));
     localStorage.setItem('five-s-demo-role', 'auditor');
     localStorage.setItem('ops-red-tag-original-reset-v1', 'done');
-    const tag = { id: 'RT-EDIT-DECISION', tagNumber: 'RT-EDIT-DECISION', plant: 'Egmore Plant', zone: 'Zone A', section: 'Production', department: 'Production', itemName: 'Synthetic decision edit', reason: 'Unused', remarks: 'Unused fixture', createdById: 'USR-LAKSHMAN', createdByName: 'Lakshman', createdAt: '2026-10-18T10:00:00Z', status: 'Decision Made', review: { reviewerId: 'USR-LAKSHMAN', reviewerName: 'Lakshman', submittedAt: '2026-10-18T10:01:00Z', reviewedAt: '2026-10-18T10:02:00Z' }, decisionRecord: { type: 'relocate', comments: 'Original relocation reasoning', decidedByUserId: 'USR-LAKSHMAN', decidedByName: 'Lakshman', decidedAt: '2026-10-18T10:02:00Z' }, history: [{ id: 'original-decision', type: 'decision_recorded', label: 'Decision recorded: relocate', actor: 'Lakshman', at: '2026-10-18T10:02:00Z' }] };
+    const tag = { id: 'RT-EDIT-DECISION', tagNumber: 'RT-EDIT-DECISION', plant: 'Egmore Plant', zone: 'Zone A', section: 'Production', department: 'Production', itemName: 'Synthetic decision edit', reason: 'Unused', remarks: 'Unused fixture', createdById: 'USR-SIVA-KUMAR', createdByName: 'Siva Kumar', createdAt: '2026-10-18T10:00:00Z', status: 'Decision Made', review: { reviewerId: 'USR-LAKSHMAN', reviewerName: 'Lakshman', submittedAt: '2026-10-18T10:01:00Z', reviewedAt: '2026-10-18T10:02:00Z' }, decisionRecord: { type: 'relocate', comments: 'Original relocation reasoning', decidedByUserId: 'USR-LAKSHMAN', decidedByName: 'Lakshman', decidedAt: '2026-10-18T10:02:00Z' }, history: [{ id: 'original-decision', type: 'decision_recorded', label: 'Decision recorded: relocate', actor: 'Lakshman', at: '2026-10-18T10:02:00Z' }] };
     localStorage.setItem('five-s-red-tags-v1', JSON.stringify([tag, { ...tag, id: 'RT-EDIT-LOCKED', tagNumber: 'RT-EDIT-LOCKED', actionId: 'EXISTING-ACTION' }]));
     localStorage.setItem('standalone-5s-actions', '[]');
   });
@@ -16,6 +16,18 @@ for (const width of [320, 1440]) test(`Edit recorded Red Tag decision before Act
   await page.goto('/5s/red/RT-EDIT-DECISION', { waitUntil: 'networkidle' });
   const panel = page.getByRole('heading', { name: 'Review and Decision', exact: true }).locator('../..');
   const original = await record();
+  const timeline = page.getByRole('list', {name:'Red Tag workflow',exact:true});
+  await expect(timeline.locator(':scope > li')).toHaveCount(4);
+  await expect(timeline.locator(':scope > li').filter({hasText:'Review & Decision'})).toHaveCount(1);
+  await expect(timeline.getByText('Review', {exact:true})).toHaveCount(0);
+  await expect(timeline.getByText('Decision', {exact:true})).toHaveCount(0);
+  // Reconfirming the current decision without edits must not report a permission error.
+  await panel.getByRole('button', { name: 'Edit Decision', exact: true }).click();
+  await panel.getByRole('button', { name: 'Relocate', exact: true }).click();
+  await panel.getByRole('button', { name: 'Record Decision', exact: true }).click();
+  await expect(panel.getByRole('button', { name: 'Edit Decision', exact: true })).toBeVisible();
+  await expect(panel.getByRole('alert')).toHaveCount(0);
+  expect(await record()).toEqual(original);
   await panel.getByRole('button', { name: 'Edit Decision', exact: true }).click();
   await expect(panel.getByRole('button', { name: 'Relocate', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await panel.getByRole('button', { name: 'Relocate', exact: true }).click();
@@ -23,6 +35,15 @@ for (const width of [320, 1440]) test(`Edit recorded Red Tag decision before Act
   await panel.getByRole('textbox', { name: 'Review Comments', exact: true }).fill('Unsaved change');
   await panel.getByRole('button', { name: 'Cancel Edit', exact: true }).click();
   expect(await record()).toEqual(original);
+  await panel.getByRole('button', { name: 'Edit Decision', exact: true }).click();
+  await panel.getByRole('button', { name: 'Relocate', exact: true }).click();
+  await panel.getByRole('textbox', { name: 'Review Comments', exact: true }).fill('Relocate to the approved storage area');
+  await panel.getByRole('button', { name: 'Record Decision', exact: true }).click();
+  await expect(panel.getByRole('button', { name: 'Edit Decision', exact: true })).toBeVisible();
+  await expect(panel.getByRole('alert')).toHaveCount(0);
+  await page.reload({ waitUntil: 'networkidle' });
+  expect(await record()).toMatchObject({status:'Decision Made',decisionRecord:{type:'relocate',comments:'Relocate to the approved storage area'}});
+  await expect(panel).toContainText('Relocate to the approved storage area');
   await panel.getByRole('button', { name: 'Edit Decision', exact: true }).click();
   await panel.getByRole('button', { name: 'Repair', exact: true }).click();
   await expect(panel.getByRole('textbox', { name: 'Review Comments', exact: true })).toHaveValue('');
@@ -41,7 +62,7 @@ for (const width of [320, 1440]) test(`Edit recorded Red Tag decision before Act
   await expect(panel.getByRole('button', { name: 'Edit Decision', exact: true })).toHaveCount(0);
   const closed = await record();
   expect(closed).toMatchObject({ status: 'Closed', decisionRecord: { type: 'keep' }, keepConfirmation: { justification: 'Retain calibrated fixture' } });
-  expect(closed.history.filter((event: { type: string }) => event.type === 'decision_updated')).toHaveLength(2);
+  expect(closed.history.filter((event: { type: string }) => event.type === 'decision_updated')).toHaveLength(3);
   await page.reload({ waitUntil: 'networkidle' });
   expect(await record()).toEqual(closed);
   await expect(page.getByText('Retain calibrated fixture', { exact: true })).toBeVisible();

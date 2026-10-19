@@ -44,6 +44,8 @@ export interface FiveSEvidence {
   size: number;
 
   dataUrl: string;
+  /** Durable binary reference; dataUrl remains supported for historical evidence. */
+  storageKey?: string;
 
   uploadedAt: string;
 
@@ -119,6 +121,8 @@ export interface FiveSSection {
    ========================================================= */
 
 export interface FiveSAudit {
+  /** Absent on legacy audits; do not infer from scheduled or edited dates. */
+  createdAt?: string;
   /** Immutable creation-time policy. Absent on legacy records. */
   scoringPolicy?: Readonly<AuditScoringPolicy>;
   id: string;

@@ -1,5 +1,7 @@
 "use client";
 
+import { withBusinessRecordCreation } from "@/lib/records/module-records";
+
 import {
   useMemo,
   useRef,
@@ -269,7 +271,7 @@ function createInitialQuestionState(
 /* =========================================================
    USERS
    =========================================================
-   
+
    Demo users for MVP.
    Replace with users from your user-management module later.
    ========================================================= */
@@ -775,7 +777,8 @@ function FiveSAuditExecution({
      CREATE ACTION
      ======================================================= */
 
-  function handleCreateAction() {
+  async function handleCreateAction() {
+    try {
     if (
       !selectedActionQuestion
     ) {
@@ -827,7 +830,7 @@ function FiveSAuditExecution({
       question.question;
 
     const action =
-      createAction({
+      await withBusinessRecordCreation(() => createAction({
         auditId: audit.id,
         questionId: question.id,
         questionText: question.question,
@@ -868,7 +871,7 @@ function FiveSAuditExecution({
         dueDate:
           state.dueDate ||
           audit.dueDate,
-      });
+      }));
 
     updateQuestionState(
       question.id,
@@ -884,6 +887,11 @@ function FiveSAuditExecution({
     setShowActionDialog(
       false
     );
+
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to save this record. Please retry.";
+      window.alert(message);
+    }
   }
 
   /* =======================================================

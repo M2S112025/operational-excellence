@@ -37,7 +37,7 @@ export function ActionSubmissionHistory({ action, beforeEvidence }: { action: My
           <div><h4 className="mb-2 text-xs font-medium text-muted-foreground">Resolution notes</h4><p className="whitespace-pre-wrap leading-relaxed">{revision.observation || "Notes not recorded"}</p></div>
           {review && <div className={`border-l-2 pl-3 ${review.type === "sent_back" ? "border-amber-500" : "border-emerald-500"}`}><p className="font-medium">{review.type === "sent_back" ? "Sent back for rework" : "Verified"} by {review.actorName}</p><p className="mt-1 text-xs text-muted-foreground">{formatOpsDateTime(review.createdAt)}</p>{review.remark && <p className="mt-2 whitespace-pre-wrap leading-relaxed">{review.remark}</p>}</div>}
           <div className="grid min-w-0 gap-5 md:grid-cols-2">
-            <SubmissionEvidenceGroup label="Before" description={`Original issue · ${before.provenance}`} items={before.evidence} emptyText={actionEvidenceEmptyText(before.state)} onPreview={setPreview} />
+            <SubmissionEvidenceGroup label="Initial" description={`Original issue · ${before.provenance}`} items={before.evidence} emptyText={actionEvidenceEmptyText(before.state)} onPreview={setPreview} />
             <SubmissionEvidenceGroup label="After" description="Completion evidence saved with this revision" items={revision.evidence} emptyText="No completion evidence recorded for this revision" onPreview={setPreview} />
           </div>
           {revision.progressEvidence.length > 0 && <SubmissionEvidenceGroup label="Progress evidence" items={revision.progressEvidence} onPreview={setPreview} />}

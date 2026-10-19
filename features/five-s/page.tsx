@@ -1,5 +1,10 @@
 "use client";
 
+import { newestCreatedFirst } from "@/lib/records/record-order";
+
+
+import { withBusinessRecordCreation } from "@/lib/records/module-records";
+
 import { useState } from "react";
 
 import FiveSAuditList from "./components/FiveSAuditList";
@@ -175,7 +180,7 @@ function createEmptyFiveSSections(): FiveSSection[] {
 
 export default function FiveSPage() {
   const audits =
-    useFiveSAuditStore();
+    newestCreatedFirst(useFiveSAuditStore());
 
   const [
     selectedAudit,
@@ -203,7 +208,7 @@ export default function FiveSPage() {
      CREATE AUDIT
      ======================================================= */
 
-  function handleCreateAudit(input: {
+  async function handleCreateAudit(input: {
     title: string;
     plant: string;
     department: string;
@@ -217,7 +222,7 @@ export default function FiveSPage() {
     const sections = createAuditChecklistSnapshot(createEmptyFiveSSections());
 
     const audit =
-      createFiveSAudit({
+      await withBusinessRecordCreation(() => createFiveSAudit({
         title: input.title,
 
         plant: input.plant,
@@ -236,7 +241,7 @@ export default function FiveSPage() {
         scheduledTime: input.scheduledTime,
 
         sections,
-      }, { startNow: input.startNow });
+      }, { startNow: input.startNow }));
 
     setIsCreatingAudit(false);
 

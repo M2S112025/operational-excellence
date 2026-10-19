@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ADMIN_USER_SEEDS } from "@/features/five-s/administration/store";
 import { MY_ACTIONS } from "@/features/five-s/data/my-actions-data";
@@ -26,7 +26,11 @@ const actor = { id: DEMO_USERS.auditor.id, name: DEMO_USERS.auditor.name };
 const before: VisualImprovementEvidence = { id: "BEFORE", name: "before.jpg", url: "data:image/jpeg;base64,before", uploadedAt: "2026-09-14T08:00:00+05:30", uploadedBy: actor.name };
 const after: VisualImprovementEvidence = { id: "AFTER", name: "after.jpg", url: "data:image/jpeg;base64,after", uploadedAt: "2026-09-14T10:00:00+05:30", uploadedBy: actor.name };
 
-afterEach(() => setVisualImprovements([...VISUAL_IMPROVEMENT_SEED_RECORDS]));
+beforeEach(() => {
+  const values = new Map<string, string>();
+  vi.stubGlobal("window", { localStorage: { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => values.set(key, value), removeItem: (key: string) => values.delete(key) } });
+});
+afterEach(() => { setVisualImprovements([...VISUAL_IMPROVEMENT_SEED_RECORDS]); vi.unstubAllGlobals(); });
 
 describe("Visual Improvement MVP", () => {
   it("covers the complete compact lifecycle with image-first fixtures", () => {
@@ -38,7 +42,7 @@ describe("Visual Improvement MVP", () => {
   it("centralizes categories and sequential VI IDs", () => {
     expect(VISUAL_IMPROVEMENT_CATEGORIES).toContain("Organization & Layout");
     expect(new Set(VISUAL_IMPROVEMENT_CATEGORIES).size).toBe(VISUAL_IMPROVEMENT_CATEGORIES.length);
-    expect(generateVisualImprovementId([{ id: "VI-2026-014" }, { id: "VI-2025-099" }], 2026)).toBe("VI-2026-015");
+    expect(generateVisualImprovementId([{ id: "VI-2026-014" }, { id: "VI-2025-099" }])).toBe("VI-000001");
   });
 
   it("requires before evidence and supports create through approve/return", () => {
@@ -46,7 +50,7 @@ describe("Visual Improvement MVP", () => {
     const input = { title: "Label shared gauge locations", plant: "Egmore Plant", zone: "Zone A", location: "Inspection Bench", category: "Visual Management" as const, owner: actor, participants: [], beforeDescription: "Gauge locations are not visible.", beforeEvidence: [before], expectedBenefit: "Reduce searching." };
     expect(() => createVisualImprovement({ ...input, beforeEvidence: [] }, actor)).toThrow(/before evidence/i);
     const created = createVisualImprovement(input, actor);
-    expect(created).toMatchObject({ id: expect.stringMatching(/^VI-\d{4}-001$/), status: "Planned" });
+    expect(created).toMatchObject({ id: expect.stringMatching(/^VI-\d{6}$/), status: "Planned" });
     expect(created?.actionId).toBeUndefined();
     startVisualImprovement(created!.id, actor);
     saveVisualImprovement(created!.id, { afterDescription: "Gauge locations are labelled and visible.", afterEvidence: [after], actualCostSaving: 3200, benefitDescription: "Search time removed." }, actor);

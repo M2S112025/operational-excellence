@@ -1,0 +1,28 @@
+import {expect,test} from '@playwright/test';
+import {ADMIN_USER_SEEDS} from '../features/five-s/administration/store';
+import {GEMBA_SEED_STATE} from '../features/gemba/gemba-store';
+import {seed} from './ui-batch2-helpers';
+const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=','base64');
+for(const width of [320,1440])test(`Own-zone restriction and independent cross-zone evaluation ${width}px`,async({page},info)=>{
+ await page.setViewportSize({width,height:900});await seed(page);
+ const users=structuredClone(ADMIN_USER_SEEDS);users.find(user=>user.id==='USR-LAKSHMAN')!.zoneMemberships.push({zone:'Zone B',responsibility:'Member'});
+ const gemba=structuredClone(GEMBA_SEED_STATE),base=gemba.walks.find(walk=>walk.id==='GEM-2026-015')!;
+ const source={...gemba.observations.find(observation=>observation.type==='Issue')!,id:'GW-CROSS-OBS-01',gembaId:'GW-CROSS',title:'Cross-zone physical item',description:'Fixture needing review',location:'Office workbench',actionId:undefined,redTagId:undefined,evidence:[{id:'CROSS-EV',name:'source.png',url:'/demo-5s/not-good-example.png',uploadedAt:'2026-10-19',uploadedBy:'Lakshman'}]};
+ gemba.walks.push({...base,id:'GW-CROSS',zone:'Zone B',observationIds:[source.id],actionIds:[]});gemba.observations.push(source);
+ await page.addInitScript(({users,gemba})=>{if(localStorage.getItem('cross-zone-seeded'))return;localStorage.setItem('cross-zone-seeded','1');localStorage.setItem('five-s-administration-users-v1',JSON.stringify(users));localStorage.setItem('ops-gemba-v1',JSON.stringify(gemba));localStorage.setItem('cross-zone-unrelated','preserved');},{users,gemba});
+ await page.goto('/gemba/GEM-2026-015/walk');
+ const own=page.getByRole('button',{name:'Create Red Tag',exact:true}).first();await expect(own).toBeDisabled();
+ await expect(page.getByText('You cannot raise a Red Tag in your assigned Zone. A Red Tag must be raised by an authorized user from another Zone.',{exact:true}).first()).toBeVisible();
+ const before=await page.evaluate(()=>localStorage.getItem('ops-gemba-v1'));
+ await own.evaluate(button=>(button as HTMLButtonElement).click());expect(await page.evaluate(()=>localStorage.getItem('ops-gemba-v1'))).toBe(before);
+ await page.goto('/gemba/GW-CROSS/walk');await page.getByRole('button',{name:'Create Red Tag',exact:true}).click();
+ const dialog=page.getByRole('dialog');await expect(dialog.getByLabel('Item Name *',{exact:true})).toHaveValue(source.title);await expect(dialog.getByLabel('Location *',{exact:true})).toHaveValue(source.location);
+ await dialog.getByRole('combobox',{name:'Tagging Category',exact:true}).click();await page.getByRole('option',{name:'Usage',exact:true}).click();await dialog.getByRole('combobox',{name:'Tagging Reason',exact:true}).click();await page.getByRole('option',{name:'Damaged',exact:true}).click();await dialog.getByRole('button',{name:'Create Red Tag',exact:true}).dblclick();await dialog.getByRole('button',{name:'View Red Tag',exact:true}).click();
+ await expect(page).toHaveURL(/\/5s\/red\/RT-000001$/);await expect(page.getByRole('button',{name:'Keep',exact:true})).toHaveCount(0);
+ await page.evaluate(()=>localStorage.setItem('five-s-demo-role','leader'));await page.reload();await page.getByRole('button',{name:'Keep',exact:true}).click();await page.getByLabel('Keep Justification',{exact:true}).fill('Retain inspected source item');await page.getByRole('button',{name:'Confirm Keep & Close',exact:true}).click();await expect(page.getByText('Kept · Closed',{exact:true})).toBeVisible();await page.reload();await expect(page.getByText('Retain inspected source item',{exact:true})).toBeVisible();
+ await page.evaluate(()=>localStorage.setItem('five-s-demo-role','auditor'));await page.goto('/5s/red/create');
+ await expect(page.getByRole('combobox',{name:'Red Tag Zone',exact:true})).toHaveText('Zone B');await page.getByRole('combobox',{name:'Red Tag Zone',exact:true}).click();await expect(page.getByRole('option',{name:'Zone A',exact:true})).toHaveCount(0);await page.keyboard.press('Escape');
+ await page.getByPlaceholder('e.g. Obsolete welding fixture').fill('Direct cross-zone item');await page.getByPlaceholder('Describe the item and its current condition.').fill('Direct creation must use the target reviewer');await page.getByRole('button',{name:'Usage',exact:true}).click();await page.getByRole('button',{name:'Unused',exact:true}).click();await page.getByLabel('Attach Red Tag images',{exact:true}).setInputFiles({name:'direct.png',mimeType:'image/png',buffer:png});await expect(page.getByRole('status').filter({hasText:'1 of 5 photos attached'})).toBeVisible();await page.getByRole('button',{name:'Create Red Tag',exact:true}).click();await expect(page).toHaveURL(/\/5s\/red\/RT-000002$/);
+ const tags=await page.evaluate(()=>JSON.parse(localStorage.getItem('five-s-red-tags-v1')!));const direct=tags.find((tag:{id:string})=>tag.id==='RT-000002');expect(direct.review.reviewerId).toBe('USR-RUMESH');expect(direct.createdById).toBe('USR-LAKSHMAN');expect(direct.actionId).toBeUndefined();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);expect(await page.evaluate(()=>localStorage.getItem('cross-zone-unrelated'))).toBe('preserved');await page.screenshot({path:info.outputPath('cross-zone-under-review.png'),fullPage:true});
+});

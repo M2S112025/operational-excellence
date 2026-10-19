@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
@@ -48,7 +48,12 @@ function createScheduled() {
 }
 
 describe("Team Feedback #3/#4 — Audit scheduling lifecycle", () => {
-  beforeEach(() => setFiveSAudits([]));
+  beforeEach(() => {
+    const values = new Map<string, string>();
+    vi.stubGlobal("window", { localStorage: { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => values.set(key, value), removeItem: (key: string) => values.delete(key) } });
+    setFiveSAudits([]);
+  });
+  afterEach(() => vi.unstubAllGlobals());
 
   it("keeps Start Now on the canonical active Audit path", () => {
     const audit = createFiveSAudit({ title: "Generated", plant: "Test Plant", department: "Production", area: "Zone B", auditor: "Test Auditor", dueDate: "2099-02-01", sections });

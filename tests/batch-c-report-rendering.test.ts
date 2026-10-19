@@ -1,6 +1,6 @@
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { RedTag } from "@/features/five-s/red-tag/types";
 import type { MyAction } from "@/features/five-s/types/my-actions";
 import { UiPreferencesProvider } from "@/components/preferences/ui-preferences-provider";
@@ -9,7 +9,9 @@ vi.mock("@/features/five-s/red-tag/store", () => ({ useRedTags: () => records.ta
 vi.mock("@/lib/actions/action-store", async original => ({ ...await original<typeof import("@/lib/actions/action-store")>(), useActionStore: () => [] }));
 import { RedTagReportPage } from "@/features/five-s/red-tag/red-tag-report-page";
 import CanonicalReport from "@/features/reports/canonical-action-report-page";
-afterEach(() => vi.restoreAllMocks());
+// Keep the report generation date distinct from the baseline due-date fixture.
+beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(new Date("2026-10-18T12:00:00+05:30")); });
+afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 const tag: RedTag = { id: "RT-C", tagNumber: "RT-C", itemName: "Temporary fixture", plant: "Egmore Plant", zone: "Zone A", section: "Office", quantity: 1, reason: "Unused", remarks: "Test", createdById: "USR-LAKSHMAN", createdByName: "Lakshman", createdAt: "2026-10-01", status: "Decision Made", decisionRecord: { type: "keep", decidedAt: "2026-10-16", decidedByUserId: "USR-LAKSHMAN", decidedByName: "Lakshman" }, imageUrl: "data:image/jpeg;base64,initial", history: [] };
 function redReport() { return renderToStaticMarkup(React.createElement(UiPreferencesProvider, null, React.createElement(RedTagReportPage, { tagId: tag.id }))); }
 describe("Batch C report output correctness", () => {

@@ -1,3 +1,4 @@
+import { newestCreatedFirst } from "@/lib/records/record-order";
 import { canReviewAction } from "@/lib/actions/action-store";
 import type { AdminUser } from "@/features/five-s/administration/types";
 import type { ActionSourceModule, MyAction, MyActionPriority, MyActionStatus } from "@/features/five-s/types/my-actions";
@@ -7,7 +8,6 @@ import {
   getActionUpdatedAt,
   inferActionSourceModule,
   isActionOverdue,
-  sortActionsByUrgency,
 } from "@/lib/actions/action-config";
 
 export type ActionCenterTab = "my-actions" | "created-by-me" | "team-actions" | "awaiting-review" | "completed";
@@ -80,7 +80,7 @@ function dueDays(action: MyAction, now: Date) {
 
 export function filterActionCenterItems(actions: MyAction[], filters: ActionCenterFilters, now = new Date()) {
   const query = filters.search.trim().toLowerCase();
-  return sortActionsByUrgency(actions.filter((action) => {
+  return newestCreatedFirst(actions.filter((action) => {
     const matchesSearch = !query || [action.id, action.title, action.description, action.sourceTitle, action.sourceId, action.plant, action.area, action.responsiblePersonName, action.assignedTo].some((value) => value?.toLowerCase().includes(query));
     const matchesSource = filters.source === "All" || inferActionSourceModule(action) === filters.source;
     const matchesStatus = filters.status === "All" ||
@@ -99,7 +99,7 @@ export function filterActionCenterItems(actions: MyAction[], filters: ActionCent
       (filters.due === "Tomorrow" && days === 1) ||
       (filters.due === "Next 7 days" && days >= 0 && days <= 7);
     return matchesSearch && matchesSource && matchesStatus && matchesPriority && matchesPlant && matchesZone && matchesAssigned && matchesDue;
-  }), now);
+  }));
 }
 
 export function getActionCenterCounts(actions: MyAction[], user: DemoUser, adminUser: AdminUser | undefined, now = new Date()) {

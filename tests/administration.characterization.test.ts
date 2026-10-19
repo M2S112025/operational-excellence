@@ -1,10 +1,11 @@
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { describe,expect,it,vi } from "vitest";
 import { DEMO_USERS } from "@/lib/current-user";
 import { ROLE_PRESETS,hasPermission,permissionsForRoles } from "@/features/five-s/administration/permissions";
 import type { AdminUserInput } from "@/features/five-s/administration/types";
 
 function storage(){const values=new Map<string,string>();return{getItem:(key:string)=>values.get(key)??null,setItem:(key:string,value:string)=>values.set(key,value),removeItem:(key:string)=>values.delete(key)}}
-async function adminStore(localStorage=storage()){vi.resetModules();vi.stubGlobal("window",{localStorage});vi.stubGlobal("localStorage",localStorage);vi.stubGlobal("crypto",{randomUUID:()=>"new-user"});return import("@/features/five-s/administration/store")}
+async function adminStore(localStorage=storage()){vi.resetModules();vi.stubGlobal("window",{localStorage}); authenticateDemoFixture();vi.stubGlobal("localStorage",localStorage);vi.stubGlobal("crypto",{randomUUID:()=>"new-user"});return import("@/features/five-s/administration/store")}
 const input:AdminUserInput={employeeId:"EMP-NEW",name:"New Member",email:"new.member@example.com",plant:"Egmore Plant",status:"Active",roles:["Zone Member"],zoneMemberships:[{zone:"Zone B",responsibility:"Member"}],permissions:permissionsForRoles(["Zone Member"])};
 
 describe("Administration users and permissions",()=>{

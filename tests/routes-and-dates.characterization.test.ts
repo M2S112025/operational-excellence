@@ -65,8 +65,14 @@ describe("current 5S route surface", () => {
       const source = read(file);
       expect(source).toContain('sourceModule: "audit"');
       expect(source).toContain("sourceId: audit.id");
-      expect(source).toContain('sourceLabel: "Audit"');
-      expect(source).toContain("sourceObservationId: question.id");
+      if (file.endsWith("FiveSAuditExecution.tsx")) {
+        expect(source).toContain("<CreateLinkedActionDialog");
+        expect(read("features/actions/create-linked-action-dialog.tsx")).toContain("sourceLabel: context.source");
+        expect(source).toContain("sourceObservationId: activeActionQuestion.id");
+      } else {
+        expect(source).toContain('sourceLabel: "Audit"');
+        expect(source).toContain("sourceObservationId: question.id");
+      }
     }
   });
 });

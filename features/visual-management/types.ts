@@ -87,6 +87,7 @@ export interface VisualManagementDecision {
 
 export interface VisualManagementMeeting {
   id: string;
+  createdAt?: string;
   boardId: string;
   /** Immutable display snapshot used after a Board is renamed or deactivated. */
   boardName?: string;

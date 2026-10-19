@@ -1,4 +1,6 @@
 "use client";
+
+import { createImprovementFromGemba, transferAvailableGembaEvidence } from "@/lib/gemba/gemba-integration";
 import { OpsPersonSelect } from "@/components/ops/ops-person-select";
 
 /**
@@ -9,7 +11,7 @@ import { OpsPersonSelect } from "@/components/ops/ops-person-select";
  * Allows creating a Continuous Improvement record from a Gemba Opportunity observation.
  */
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { OpsFeedback } from "@/components/ops/ops-feedback";
 import { Lightbulb } from "lucide-react";
@@ -19,15 +21,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { useModuleEntitlements } from "@/lib/module-entitlements";
 import { useCurrentUser } from "@/lib/current-user";
-import { createImprovement } from "@/features/five-s/continuous-improvement/store";
 import type { ImprovementBenefitType, TimeUnit } from "@/features/five-s/continuous-improvement/types";
 import { IMPROVEMENT_BENEFIT_TYPES } from "@/features/five-s/continuous-improvement/config";
 import { selectableImprovementOwners } from "@/features/five-s/continuous-improvement/owner";
 import { canCreateImprovement } from "@/features/five-s/continuous-improvement/access";
 import { useAdminUsers } from "@/features/five-s/administration/store";
 import type { GembaObservation } from "@/features/gemba/types";
-import { linkGembaObservationToImprovement } from "@/lib/gemba/gemba-relationships";
 
 interface CreateCIFromGembaProps {
   open: boolean;
@@ -62,9 +63,11 @@ export function CreateCIFromGembaDialog({
   zone,
   onCreated,
 }: CreateCIFromGembaProps) {
+  const creationGuard = useRef(false);
   const [pendingId, setPendingId] = useState<string>();
   const [linkedId, setLinkedId] = useState<string>();
   const currentUser = useCurrentUser();
+  const moduleAccess = useModuleEntitlements();
   const adminUsers = useAdminUsers();
   const adminUser = adminUsers.find((u) => u.id === currentUser.id);
   const ownerOptions = selectableImprovementOwners(adminUsers, plant, zone);
@@ -84,8 +87,9 @@ export function CreateCIFromGembaDialog({
   
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
+  const [evidenceNotice, setEvidenceNotice] = useState("");
 
-  const canCreate = canCreateImprovement(adminUser, currentUser);
+  const canCreate = moduleAccess.continuousImprovement && observation.type === "Opportunity" && canCreateImprovement(adminUser, currentUser);
 
   function handleClose() {
     if (creating) return;
@@ -93,6 +97,7 @@ export function CreateCIFromGembaDialog({
   }
 
   async function handleCreate() {
+    if (creationGuard.current) return;
     if (!canCreate) {
       setError("You do not have permission to create Continual Improvements.");
       return;
@@ -128,12 +133,16 @@ export function CreateCIFromGembaDialog({
       return;
     }
 
+    creationGuard.current = true;
     setCreating(true);
     setError("");
 
     try {
       // Create CI using canonical store command
-      const improvement = pendingId ? { id: pendingId } : createImprovement({
+      const transfer = pendingId ? {available:[],unavailable:[]} : await transferAvailableGembaEvidence(observation.evidence);
+      const beforeEvidence = transfer.available;
+      setEvidenceNotice(transfer.unavailable.length ? `${transfer.unavailable.length} source photo(s) are unavailable and were not copied. The original observation remains linked.` : "");
+      const improvement = await createImprovementFromGemba(walkId, observation.id, {
         title: title.trim(),
         issueDescription: problem.trim(),
         proposedImprovement: proposedImprovement.trim(),
@@ -146,8 +155,8 @@ export function CreateCIFromGembaDialog({
         plant,
         zone,
         memberIds: [],
-        beforeEvidence: [],
-      }, currentUser);
+        beforeEvidence,
+      }, currentUser, setPendingId, pendingId);
 
       if (!improvement) {
         setError("Failed to create Continual Improvement. Please try again.");
@@ -156,7 +165,6 @@ export function CreateCIFromGembaDialog({
       }
 
       setPendingId(improvement.id);
-      linkGembaObservationToImprovement(walkId, observation.id, improvement.id, observation.title, currentUser);
       setLinkedId(improvement.id);
       setCreating(false);
       onCreated?.(improvement.id);
@@ -166,7 +174,7 @@ export function CreateCIFromGembaDialog({
         err instanceof Error ? err.message : "Failed to create improvement"
       );
       setCreating(false);
-    }
+    } finally { creationGuard.current = false; }
   }
 
   return (
@@ -188,6 +196,7 @@ export function CreateCIFromGembaDialog({
             <OpsFeedback tone="error" message={error} />
           )}
 
+          {evidenceNotice && <p role="status" className="text-sm text-muted-foreground">{evidenceNotice}</p>}
           {linkedId && <div className="grid gap-3"><OpsFeedback tone="success" message={`${linkedId} created and linked. You can continue the Gemba walk.`} /><Link className="font-medium text-primary underline" href={`/continuous-improvement/${encodeURIComponent(linkedId)}`}>Open improvement {linkedId}</Link><Button variant="outline" onClick={handleClose}>Continue Gemba walk</Button></div>}
           {pendingId && !linkedId && <p className="text-sm">Existing improvement {pendingId} will be reused when you retry. No duplicate will be created.</p>}
           {/* Title - prefilled from Gemba */}

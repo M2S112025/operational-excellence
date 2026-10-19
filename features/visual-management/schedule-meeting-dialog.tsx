@@ -1,4 +1,6 @@
 "use client";
+
+import { withBusinessRecordCreation } from "@/lib/records/module-records";
 import { getCurrentDemoUser } from "@/lib/current-user";
 
 import { useState } from "react";
@@ -44,7 +46,8 @@ export function ScheduleMeetingDialog({
   const [scope, setScope] = useState<"single" | "future" | "series">("single");
   const [error, setError] = useState("");
 
-  function save() {
+  async function save() {
+    try {
     const recurrence: MeetingRecurrence = {
       type: repeat,
       interval,
@@ -57,19 +60,24 @@ export function ScheduleMeetingDialog({
     if (endType === "count" && endCount < 1) return setError("Enter a valid number of meetings.");
     if (!attendees.length) return setError("Add at least one expected attendee.");
     if (schedule && occurrence) {
-      const changed = changeMeetingSchedule(schedule.id, occurrence.occurrenceDate, scope, {
+      const changed = await withBusinessRecordCreation(() => changeMeetingSchedule(schedule.id, occurrence.occurrenceDate, scope, {
         date,
         time,
         durationMinutes,
         attendees,
         ...(scope === "single" ? {} : { recurrence }),
-      }, undefined, getCurrentDemoUser());
+      }, undefined, getCurrentDemoUser()));
       if (!changed) return setError("The meeting could not be updated.");
     } else {
-      const result = createMeetingSchedule({ boardId: board.id, date, time, durationMinutes, recurrence, attendees, createdByUserId: actorId });
+      const result = await withBusinessRecordCreation(() => createMeetingSchedule({ boardId: board.id, date, time, durationMinutes, recurrence, attendees, createdByUserId: actorId }));
       if (!result.success) return setError(result.error);
     }
     onOpenChange(false);
+
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to save this record. Please retry.";
+      setError(message);
+    }
   }
 
   return (

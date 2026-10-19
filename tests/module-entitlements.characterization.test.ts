@@ -1,3 +1,4 @@
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 afterEach(() => vi.unstubAllGlobals());
@@ -10,8 +11,9 @@ describe("organization module access", () => {
       getItem: (key: string) => values.get(key) ?? null,
       setItem: (key: string, value: string) => values.set(key, value),
       removeItem: (key: string) => values.delete(key),
-    } });
+    } }); authenticateDemoFixture();
     vi.resetModules();
+    const identity = await import("@/lib/current-user"); identity.setDemoRole("superAdmin");
     const store = await import("@/lib/module-entitlements");
     const initial = store.getOrganizationAccess("abc-manufacturing");
     expect(initial.gemba).toBe(true);

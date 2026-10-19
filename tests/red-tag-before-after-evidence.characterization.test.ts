@@ -1,3 +1,6 @@
+import { configureRedTagMemberFixture } from "./helpers/red-tag-actors";
+let fixtureIdentity: Awaited<ReturnType<typeof configureRedTagMemberFixture>>;
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
@@ -20,8 +23,9 @@ function storage() {
 async function setup() {
   vi.resetModules();
   const localStorage = storage();
-  vi.stubGlobal("window", { localStorage, alert: vi.fn() });
+  vi.stubGlobal("window", { localStorage, alert: vi.fn() }); authenticateDemoFixture();
   vi.stubGlobal("localStorage", localStorage);
+  fixtureIdentity = await configureRedTagMemberFixture();
   let sequence = 0;
   vi.stubGlobal("crypto", { randomUUID: () => `feedback-34-${++sequence}` });
   return { store: await import("@/features/five-s/red-tag/store"), localStorage };
@@ -29,7 +33,7 @@ async function setup() {
 
 afterEach(() => { vi.resetModules(); vi.unstubAllGlobals(); });
 
-const creator = DEMO_USERS.auditor;
+const creator = DEMO_USERS.responsible;
 const reviewer = DEMO_USERS.auditor;
 const beforeUrl = "data:image/jpeg;base64,before-photo";
 const after = [{ id: "RTE-AFTER", name: "after.jpg", url: "data:image/jpeg;base64,after-photo", uploadedBy: reviewer.name, uploadedAt: "2026-09-24T08:00:00.000Z" }];
@@ -39,8 +43,10 @@ function input(imageUrl = beforeUrl) {
 }
 
 function decision(store: Awaited<ReturnType<typeof setup>>["store"], type: "keep" | "relocate" | "return" | "repair" | "sell_reuse" | "scrap" | "further_evaluation") {
+  fixtureIdentity.setDemoRole("responsible");
   const tag = store.createRedTagV2(input(beforeUrl), creator)!;
   store.submitRedTagForReview(tag.id, { reviewerId: reviewer.id, reviewerName: reviewer.name }, creator);
+  fixtureIdentity.setDemoRole("auditor");
   return store.recordRedTagDecision(tag.id, { decision: type, comments: "Approved" }, reviewer)!;
 }
 
@@ -50,9 +56,41 @@ describe("Feedback #34 Red Tag before and after evidence", () => {
     const missingBefore = input();
     Reflect.deleteProperty(missingBefore, "imageUrl");
     expect(store.createRedTagV2(missingBefore, creator)).toBeUndefined();
-    const tag = store.createRedTagV2(input(beforeUrl), creator)!;
+    fixtureIdentity.setDemoRole("responsible");
+  const tag = store.createRedTagV2(input(beforeUrl), creator)!;
     expect(tag).toMatchObject({ imageUrl: beforeUrl });
     expect(store.getRedTag(tag.id)).toMatchObject({ imageUrl: beforeUrl });
+  });
+
+  it("persists multiple identification photos after reload and exposes them without copying to linked Actions", async () => {
+    const { store, localStorage } = await setup();
+    const photos = [
+      { id: "photo-one", name: "front.jpg", url: beforeUrl, uploadedBy: creator.name, uploadedAt: "2026-10-19" },
+      { id: "photo-two", name: "side.jpg", url: "data:image/jpeg;base64,side", uploadedBy: creator.name, uploadedAt: "2026-10-19" },
+    ];
+    const tag = store.createAndSubmitRedTagV2({ ...input(), identificationEvidence: photos }, creator, reviewer)!;
+    expect(tag.identificationEvidence).toEqual(photos);
+    expect(tag.imageUrl).toBe(beforeUrl);
+    expect(JSON.parse(localStorage.getItem("five-s-red-tags-v1")!).find((item: {id:string}) => item.id === tag.id).identificationEvidence).toEqual(photos);
+    vi.resetModules();
+    const reloaded = (await import("@/features/five-s/red-tag/store")).getRedTag(tag.id)!;
+    expect(reloaded.identificationEvidence).toEqual(photos);
+    const { resolveActionSourceBeforeEvidence } = await import("@/lib/actions/action-evidence");
+    const { MY_ACTIONS } = await import("@/features/five-s/data/my-actions-data");
+    const action = { ...MY_ACTIONS[0], sourceModule: "redTag" as const, source: "Red Tag" as const, sourceId: tag.id, issueEvidence: [] };
+    expect(resolveActionSourceBeforeEvidence(action, [reloaded]).evidence.map(photo => photo.url)).toEqual(photos.map(photo => photo.url));
+    const { getRedTagIdentificationEvidence } = await import("@/features/five-s/red-tag/types");
+    expect(getRedTagIdentificationEvidence({ ...reloaded, identificationEvidence: undefined })).toHaveLength(1);
+  });
+
+  it("rejects excessive or inconsistent photo collections without persisting a record", async () => {
+    const { store, localStorage } = await setup();
+    const photo = { id: "photo-one", name: "front.jpg", url: beforeUrl, uploadedBy: creator.name, uploadedAt: "2026-10-19" };
+    const before = localStorage.getItem("five-s-red-tags-v1");
+    for (const identificationEvidence of [[], Array.from({length:6}, (_, index) => ({...photo,id:String(index)})), [{...photo,url:"different"}], [photo,photo]]) {
+      expect(store.createRedTagV2({...input(),identificationEvidence},creator)).toBeUndefined();
+    }
+    expect(localStorage.getItem("five-s-red-tags-v1")).toBe(before);
   });
 
   it("keeps notes, responsible confirmation, After evidence, and linked Action completion as disposition guards", async () => {
@@ -92,7 +130,9 @@ describe("Feedback #34 Red Tag before and after evidence", () => {
 
   it("enforces missing Before and missing After in the canonical close function", async () => {
     const { store, localStorage } = await setup();
+    fixtureIdentity.setDemoRole("responsible");
     const tag = store.createRedTagV2(input(beforeUrl), creator)!;
+    fixtureIdentity.setDemoRole("auditor");
     const key = store.RED_TAG_STORAGE_KEY;
     const saved = JSON.parse(localStorage.getItem(key)!) as Array<Record<string, unknown>>;
     Object.assign(saved[0], { status: "Awaiting Verification", closure: { verificationResult: "Passed", verificationDetails: "Checked", verifiedAt: "2026-09-24T09:00:00.000Z", verifiedByUserId: reviewer.id, verifiedByName: reviewer.name } });
@@ -132,7 +172,7 @@ describe("Feedback #34 Red Tag before and after evidence", () => {
 
   it("keeps UI evidence roles, camera/upload semantics, detail comparison, Action separation, and QR identity explicit", async () => {
     const source = readFileSync(resolve(process.cwd(), "features/five-s/red-tag/red-tag-module.tsx"), "utf8");
-    expect(source).toContain('label="Before Photo *"');
+    expect(source).toContain('label="Image *"');
     expect(source).toContain('label="After Photo *"');
     expect(source).toContain("OpsCameraCapture");
     expect(source).toContain("Disposition Outcome");

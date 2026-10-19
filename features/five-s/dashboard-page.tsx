@@ -1,5 +1,10 @@
 "use client";
 
+import { newestCreatedFirst } from "@/lib/records/record-order";
+
+
+import { withBusinessRecordCreation } from "@/lib/records/module-records";
+
 import { scoringPercentage } from "@/lib/five-s/scoring-policy";
 import FiveSPageHeader from "./components/FiveSPageHeader";
 import { PageContainer } from "@/components/layout/page-container";
@@ -191,7 +196,7 @@ function createEmptyFiveSSections(): FiveSSection[] {
    ========================================================= */
 
 export function LegacyFiveSDashboardPage() {
-  const audits = useFiveSAuditStore();
+  const audits = newestCreatedFirst(useFiveSAuditStore());
   const actions = useActionStore();
   const { t } = useI18n();
   const moduleAccess = useModuleEntitlements();
@@ -336,7 +341,7 @@ export function LegacyFiveSDashboardPage() {
      CREATE AUDIT
      ======================================================= */
 
-  function handleCreateAudit(input: {
+  async function handleCreateAudit(input: {
     title: string;
     plant: string;
     department: string;
@@ -351,7 +356,7 @@ export function LegacyFiveSDashboardPage() {
     if (!canAuditZone({ primaryZone: auditorZone }, input.area)) return;
     const sections = createAuditChecklistSnapshot(createEmptyFiveSSections());
 
-    const audit = createFiveSAudit({
+    const audit = await withBusinessRecordCreation(() => createFiveSAudit({
       title: input.title,
 
       plant: input.plant,
@@ -369,7 +374,7 @@ export function LegacyFiveSDashboardPage() {
       scheduledTime: input.scheduledTime,
 
       sections,
-    }, { startNow: input.startNow });
+    }, { startNow: input.startNow }));
 
     setIsCreatingAudit(false);
 

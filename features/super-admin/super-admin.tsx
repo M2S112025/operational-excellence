@@ -65,6 +65,7 @@ export function OrganizationModulesPage({ organizationId }: { organizationId: st
   const [changes, setChanges] = React.useState<Partial<OrganizationAccess>>({});
   const [pendingDisable, setPendingDisable] = React.useState<AccessCapabilityId | null>(null);
   const [success, setSuccess] = React.useState(false);
+  const [error, setError] = React.useState("");
   if (!organization) return <OrganizationMissing />;
 
   const draft: OrganizationAccess = { ...persisted, ...changes };
@@ -80,10 +81,11 @@ export function OrganizationModulesPage({ organizationId }: { organizationId: st
     setPendingDisable(null);
   }
   function save() {
-    if (saveOrganizationAccess(organizationId, draft)) { setChanges({}); setSuccess(true); }
+    setSuccess(false); setError(""); if (saveOrganizationAccess(organizationId, draft)) { setChanges({}); setSuccess(true); } else setError("Unable to save module access. Check your platform administrator session and browser storage, then retry.");
   }
 
   return <PageContainer className="pb-20"><FiveSPageHeader eyebrow="Super Admin / Organizations" title={organization.name} description="Module Access — Control which OPS modules are available to this organization." /><OrganizationTabs organization={organization} active="modules" />
+    {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     {success && <div role="status" className="flex items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/[0.08] px-4 py-3 text-sm text-emerald-700 dark:text-emerald-400"><CheckCircle2 className="size-4" />Module access updated successfully.</div>}
     <AccessSection title="Operational Excellence Modules" capabilities={OPERATIONAL_MODULES} access={draft} onChange={requestChange} />
     <AccessSection title="Shared Platform Capabilities" capabilities={SHARED_CAPABILITIES} access={draft} onChange={requestChange} />

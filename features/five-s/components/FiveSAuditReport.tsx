@@ -1,4 +1,5 @@
 "use client";
+import { useActionEvidenceUrl } from "@/lib/actions/use-action-evidence-url";
 
 import { scoringPercentage, auditScorePercentage, questionComplianceResponse, getAuditScoringValues, scoreForComplianceResponse, type ComplianceResponse } from "@/lib/five-s/scoring-policy";
 import { ArrowLeft, FileText, Printer } from "lucide-react";
@@ -54,7 +55,7 @@ function ReportSection({ title, children }: { title: string; children: React.Rea
 }
 
 function EvidenceItem({ evidence }: { evidence: FiveSEvidence | NonNullable<MyAction["issueEvidence"]>[number] }) {
-  const url = "dataUrl" in evidence ? evidence.dataUrl : evidence.url;
+  const url = useActionEvidenceUrl({url:"dataUrl" in evidence ? evidence.dataUrl : evidence.url,storageKey:evidence.storageKey});
   return (
     <div className="audit-report-block flex min-w-0 items-center gap-2 rounded-md border border-slate-200 p-2 dark:border-slate-700">
       {evidence.type === "image" && url ? (
