@@ -1,5 +1,7 @@
 "use client";
 
+import { CanonicalLinkedRecords } from "@/components/ops/ops-linked-records";
+
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -65,6 +67,7 @@ export default function VisualImprovementDetailPage({ improvementId, initialTab 
 
     <section aria-label="Improvement ownership" className="grid overflow-hidden rounded-xl border bg-card sm:grid-cols-2 lg:grid-cols-4"><HeaderFact icon={UserRound} label="Owner" value={item.ownerName} /><HeaderFact icon={MapPin} label="Plant / Zone" value={`${item.plant} · ${item.zone}`} /><HeaderFact icon={Sparkles} label="Category" value={item.category} /><HeaderFact icon={CalendarDays} label="Updated" value={formatVisualDate(item.updatedAt, true)} /></section>
 
+    <CanonicalLinkedRecords currentRecord={{module:"visualImprovement",recordId:item.id}} />
     <VisualImprovementTabs label="Visual Improvement record" active={active} onChange={(value) => setActive(value as DetailTab)} tabs={[{ id: "before-after", label: "Before & After", count: item.beforeEvidence.length + item.afterEvidence.length }, { id: "overview", label: "Overview" }, { id: "benefits", label: "Benefits" }, { id: "actions", label: "Actions", count: item.actionId ? 1 : 0 }, { id: "activity", label: "Activity", count: item.activity.length }, { id: "review", label: "Review" }]} />
 
     {active === "before-after" && <Card className="gap-0 overflow-hidden"><CardHeader className="border-b pb-4"><CardTitle className="text-[15px]">Before & After</CardTitle><p className="text-xs text-muted-foreground">The visible transformation is the primary evidence for this improvement.</p></CardHeader><CardContent className="p-4 sm:p-5"><BeforeAfterEvidence item={item} onAddAfter={editable ? () => router.push(`/visual-improvement/${encodeURIComponent(item.id)}/edit`) : undefined} /></CardContent></Card>}

@@ -1,3 +1,4 @@
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ContinuousImprovement, ImprovementStatus } from "@/features/five-s/continuous-improvement/types";
 import type { AdminUser } from "@/features/five-s/administration/types";
@@ -10,7 +11,7 @@ async function setup(userOverrides: Record<string, Partial<AdminUser>> = {}) {
   vi.resetModules();
   const values = new Map<string, string>();
   const localStorage = { getItem: (key: string) => values.get(key) ?? null, setItem: vi.fn((key: string, value: string) => { values.set(key, value); }), removeItem: (key: string) => { values.delete(key); } };
-  vi.stubGlobal("window", { localStorage, alert: vi.fn() });
+  vi.stubGlobal("window", { localStorage, alert: vi.fn() }); authenticateDemoFixture();
   const admin = await import("@/features/five-s/administration/store");
   localStorage.setItem(usersKey, JSON.stringify(admin.ADMIN_USER_SEEDS.map(user => ({ ...user, ...userOverrides[user.id] }))));
   const ci = await import("@/features/five-s/continuous-improvement/store");

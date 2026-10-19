@@ -1,3 +1,4 @@
+import { previewModuleRecordId } from "@/lib/records/module-records";
 import type { ContinuousImprovement, ImprovementBenefitType, ImprovementStatus } from "./types";
 
 export const IMPROVEMENT_STATUSES: readonly ImprovementStatus[] = [
@@ -57,13 +58,8 @@ export function matchesImprovementQuickFilter(item: Pick<ContinuousImprovement, 
   return definition ? (definition.statuses as readonly ImprovementStatus[]).includes(item.status) : true;
 }
 
-export function generateImprovementId(records: readonly Pick<ContinuousImprovement, "id">[], year = new Date().getFullYear()) {
-  const prefix = `CI-${year}-`;
-  const next = records.reduce((maximum, record) => {
-    if (!record.id.startsWith(prefix)) return maximum;
-    return Math.max(maximum, Number(record.id.slice(prefix.length)) || 0);
-  }, 0) + 1;
-  return `${prefix}${String(next).padStart(3, "0")}`;
+export function generateImprovementId(records: readonly Pick<ContinuousImprovement, "id">[]) {
+  return previewModuleRecordId("continuousImprovement", records.map(record => record.id));
 }
 
 // Pipeline groups can contain several existing lifecycle statuses. Preserve the

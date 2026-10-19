@@ -1,5 +1,9 @@
 "use client";
 
+import { registerActionCreationSource } from "@/lib/actions/action-source-access";
+
+import { allocateModuleRecordId, registerRecordCreationStore } from "@/lib/records/module-records";
+
 import { useSyncExternalStore } from "react";
 import { ORGANIZATION_ZONE_SEEDS } from "@/lib/organization-store";
 import { selectableImprovementOwners } from "./owner";
@@ -11,12 +15,13 @@ import { createNotification } from "@/lib/notifications/notification-store";
 import { getActionById } from "@/lib/actions/action-store";
 import {
   canCompleteReview,
+  canCreateImprovementAction,
   canEditProposal,
   canImplementImprovement,
   canReviewProposal,
   canViewImprovement,
 } from "./access";
-import { generateImprovementId, IMPROVEMENT_STATUSES, matchesImprovementQuickFilter } from "./config";
+import { IMPROVEMENT_STATUSES, matchesImprovementQuickFilter } from "./config";
 import type {
   ContinuousImprovement,
   CreateImprovementInput,
@@ -245,7 +250,7 @@ export function createImprovement(input: CreateImprovementInput, user: DemoUser,
   if (input.memberIds.some((id) => !allowed.has(id))) throw new Error("Team members must belong to your Zone.");
   if (!input.title.trim() || !input.issueDescription.trim() || input.estimatedTime <= 0) throw new Error("Proposal requirements are not met.");
   const now = new Date().toISOString();
-  const id = generateImprovementId(records, new Date(now).getFullYear());
+  const id = allocateModuleRecordId("continuousImprovement", records.map(item => item.id));
   const beforeEvidence = input.beforeEvidence ?? input.existingPhotos ?? [];
   const memberIds = [...new Set([...(allowed.has(user.id) ? [user.id] : []), ...input.memberIds])];
   const memberNames = memberIds.map((id) => zone.members.find((member) => member.id === id)?.name ?? (id === user.id ? user.name : id));
@@ -409,3 +414,10 @@ function notifyReviewer(item: ContinuousImprovement, title: string, message: str
 function notifyParticipants(item: ContinuousImprovement, title: string, message: string) {
   for (const recipientUserId of new Set([item.proposedById, item.ownerId, ...item.memberIds].filter(Boolean))) createNotification({ recipientUserId, title, message, href: `/continuous-improvement/${encodeURIComponent(item.id)}` });
 }
+
+registerRecordCreationStore(STORAGE_KEY, () => { loaded = false; load(); });
+
+registerActionCreationSource("continuousImprovement", (input, user, identity) => {
+  const item = input.sourceId ? getImprovementById(input.sourceId) : undefined;
+  return { record: item, zone: item?.zone, permitted: Boolean(item && canCreateImprovementAction(user, identity, item)) };
+});

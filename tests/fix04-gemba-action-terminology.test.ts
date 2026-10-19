@@ -6,7 +6,7 @@ import type { MyAction } from "@/features/five-s/types/my-actions";
 import { UiPreferencesProvider } from "@/components/preferences/ui-preferences-provider";
 const records = vi.hoisted(() => ({ observations: [] as GembaObservation[], actions: [] as MyAction[] }));
 // Render the preview's actual contents for copy QA without opening a browser dialog.
-vi.mock("@/components/ui/dialog", () => ({ Dialog: ({ children }: { children: React.ReactNode }) => React.createElement("div", null, children), DialogContent: ({ children, className }: { children: React.ReactNode; className: string }) => React.createElement("section", { className }, children), DialogHeader: ({ children }: { children: React.ReactNode }) => React.createElement("header", null, children), DialogTitle: ({ children }: { children: React.ReactNode }) => React.createElement("h2", null, children), DialogDescription: ({ children }: { children: React.ReactNode }) => React.createElement("p", null, children) }));
+vi.mock("@/components/ui/dialog", () => ({ DialogClose: ({ children }: { children: React.ReactNode }) => React.createElement("button", null, children), Dialog: ({ children }: { children: React.ReactNode }) => React.createElement("div", null, children), DialogContent: ({ children, className }: { children: React.ReactNode; className: string }) => React.createElement("section", { className }, children), DialogHeader: ({ children }: { children: React.ReactNode }) => React.createElement("header", null, children), DialogTitle: ({ children }: { children: React.ReactNode }) => React.createElement("h2", null, children), DialogDescription: ({ children }: { children: React.ReactNode }) => React.createElement("p", null, children) }));
 vi.mock("@/features/gemba/gemba-store", async original => { const store = await original<typeof import("@/features/gemba/gemba-store")>(); return { ...store, useGembaStore: () => ({ ...store.getGembaState(), observations: records.observations }) }; });
 vi.mock("@/lib/actions/action-store", async original => ({ ...await original<typeof import("@/lib/actions/action-store")>(), useActionStore: () => records.actions }));
 import { ObservationCard } from "@/features/gemba/gemba-components";
@@ -20,7 +20,7 @@ describe("Fix 04 — Overall issues row 11 Gemba Action terminology", () => {
     const html = render(React.createElement(ObservationCard, { observation, action }));
     expect(html).not.toContain(">Corrective Action<"); expect(html).toContain(">Action<"); expect(html).toContain("Required");
     expect(html).toContain('href="/actions/ACT-FIX04"'); expect(html).toContain(action.title); expect(html).toContain(action.status);
-    expect(html).toContain("sm:max-w-[860px]"); expect(html).toContain("max-h-[92dvh]");
+    expect(html).toContain("sm:max-w-[900px]"); expect(html).toContain("max-h-[calc(100dvh-2rem)]");
     expect({ observation, action }).toEqual(before);
   });
   it("renders canonical Action report terminology and preserves summary counts/source navigation/data", () => {

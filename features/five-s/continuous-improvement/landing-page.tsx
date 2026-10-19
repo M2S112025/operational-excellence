@@ -1,5 +1,8 @@
 "use client";
 
+import { newestCreatedFirst, compareNewestCreated, compareOldestCreated } from "@/lib/records/record-order";
+
+
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronDown, Columns3, IndianRupee, List, Plus, Search, TrendingUp, X } from "lucide-react";
@@ -74,7 +77,7 @@ function Overview({ records }: { records: ContinuousImprovement[] }) {
   const summary = getContinuousImprovementSummary(records);
   const zoneCounts = countBy(records, (item) => item.zone);
   const benefitCounts = countBy(records, (item) => item.benefitType);
-  const recent = records.filter((item) => item.status === "completed").sort((a, b) => (b.completedAt ?? b.updatedAt).localeCompare(a.completedAt ?? a.updatedAt)).slice(0, 3);
+  const recent = newestCreatedFirst(records.filter((item) => item.status === "completed")).slice(0, 3);
   const maximum = Math.max(1, ...zoneCounts.map((item) => item.value), ...benefitCounts.map((item) => item.value));
   const overviewMetrics = [
     ["Ideas Submitted", records.filter((item) => item.submittedAt).length],
@@ -102,7 +105,7 @@ function Distribution({ title, items, maximum }: { title: string; items: Array<{
 }
 
 function ReviewQueue({ records }: { records: ContinuousImprovement[] }) {
-  const sorted = [...records].sort((a, b) => (a.submittedAt ?? a.updatedAt).localeCompare(b.submittedAt ?? b.updatedAt));
+  const sorted = newestCreatedFirst(records);
   if (!sorted.length) return <Card><ImprovementEmpty title="No improvements awaiting review" description="Submitted proposals and completion packages will appear here." /></Card>;
   return <Card className="gap-0 overflow-hidden"><CardContent className="p-0"><div className="hidden overflow-x-auto md:block"><table className="w-full min-w-[960px] text-sm"><thead className="border-b bg-muted/25 text-left text-[11px] uppercase tracking-wide text-muted-foreground"><tr>{["Improvement", "Proposed By", "Plant / Zone", "Expected Benefit", "Proposed Saving", "Submitted", "Age", "Actions"].map((heading) => <th key={heading} className="px-4 py-3 font-semibold">{heading}</th>)}</tr></thead><tbody>{sorted.map((item) => <tr key={item.id} className="border-b last:border-0"><td className="max-w-xs px-4 py-3"><p className="font-medium">{item.title}</p><div className="mt-1 flex items-center gap-2"><span className="font-mono text-[10px] text-primary">{item.id}</span><ImprovementStatusBadge status={item.status} /></div></td><td className="px-4 py-3">{item.proposedByName}</td><td className="px-4 py-3 text-muted-foreground">{item.plant}<br />{item.zone}</td><td className="max-w-xs px-4 py-3 text-muted-foreground"><span className="line-clamp-2">{item.expectedBenefit}</span></td><td className="px-4 py-3 font-medium">{formatImprovementMoney(item.proposedSaving)}</td><td className="px-4 py-3 text-muted-foreground">{formatImprovementDate(item.submittedAt ?? item.updatedAt)}</td><td className="px-4 py-3">{improvementAge(item.submittedAt ?? item.createdAt)}</td><td className="px-4 py-3"><Button size="sm" nativeButton={false} render={<Link href={`/continuous-improvement/${encodeURIComponent(item.id)}?tab=review`} />}>Review</Button></td></tr>)}</tbody></table></div><div className="grid gap-3 p-3 md:hidden">{sorted.map((item) => <Link key={item.id} href={`/continuous-improvement/${encodeURIComponent(item.id)}?tab=review`} className="rounded-xl border p-4 outline-none focus-visible:ring-2 focus-visible:ring-ring"><div className="flex items-start justify-between gap-3"><span className="font-mono text-xs font-semibold text-primary">{item.id}</span><ImprovementStatusBadge status={item.status} /></div><p className="mt-2 font-semibold">{item.title}</p><p className="mt-1 text-xs text-muted-foreground">{item.proposedByName} · {item.zone} · {improvementAge(item.submittedAt ?? item.createdAt)}</p><div className="mt-3 flex items-center justify-between border-t pt-3 text-xs"><span className="line-clamp-1 text-muted-foreground">{item.expectedBenefit}</span><span className="ml-3 shrink-0 font-semibold">{formatImprovementMoney(item.proposedSaving)}</span></div></Link>)}</div></CardContent></Card>;
 }
@@ -126,7 +129,7 @@ function ImprovementList({ records, initialStage, quickFilter, onQuickFilterChan
     const haystack = `${item.id} ${item.title} ${item.issueDescription} ${item.proposedByName} ${ownerName} ${item.zone}`.toLowerCase();
     const itemDate = new Date(item.createdAt);
     return haystack.includes(search.toLowerCase()) && (!quickFilter || matchesImprovementQuickFilter(item, quickFilter)) && (quickFilter || matchesImprovementStage(item, stage)) && (plant === "All" || item.plant === plant) && (zone === "All" || item.zone === zone) && (proposer === "All" || item.proposedByName === proposer) && (owner === "All" || ownerName === owner) && (reviewer === "All" || item.reviewerName === reviewer) && (benefit === "All" || item.benefitType === benefit) && (date === "All" || (date === "This Month" ? itemDate.getMonth() === now.getMonth() && itemDate.getFullYear() === now.getFullYear() : now.getTime() - itemDate.getTime() <= 30 * 86_400_000));
-  }).sort((a, b) => sort === "Oldest" ? a.createdAt.localeCompare(b.createdAt) : sort === "Highest Proposed Saving" ? (b.proposedSaving ?? 0) - (a.proposedSaving ?? 0) : sort === "Highest Actual Saving" ? (b.actualSaving ?? 0) - (a.actualSaving ?? 0) : sort === "Longest Open" ? a.createdAt.localeCompare(b.createdAt) : b.createdAt.localeCompare(a.createdAt));
+  }).sort((a, b) => sort === "Oldest" ? compareOldestCreated(a, b) : sort === "Highest Proposed Saving" ? (b.proposedSaving ?? 0) - (a.proposedSaving ?? 0) : sort === "Highest Actual Saving" ? (b.actualSaving ?? 0) - (a.actualSaving ?? 0) : sort === "Longest Open" ? compareOldestCreated(a, b) : compareNewestCreated(a, b));
   const options = (values: string[]) => [...new Set(values)].sort();
   const quickFilterLabel = IMPROVEMENT_QUICK_FILTERS.find((item) => item.id === quickFilter)?.label;
   return <div className="grid gap-3">

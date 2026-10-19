@@ -69,7 +69,7 @@ for (const width of [320, 1440]) test(`Action evidence survives quota pressure, 
   const newDownload = await newDownloadEvent;
   expect(await readFile((await newDownload.path())!)).toEqual(file.buffer);
   const firstRevision = page.locator('details').filter({ has: page.locator('summary', { hasText: 'Submission revision 1 ·' }) });
-  const beforeGroup = firstRevision.getByRole('region', { name: 'Before evidence', exact: true });
+  const beforeGroup = firstRevision.getByRole('region', { name: 'Initial evidence', exact: true });
   const afterGroup = firstRevision.getByRole('region', { name: 'After evidence', exact: true });
   const beforeImage = beforeGroup.getByRole('img', { name: 'original-condition.png', exact: true });
   await expect(beforeImage).toBeVisible();

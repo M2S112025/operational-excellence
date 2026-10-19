@@ -1,3 +1,4 @@
+import { registerRecordCreationStore } from "@/lib/records/module-records";
 import { resetImportedRedTagData } from "@/lib/five-s/red-tag-reset";
 /**
  * OPS Relationship Store
@@ -260,3 +261,5 @@ export function removeRelationship(relationshipId: string): boolean {
 export function useRelationships(): OpsRelationship[] {
   return React.useSyncExternalStore(subscribe, getSnapshot, () => []);
 }
+
+registerRecordCreationStore(STORAGE_KEY, () => { relationships = []; hasInitialized = false; initializeStore(); });

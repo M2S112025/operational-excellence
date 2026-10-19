@@ -1,5 +1,7 @@
 "use client";
 
+import { newestCreatedFirst } from "@/lib/records/record-order";
+
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ExternalLink, Link2, Plus, Search, Unlink } from "lucide-react";
@@ -9,6 +11,9 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { useAdminUsers } from "@/features/five-s/administration/store";
 import { hasPermission } from "@/features/five-s/administration/permissions";
+import { canAccessRedTagZone } from "@/features/five-s/red-tag/access";
+import { recordInOrganizationScope } from "@/lib/relationships/canonical-records";
+import { DEMO_ORGANIZATION } from "@/lib/module-entitlements";
 import { useRedTags } from "@/features/five-s/red-tag/store";
 import { canViewGembaWalk, visibleGembaWalks } from "@/features/gemba/gemba-access";
 import { useGembaStore } from "@/features/gemba/gemba-store";
@@ -95,8 +100,8 @@ export function RelatedOperationalRecords({ improvementId, pendingRecords = [], 
         const route = resolveRecordRoute(ref);
         const removable = !improvementId || Boolean(relationship && canRemoveImprovementOperationalRelationship(relationship, improvementId));
         return <div key={relationship?.id ?? getRecordRefKey(ref)} className={cn("flex min-w-0 items-center gap-3", compact ? "rounded-lg border p-3" : "px-4 py-3 sm:px-5")}>
-          <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><Badge variant="secondary" size="sm">{getModuleDisplayName(ref.module)}</Badge><span className="break-all font-mono text-[11px] font-semibold text-primary">{ref.childId ?? ref.recordId}</span>{option?.status && <Badge variant="outline" size="sm">{option.status}</Badge>}</div><p className="mt-1 truncate text-sm font-medium">{option?.title ?? ref.label ?? "Linked record unavailable"}</p><p className="mt-0.5 truncate text-xs text-muted-foreground">{option?.context ?? "The linked record is currently unavailable."}</p></div>
-          <div className="flex shrink-0 items-center gap-1">{route && <Button nativeButton={false} render={<Link href={route} />} variant="ghost" size="sm">View<ExternalLink className="size-3.5" /></Button>}{editable && removable && <Button type="button" variant="ghost" size="sm" onClick={() => remove(ref, relationship)} aria-label={`Remove connection to ${ref.childId ?? ref.recordId}`}><Unlink className="size-4" /><span className="hidden sm:inline">Remove connection</span></Button>}</div>
+          <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><Badge variant="secondary" size="sm">{getModuleDisplayName(ref.module)}</Badge><span className="break-all font-mono text-[11px] font-semibold text-primary">{ref.childId ?? ref.recordId}</span>{option?.status && <Badge variant="outline" size="sm">{option.status}</Badge>}</div><p className="mt-1 truncate text-sm font-medium">{option?.title ?? "Linked record unavailable"}</p><p className="mt-0.5 truncate text-xs text-muted-foreground">{option?.context ?? "The linked record is currently unavailable."}</p></div>
+          <div className="flex shrink-0 items-center gap-1">{route && option && <Button nativeButton={false} render={<Link href={route} />} variant="ghost" size="sm">View<ExternalLink className="size-3.5" /></Button>}{editable && removable && <Button type="button" variant="ghost" size="sm" onClick={() => remove(ref, relationship)} aria-label={`Remove connection to ${ref.childId ?? ref.recordId}`}><Unlink className="size-4" /><span className="hidden sm:inline">Remove connection</span></Button>}</div>
         </div>;
       }) : <div className={cn("text-center", compact ? "rounded-lg border border-dashed p-4" : "px-4 py-8 sm:px-5")}><Link2 className="mx-auto size-5 text-muted-foreground" /><p className="mt-2 text-sm font-medium">No related operational records</p><p className="mt-1 text-xs text-muted-foreground">This improvement remains valid without a connection.</p></div>}
     </div>
@@ -114,16 +119,16 @@ function useOperationalRecordOptions() {
   return useMemo(() => {
     const result: OperationalRecordOption[] = [];
     if (access.gemba) {
-      const walks = visibleGembaWalks(gemba.walks, currentUser, adminUser?.roles);
+      const walks = visibleGembaWalks(gemba.walks.filter(w=>recordInOrganizationScope(w,DEMO_ORGANIZATION.id,currentUser.plant)), currentUser, adminUser?.roles);
       const walkIds = new Set(walks.map((walk) => walk.id));
-      for (const observation of gemba.observations.filter((item) => walkIds.has(item.gembaId))) {
+      for (const observation of newestCreatedFirst(gemba.observations.filter((item) => walkIds.has(item.gembaId)))) {
         const walk = walks.find((item) => item.id === observation.gembaId);
         if (!walk || !canViewGembaWalk(walk, currentUser, adminUser?.roles)) continue;
         result.push({ ref: { module: "gemba", recordId: observation.gembaId, childId: observation.id }, title: observation.title, context: `${observation.location} · ${walk.zone}`, status: observation.type });
       }
     }
-    if (access.redTag && hasPermission(adminUser, "red_tag.view")) for (const tag of redTags) result.push({ ref: { module: "redTag", recordId: tag.id }, title: tag.itemName, context: `${tag.zone} · ${tag.section}`, status: tag.status });
-    if (access.audit && hasPermission(adminUser, "audits.view")) for (const audit of audits) result.push({ ref: { module: "audit", recordId: audit.id }, title: audit.title, context: `${audit.area} · ${audit.plant}`, status: audit.status });
+    if (access.redTag && hasPermission(adminUser, "red_tag.view")) for (const tag of newestCreatedFirst(redTags.filter(t => recordInOrganizationScope(t,DEMO_ORGANIZATION.id,currentUser.plant) && canAccessRedTagZone(adminUser,t.plant,t.zone)))) result.push({ ref: { module: "redTag", recordId: tag.id }, title: tag.itemName, context: `${tag.zone} · ${tag.section}`, status: tag.status });
+    if (access.audit && hasPermission(adminUser, "audits.view")) for (const audit of newestCreatedFirst(audits.filter(a => recordInOrganizationScope(a,DEMO_ORGANIZATION.id,currentUser.plant) && (adminUser?.roles.some(r=>r==="Admin"||r==="Auditor")||a.area===currentUser.primaryZone)))) result.push({ ref: { module: "audit", recordId: audit.id }, title: audit.title, context: `${audit.area} · ${audit.plant}`, status: audit.status });
     return result;
   }, [access.audit, access.gemba, access.redTag, adminUser, audits, currentUser, gemba.observations, gemba.walks, redTags]);
 }

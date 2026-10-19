@@ -36,9 +36,9 @@ describe("Red Tag V2 canonical QR identity", () => {
 describe("Red Tag QR and physical print UI", () => {
   const source = readFileSync(resolve(process.cwd(), "features/five-s/red-tag/red-tag-module.tsx"), "utf8");
 
-  it("uses the same canonical target for detail, View QR, and Print Tag", () => {
+  it("uses the same canonical target for the View QR dialog and Print Tag", () => {
     expect(source).toContain("const qrTarget = useRedTagQrTarget(tagId)");
-    expect(source.match(/<QrCode value=\{qrTarget\}/g)).toHaveLength(3);
+    expect(source.match(/<QrCode value=\{qrTarget\}/g)).toHaveLength(2);
     expect(source).toContain("View QR");
     expect(source).toContain("Print Red Tag");
   });

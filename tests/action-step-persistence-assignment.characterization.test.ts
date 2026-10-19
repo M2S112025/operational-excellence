@@ -1,3 +1,4 @@
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 function storage() {
@@ -14,7 +15,7 @@ function storage() {
 
 async function actionStore(localStorage = storage()) {
   vi.resetModules();
-  vi.stubGlobal("window", { localStorage });
+  vi.stubGlobal("window", { localStorage }); authenticateDemoFixture();
   vi.stubGlobal("localStorage", localStorage);
   vi.stubGlobal("crypto", { randomUUID: () => "step-persistence" });
   return { store: await import("@/lib/actions/action-store"), localStorage };
@@ -27,6 +28,9 @@ describe("canonical Action step persistence", () => {
     const { store, localStorage } = await actionStore();
     const owner = { id: "USR-RITIKA", name: "Ritika" };
     const reviewer = { id: "USR-LAKSHMAN", name: "Lakshman" };
+    const { GEMBA_SEED_STATE } = await import("@/features/gemba/gemba-store");
+    const walk = GEMBA_SEED_STATE.walks.find(item => item.zone === "Zone A")!;
+    localStorage.setItem("ops-gemba-v1", JSON.stringify({ walks: [{ ...walk, id: "GEM-001", status: "In Progress", observationIds: ["OBS-001"] }], observations: [{ ...GEMBA_SEED_STATE.observations[0], id: "OBS-001", gembaId: "GEM-001", type: "Issue", actionId: undefined }] }));
     const action = store.createAction({
       title: "Repair fixture", description: "Replace damaged fixture", source: "Gemba", sourceTitle: "GEM-001",
       sourceModule: "gemba", sourceId: "GEM-001", sourceObservationId: "OBS-001", sourceObservation: "Fixture is damaged",

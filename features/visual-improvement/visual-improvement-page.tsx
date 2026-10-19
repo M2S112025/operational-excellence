@@ -1,5 +1,8 @@
 "use client";
 
+import { newestCreatedFirst, compareNewestCreated, compareOldestCreated } from "@/lib/records/record-order";
+
+
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, BarChart3, Plus, Search, Sparkles } from "lucide-react";
@@ -73,7 +76,7 @@ function Metric({ label, value, tone }: { label: string; value: string; tone: "i
 }
 
 function VisualOverview({ records, mayCreate }: { records: VisualImprovement[]; mayCreate: boolean }) {
-  const completed = records.filter((item) => item.status === "Completed").sort((a, b) => (b.completedAt || b.updatedAt).localeCompare(a.completedAt || a.updatedAt));
+  const completed = newestCreatedFirst(records.filter((item) => item.status === "Completed"));
   const categoryCounts = VISUAL_IMPROVEMENT_CATEGORIES.map((category) => ({ label: category, value: records.filter((item) => item.category === category).length })).filter((item) => item.value).sort((a, b) => b.value - a.value).slice(0, 5);
   const zoneCounts = Array.from(new Set(records.map((item) => item.zone))).map((zone) => ({ label: zone, value: records.filter((item) => item.zone === zone).length })).sort((a, b) => b.value - a.value);
   const maxCategory = Math.max(1, ...categoryCounts.map((item) => item.value));
@@ -138,5 +141,5 @@ function filterRecords(records: VisualImprovement[], filters: { search: string; 
 }
 
 function sortRecords(records: VisualImprovement[], sort: SortMode) {
-  return [...records].sort((a, b) => sort === "Oldest" ? a.createdAt.localeCompare(b.createdAt) : sort === "Highest Saving" ? (b.actualCostSaving ?? b.proposedCostSaving ?? -1) - (a.actualCostSaving ?? a.proposedCostSaving ?? -1) : sort === "Recently Completed" ? (b.completedAt || "").localeCompare(a.completedAt || "") : b.createdAt.localeCompare(a.createdAt));
+  return [...records].sort((a, b) => sort === "Oldest" ? compareOldestCreated(a, b) : sort === "Highest Saving" ? (b.actualCostSaving ?? b.proposedCostSaving ?? -1) - (a.actualCostSaving ?? a.proposedCostSaving ?? -1) : sort === "Recently Completed" ? (b.completedAt || "").localeCompare(a.completedAt || "") : compareNewestCreated(a, b));
 }

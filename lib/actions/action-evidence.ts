@@ -1,4 +1,4 @@
-import type { RedTag } from "@/features/five-s/red-tag/types";
+import { getRedTagIdentificationEvidence, type RedTag } from "@/features/five-s/red-tag/types";
 import type { MyAction, MyActionEvidence } from "@/features/five-s/types/my-actions";
 import type { GembaState } from "@/features/gemba/types";
 import { getGembaState } from "@/features/gemba/gemba-store";
@@ -78,15 +78,7 @@ export function resolveActionSourceBeforeEvidence(action: MyAction, redTags: Red
   };
 
   return {
-    evidence: [{
-      id: `SOURCE-${source.id}-BEFORE`,
-      name: "Red Tag identification photo",
-      type: "image",
-      evidenceType: "finding",
-      uploadedAt: source.createdAt,
-      uploadedBy: source.createdByName,
-      url: source.imageUrl,
-    }],
+    evidence: getRedTagIdentificationEvidence(source).map(photo => ({ ...photo, type: "image", evidenceType: "finding" })),
     state: "available",
     provenance: sourceLabel,
     description: `Source: ${sourceLabel}`,

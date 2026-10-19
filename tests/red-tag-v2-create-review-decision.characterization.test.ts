@@ -1,3 +1,4 @@
+import { configureRedTagMemberFixture } from "./helpers/red-tag-actors";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
@@ -16,6 +17,7 @@ async function redTagStore() {
   const localStorage = storage();
   vi.stubGlobal("window", { localStorage, alert: vi.fn() });
   vi.stubGlobal("localStorage", localStorage);
+  await configureRedTagMemberFixture();
   let sequence = 0;
   vi.stubGlobal("crypto", { randomUUID: () => `phase-3b-${++sequence}` });
   return import("@/features/five-s/red-tag/store");
@@ -23,7 +25,7 @@ async function redTagStore() {
 
 afterEach(() => { vi.resetModules(); vi.unstubAllGlobals(); });
 
-const creator = DEMO_USERS.auditor;
+const creator = DEMO_USERS.responsible;
 const reviewer = DEMO_USERS.leader;
 const validInput = {
   plant: creator.plant, zone: "Zone A", section: "Assembly Bay 2", department: "Production", category: "Equipment" as const,
@@ -49,7 +51,7 @@ describe("Red Tag V2 create", () => {
   it("preserves generated identity, opens the lifecycle, creates history, and does not create an Action", async () => {
     const store = await redTagStore();
     const tag = store.createRedTagV2(validInput, creator)!;
-    expect(tag).toMatchObject({ id: "RT-EGM-ZA-002", tagNumber: "RT-EGM-ZA-002", status: "Open" });
+    expect(tag).toMatchObject({ id: "RT-000001", tagNumber: "RT-000001", status: "Open" });
     expect(tag.id).toBe(tag.tagNumber);
     expect(tag.actionId).toBeUndefined();
     expect(tag.history).toHaveLength(1);

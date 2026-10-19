@@ -1,3 +1,5 @@
+import { configureRedTagMemberFixture } from "./helpers/red-tag-actors";
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
@@ -17,12 +19,15 @@ afterEach(() => { vi.resetModules(); vi.unstubAllGlobals(); });
 
 describe("5S Red Tag identity and compatibility", () => {
   it("links exactly one canonical Red Tag Action with explicit source metadata", async () => {
-    const localStorage = storage(); vi.stubGlobal("window", { localStorage, alert: vi.fn() }); vi.stubGlobal("localStorage", localStorage);
+    const localStorage = storage(); vi.stubGlobal("window", { localStorage, alert: vi.fn() }); authenticateDemoFixture(); vi.stubGlobal("localStorage", localStorage);
     vi.stubGlobal("crypto", { randomUUID: () => "test-uuid" });
     const redTags = await import("@/features/five-s/red-tag/store");
     const actions = await import("@/lib/actions/action-store");
     const actor = DEMO_USERS.auditor;
-    const tag = redTags.createRedTag({ plant: actor.plant, zone: "Zone A", section: "Production", itemName: "Obsolete jig", quantity: 1, reason: "Undefined Items", remarks: "Unused", requiredAction: "Remove from cell", responsiblePersonId: "USR-SIVA-KUMAR", responsiblePersonName: "Siva Kumar", targetDate: "2026-09-20", createdById: actor.id, createdByName: actor.name }, actor);
+    const identityForCreation = await configureRedTagMemberFixture();
+    const creator = DEMO_USERS.responsible;
+    const tag = redTags.createRedTag({ plant: actor.plant, zone: "Zone A", section: "Production", itemName: "Obsolete jig", quantity: 1, reason: "Undefined Items", remarks: "Unused", requiredAction: "Remove from cell", responsiblePersonId: "USR-RITIKA", responsiblePersonName: "Ritika", targetDate: "2026-09-20", createdById: creator.id, createdByName: creator.name }, creator);
+    identityForCreation.setDemoRole("auditor");
     const action = actions.createAction({ title: `Clear ${tag.tagNumber}`, description: tag.requiredAction, source: "Red Tag", sourceTitle: tag.id, sourceModule: "redTag", sourceId: tag.id, sourceLabel: "Red Tag", sourceLocation: `${tag.plant} · ${tag.zone} · ${tag.section}`, sourceObservation: tag.remarks, originalFinding: tag.remarks, plant: tag.plant, department: "Production", area: tag.zone, assignedTo: tag.responsiblePersonName, responsiblePersonId: tag.responsiblePersonId, responsiblePersonName: tag.responsiblePersonName, createdByUserId: actor.id, createdByName: actor.name, auditor: actor.name, status: "Assigned", priority: "Medium", dueDate: tag.targetDate, issueEvidence: [] });
     expect(redTags.linkRedTagAction(tag.id, action.id, actor)?.actionId).toBe(action.id);
     expect(redTags.linkRedTagAction(tag.id, "ACT-DUPLICATE", actor)).toBeUndefined();
@@ -30,10 +35,13 @@ describe("5S Red Tag identity and compatibility", () => {
   });
 
   it("reconciles active and completed Actions without automatically closing the Red Tag", async () => {
-    const localStorage = storage(); vi.stubGlobal("window", { localStorage, alert: vi.fn() }); vi.stubGlobal("localStorage", localStorage); vi.stubGlobal("crypto", { randomUUID: () => "test-uuid" });
+    const localStorage = storage(); vi.stubGlobal("window", { localStorage, alert: vi.fn() }); authenticateDemoFixture(); vi.stubGlobal("localStorage", localStorage); vi.stubGlobal("crypto", { randomUUID: () => "test-uuid" });
     const store = await import("@/features/five-s/red-tag/store");
     const actor = DEMO_USERS.auditor;
-    const tag = store.createRedTag({ plant: actor.plant, zone: "Zone A", section: "Production", itemName: "Fixture", quantity: 1, reason: "Undefined Items", remarks: "Unused", imageUrl: "data:image/jpeg;base64,before", requiredAction: "Remove", responsiblePersonId: "USR-SIVA-KUMAR", responsiblePersonName: "Siva Kumar", targetDate: "2026-09-20", createdById: actor.id, createdByName: actor.name }, actor);
+    const identityForCreation = await configureRedTagMemberFixture();
+    const creator = DEMO_USERS.responsible;
+    const tag = store.createRedTag({ plant: actor.plant, zone: "Zone A", section: "Production", itemName: "Fixture", quantity: 1, reason: "Undefined Items", remarks: "Unused", imageUrl: "data:image/jpeg;base64,before", requiredAction: "Remove", responsiblePersonId: "USR-SIVA-KUMAR", responsiblePersonName: "Siva Kumar", targetDate: "2026-09-20", createdById: creator.id, createdByName: creator.name }, creator);
+    identityForCreation.setDemoRole("auditor");
     store.linkRedTagAction(tag.id, "ACT-RT-001", actor);
     const action = (status: MyAction["status"]): MyAction => ({ id: "ACT-RT-001", title: "Remove fixture", description: "Remove", source: "Red Tag", sourceTitle: tag.id, sourceModule: "redTag", sourceId: tag.id, plant: tag.plant, department: "Production", area: tag.zone, assignedTo: "Siva Kumar", status, priority: "Medium", dueDate: tag.targetDate, createdAt: "2026-09-16", evidence: [] });
     store.reconcileRedTagActions([action("In Progress")]);
@@ -44,11 +52,16 @@ describe("5S Red Tag identity and compatibility", () => {
   });
 
   it("enforces evidence, disposition, remark, verification identity, and physical removal before closure", async () => {
-    const localStorage = storage(); vi.stubGlobal("window", { localStorage, alert: vi.fn() }); vi.stubGlobal("localStorage", localStorage); vi.stubGlobal("crypto", { randomUUID: () => "test-uuid" });
+    const localStorage = storage(); vi.stubGlobal("window", { localStorage, alert: vi.fn() }); authenticateDemoFixture(); vi.stubGlobal("localStorage", localStorage); vi.stubGlobal("crypto", { randomUUID: () => "test-uuid" });
     const store = await import("@/features/five-s/red-tag/store");
     const actor = DEMO_USERS.auditor;
-    const tag = store.createRedTag({ plant: actor.plant, zone: "Zone A", section: "Production", itemName: "Fixture", quantity: 1, reason: "Undefined Items", remarks: "Unused", imageUrl: "data:image/jpeg;base64,before", requiredAction: "Remove", responsiblePersonId: "USR-SIVA-KUMAR", responsiblePersonName: "Siva Kumar", targetDate: "2026-09-20", createdById: actor.id, createdByName: actor.name }, actor);
-    const baseAction = (await import("@/lib/actions/action-store")).createAction({ title: "Remove fixture", description: "Remove", source: "Red Tag", sourceTitle: tag.id, sourceModule: "redTag", sourceId: tag.id, plant: tag.plant, department: "Production", area: tag.zone, assignedTo: "Siva Kumar", status: "Completed", priority: "Medium", dueDate: tag.targetDate });
+    const identityForCreation = await configureRedTagMemberFixture();
+    const creator = DEMO_USERS.responsible;
+    const tag = store.createRedTag({ plant: actor.plant, zone: "Zone A", section: "Production", itemName: "Fixture", quantity: 1, reason: "Undefined Items", remarks: "Unused", imageUrl: "data:image/jpeg;base64,before", requiredAction: "Remove", responsiblePersonId: "USR-SIVA-KUMAR", responsiblePersonName: "Siva Kumar", targetDate: "2026-09-20", createdById: creator.id, createdByName: creator.name }, creator);
+    identityForCreation.setDemoRole("auditor");
+    const baseAction = (await import("@/lib/actions/action-store")).createAction({ title: "Remove fixture", description: "Remove", source: "Red Tag", sourceTitle: tag.id, sourceModule: "redTag", sourceId: tag.id, plant: tag.plant, department: "Production", area: tag.zone, assignedTo: "Siva Kumar", status: "Assigned", priority: "Medium", dueDate: tag.targetDate });
+    baseAction.status = "Completed";
+    (await import("@/lib/actions/action-store")).setActions((await import("@/lib/actions/action-store")).getActions());
     store.linkRedTagAction(tag.id, baseAction.id, actor); store.reconcileRedTagActions([baseAction]);
     expect(store.verifyRedTag(tag.id, { ...baseAction, status: "In Progress" }, { disposition: "Dispose", verificationRemark: "Cleared" }, actor)).toBeUndefined();
     expect(store.verifyRedTag(tag.id, baseAction, { disposition: "Dispose", verificationRemark: "Cleared" }, actor)).toBeUndefined();
@@ -56,8 +69,24 @@ describe("5S Red Tag identity and compatibility", () => {
     expect(store.verifyRedTag(tag.id, baseAction, { disposition: "" as never, verificationRemark: "Cleared" }, actor)).toBeUndefined();
     expect(store.verifyRedTag(tag.id, baseAction, { disposition: "Dispose", verificationRemark: "" }, actor)).toBeUndefined();
     expect(store.verifyRedTag(tag.id, baseAction, { disposition: "Other", verificationRemark: "Cleared" }, actor)).toBeUndefined();
+    const identity = await import("@/lib/current-user");
+    const beforeUnauthorized = localStorage.getItem(store.RED_TAG_STORAGE_KEY);
+    expect(store.verifyRedTag(tag.id, baseAction, { disposition: "Dispose", verificationRemark: "Area clear" }, { ...actor, id: "UNKNOWN" })).toBeUndefined();
+    identity.setDemoRole("responsible");
+    expect(store.verifyRedTag(tag.id, baseAction, { disposition: "Dispose", verificationRemark: "Area clear" }, actor)).toBeUndefined();
+    expect(localStorage.getItem(store.RED_TAG_STORAGE_KEY)).toBe(beforeUnauthorized);
+    identity.setDemoRole("auditor");
+    baseAction.status = "Rework Required";
+    expect(store.verifyRedTag(tag.id, { ...baseAction, status: "Completed" }, { disposition: "Dispose", verificationRemark: "Stale caller snapshot" }, actor)).toBeUndefined();
+    baseAction.status = "Completed";
     expect(store.verifyRedTag(tag.id, baseAction, { disposition: "Dispose", verificationRemark: "Area clear" }, actor)).toMatchObject({ verifiedByUserId: actor.id, verifiedByName: actor.name, disposition: "Dispose" });
+    baseAction.status = "Rework Required";
+    expect(store.closeRedTagAfterRemoval(tag.id, { ...baseAction, status: "Completed" }, true, actor)).toBeUndefined();
+    baseAction.status = "Completed";
     expect(store.closeRedTagAfterRemoval(tag.id, baseAction, false, actor)).toBeUndefined();
+    identity.setDemoRole("responsible");
+    expect(store.closeRedTagAfterRemoval(tag.id, baseAction, true, actor)).toBeUndefined();
+    identity.setDemoRole("auditor");
     expect(store.closeRedTagAfterRemoval(tag.id, baseAction, true, actor)).toMatchObject({ status: "Closed", removalConfirmed: true, removedByUserId: actor.id, removedByName: actor.name });
     expect(store.getRedTag(tag.id)?.closedAt).toBeTruthy();
   });

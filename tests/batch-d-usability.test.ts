@@ -23,7 +23,7 @@ describe("Batch D terminology and usable forms", () => {
   it("makes Manual provenance understandable and its owner selector searchable", () => {
     const html = render(React.createElement(ManualActionDialog, { open: true, onOpenChange: vi.fn(), onCreated: vi.fn() }));
     expect(html).toContain("Create Action"); expect(html).toContain("Manual · Created in Actions");
-    expect(html).toContain("Observation Evidence"); expect(html).toContain('aria-label="Action Owner"');
+    expect(html).toContain("Initial Evidence"); expect(html).toContain('aria-label="Action Owner"');
     expect(html).not.toContain("Create Manual Action"); expect(html).not.toMatch(/<label[^>]*>(?:(?!<\/label>)[\s\S])*?<label[^>]*>/);
   });
   it("keeps selected people readable and exposes an accessible empty search result", () => {

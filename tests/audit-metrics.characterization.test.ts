@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   createFiveSAudit,
@@ -45,7 +45,12 @@ function create(sections: FiveSSection[]) {
 }
 
 describe("audit store score and completion behavior", () => {
-  beforeEach(() => setFiveSAudits([]));
+  beforeEach(() => {
+    const values = new Map<string, string>();
+    vi.stubGlobal("window", { localStorage: { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => values.set(key, value), removeItem: (key: string) => values.delete(key) } });
+    setFiveSAudits([]);
+  });
+  afterEach(() => vi.unstubAllGlobals());
 
   it("sums scores 0, 1, and 2 and respects per-question maxScore", () => {
     const audit = create([section([

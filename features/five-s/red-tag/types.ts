@@ -152,6 +152,8 @@ export interface RedTag {
   createdByName: string;
   createdAt: string;
   imageUrl?: string;
+  /** Identification photos; imageUrl remains the primary photo for legacy consumers. */
+  identificationEvidence?: RedTagEvidence[];
   actionId?: string;
   /** Canonical Action IDs only; legacy actionId remains the original first link. */
   actionIds?: string[];
@@ -175,4 +177,10 @@ export interface RedTag {
   closure?: RedTagClosure;
   closedAt?: string;
   history: RedTagHistoryEvent[];
+}
+
+/** Legacy single-photo records remain readable without rewriting persisted data. */
+export function getRedTagIdentificationEvidence(tag: RedTag): RedTagEvidence[] {
+  if (tag.identificationEvidence?.length) return tag.identificationEvidence;
+  return tag.imageUrl?.trim() ? [{ id: `SOURCE-${tag.id}-BEFORE`, name: "Red Tag identification photo", url: tag.imageUrl, uploadedAt: tag.createdAt, uploadedBy: tag.createdByName }] : [];
 }

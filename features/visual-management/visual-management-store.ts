@@ -1,4 +1,8 @@
 "use client";
+
+import { registerActionCreationSource } from "@/lib/actions/action-source-access";
+
+import { allocateModuleRecordId, registerRecordCreationStore } from "@/lib/records/module-records";
 import { canOperateVisualManagementBoard, type VisualManagementActor } from "./visual-management-access";
 
 import { useMemo, useSyncExternalStore } from "react";
@@ -9,7 +13,7 @@ import { safeSetStorage } from "@/lib/browser-storage";
 import { getOrganizationPlants, getOrganizationZones, useOrganizationConfiguration } from "@/lib/organization-store";
 import { createDefaultKpiEntries, nextTier } from "./visual-management-config";
 import { getVisualManagementConfiguration, useVisualManagementConfiguration } from "./visual-management-configuration-store";
-import { createMeetingKpiReviewSnapshots } from "./kpi-execution-store";
+import { getKpiExecution, createMeetingKpiReviewSnapshots } from "./kpi-execution-store";
 import type {
   VisualManagementBoard,
   VisualManagementDecision,
@@ -160,10 +164,9 @@ export function startVisualManagementMeeting(boardId: string, actor: VisualManag
   const selected = current.boards.find((item) => item.id === boardId);
   if (!selected || selected.status !== "Active") return null;
   if (lead && (getAdminUser(lead.id)?.status !== "Active" || ![selected.owner.id, ...selected.members.map(member => member.id)].includes(lead.id))) return null;
-  const year = new Date().getFullYear();
-  const number = Math.max(0, ...current.meetings.map((item) => Number(item.id.match(/(\d+)$/)?.[1]) || 0)) + 1;
+  const meetingId = allocateModuleRecordId("visualManagement", current.meetings.map(item => item.id));
   const meeting: VisualManagementMeeting = {
-    id: `VMM-${year}-${String(number).padStart(3, "0")}`,
+    id: meetingId,
     boardId: selected.id,
     boardName: selected.name,
     plant: selected.plant,
@@ -175,9 +178,10 @@ export function startVisualManagementMeeting(boardId: string, actor: VisualManag
     occurrenceDate: scheduled?.occurrenceDate,
     scheduledTime: scheduled?.scheduledTime,
     scheduledDurationMinutes: scheduled?.durationMinutes,
+    createdAt: new Date().toISOString(),
     startedAt: new Date().toISOString(),
     kpiEntries: selected.sections.map((item) => ({ ...item, evidence: item.evidence?.map((evidence) => ({ ...evidence })) })),
-    configuredKpiReviews: createMeetingKpiReviewSnapshots(`VMM-${year}-${String(number).padStart(3, "0")}`, selected.id, actor.id),
+    configuredKpiReviews: createMeetingKpiReviewSnapshots(meetingId, selected.id, actor.id),
     topicIds: [], decisionIds: [], actionIds: [], redFlagIds: [], continuousImprovementIds: [], gembaIds: [], escalationIds: [],
     status: "In Progress",
   };
@@ -290,7 +294,7 @@ export function createMeetingEscalation(topicId: string, targetBoardId: string, 
   const topic = current.topics.find((item) => item.id === topicId);
   const meeting = topic ? current.meetings.find((item) => item.id === topic.meetingId) : undefined;
   if (!topic || !meeting || !getEscalationTargets(meeting.boardId).some((item) => item.id === targetBoardId) || !reason.trim()) return null;
-  const escalation: VisualManagementEscalation = { id: uid("VME"), sourceBoardId: meeting.boardId, sourceMeetingId: meeting.id, targetBoardId, topicId, reason: reason.trim(), status: "Open", createdBy: actor, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+  const escalation: VisualManagementEscalation = { id: allocateModuleRecordId("visualManagement", current.escalations.map(item => item.id)), sourceBoardId: meeting.boardId, sourceMeetingId: meeting.id, targetBoardId, topicId, reason: reason.trim(), status: "Open", createdBy: actor, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
   const topics = current.topics.map((item) => item.id === topic.id ? { ...item, followUpType: "Escalation" as const, escalationId: escalation.id } : item);
   const meetings = current.meetings.map((item) => item.id === meeting.id ? { ...item, escalationIds: [...item.escalationIds, escalation.id] } : item);
   return persist({ ...current, topics, meetings, escalations: [escalation, ...current.escalations] }) ? escalation : null;
@@ -304,7 +308,7 @@ export function escalateExistingEscalation(escalationId: string, targetBoardId: 
   if (!existing || !getEscalationTargets(existing.targetBoardId).some((item) => item.id === targetBoardId)) return null;
   const now = new Date().toISOString();
   const escalation: VisualManagementEscalation = {
-    id: uid("VME"),
+    id: allocateModuleRecordId("visualManagement", current.escalations.map(item => item.id)),
     sourceBoardId: existing.targetBoardId,
     sourceMeetingId: existing.sourceMeetingId,
     targetBoardId,
@@ -393,3 +397,19 @@ export function getVisualManagementMetrics(current: VisualManagementState, actio
     averageMeetingDuration: completed.length ? Math.round(completed.reduce((sum, meeting) => sum + meetingDurationMinutes(meeting, now), 0) / completed.length) : 0,
   };
 }
+
+registerRecordCreationStore(STORAGE_KEY, () => { loaded = false; load(); });
+
+registerActionCreationSource("visualManagement", (input, user, identity) => {
+  const meeting = input.sourceId ? getVisualManagementMeeting(input.sourceId) : undefined;
+  const board = getVisualManagementBoard(meeting?.boardId ?? input.sourceId ?? "");
+  const topic = meeting ? getVisualManagementState().topics.find(item => item.id === input.sourceObservationId && item.meetingId === meeting.id) : undefined;
+  const deviation = !meeting ? getKpiExecution().deviations.find(item => item.id === input.sourceObservationId && item.boardId === board?.id) : undefined;
+  const metadata = input.visualManagementSource;
+  if (metadata) {
+    const referencedMeeting = metadata.meetingId ? getVisualManagementMeeting(metadata.meetingId) : undefined;
+    const entry = getKpiExecution().actualEntries.find(item => item.id === metadata.actualEntryId && item.boardId === board?.id && item.kpiId === metadata.configuredKpiId);
+    if (metadata.boardId !== board?.id || (metadata.meetingId && referencedMeeting?.boardId !== board?.id) || !entry || deviation?.id !== metadata.deviationId || deviation.kpiActualEntryId !== entry.id) return { permitted: false };
+  }
+  return { record: board, zone: meeting?.zone ?? board?.zone ?? input.area, permitted: Boolean(board && canOperateVisualManagementBoard(board, identity) && (topic || deviation)), alreadyLinked: topic?.linkedActionId ?? deviation?.actionId };
+});

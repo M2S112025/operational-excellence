@@ -1,3 +1,4 @@
+import { compareNewestCreated } from "@/lib/records/record-order";
 
 import { auditScorePercentage } from "@/lib/five-s/scoring-policy";
 import { isActionOverdue as canonicalActionIsOverdue } from "@/lib/actions/action-config";
@@ -723,7 +724,7 @@ export function getVisualImprovementMetrics(context: AnalyticsSelectorContext): 
   const areas = new Set(completed.map((item) => `${item.plant}/${item.zone}/${item.location}`)).size;
   const transformations = [...completed, ...awaiting]
     .filter((item) => item.beforeEvidence[0]?.url && item.afterEvidence[0]?.url)
-    .sort((a, b) => visualDate(b).localeCompare(visualDate(a)))
+    .sort(compareNewestCreated)
     .slice(0, 4)
     .map((item) => ({ id: item.id, title: item.title, zone: item.zone, beforeUrl: item.beforeEvidence[0].url, afterUrl: item.afterEvidence[0].url, href: `/visual-improvement/${encodeURIComponent(item.id)}` }));
   const savingTrend = sumSeries(context.scopedVisualImprovements.filter((item) => item.status === "Completed"), context.buckets, (item) => item.completedAt, (item) => item.actualCostSaving ?? 0, "value");

@@ -1,3 +1,5 @@
+import { configureRedTagMemberFixture } from "./helpers/red-tag-actors";
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { LinkedActionContext } from "@/features/actions/create-linked-action-dialog";
 let values: Map<string, string>;
@@ -9,7 +11,7 @@ beforeEach(() => {
     getItem: (key: string) => values.get(key) ?? null,
     setItem: (key: string, value: string) => { if (key === failedKey) throw new DOMException("QA quota failure", "QuotaExceededError"); values.set(key, value); },
     removeItem: (key: string) => values.delete(key),
-  } });
+  } }); authenticateDemoFixture();
 });
 afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 const context: LinkedActionContext = { source: "Red Tag", sourceModule: "redTag", sourceId: "RT-QA-P0", sourceObservation: "Unused fixture", sourceTitle: "RT-QA-P0", title: "Dispose fixture", description: "Review and remove", plant: "Egmore Plant", zone: "Zone A", location: "Stores", evidence: [], defaultDueDate: "2030-10-25" };
@@ -19,7 +21,10 @@ async function setup() {
   const { createCanonicalLinkedAction } = await import("@/features/actions/create-linked-action-dialog");
   const { DEMO_USERS } = await import("@/lib/current-user");
   const actor = DEMO_USERS.auditor;
-  const tag = tags.createRedTagV2({ plant: context.plant, zone: context.zone, section: "Stores", department: "Production", itemName: "Storage fixture", reason: "Unused", remarks: "Unused fixture", imageUrl: "data:image/png;base64,before", createdById: actor.id, createdByName: actor.name }, actor)!;
+  const identity = await configureRedTagMemberFixture();
+  const creator = identity.DEMO_USERS.responsible;
+  const tag = tags.createRedTagV2({ plant: context.plant, zone: context.zone, section: "Stores", department: "Production", itemName: "Storage fixture", reason: "Unused", remarks: "Unused fixture", imageUrl: "data:image/png;base64,before", createdById: creator.id, createdByName: creator.name }, creator)!;
+  identity.setDemoRole("auditor");
   context.sourceId = tag.id;
   return { actions, tags, createCanonicalLinkedAction, actor };
 }
@@ -34,7 +39,10 @@ describe("P0 failed-write and source integrity", () => {
   });
   it("rolls back a just-created Action after failed Red Tag linkage and retries without a duplicate or edge", async () => {
     const { actions, tags, createCanonicalLinkedAction, actor } = await setup();
-    const tag = tags.createRedTagV2({ plant: "Egmore Plant", zone: "Zone A", section: "Stores", department: "Production", category: "Tools", itemName: "Unused fixture", reason: "Unused", reasonCategory: "Usage", remarks: "Remove unused fixture", imageUrl: "data:image/jpeg;base64,before", createdById: actor.id, createdByName: actor.name }, actor)!;
+    const identity = await configureRedTagMemberFixture();
+  const creator = identity.DEMO_USERS.responsible;
+  const tag = tags.createRedTagV2({ plant: "Egmore Plant", zone: "Zone A", section: "Stores", department: "Production", category: "Tools", itemName: "Unused fixture", reason: "Unused", reasonCategory: "Usage", remarks: "Remove unused fixture", imageUrl: "data:image/jpeg;base64,before", createdById: creator.id, createdByName: creator.name }, creator)!;
+  identity.setDemoRole("auditor");
     const source = { ...context, sourceId: tag.id, sourceTitle: tag.id };
     const action = createCanonicalLinkedAction(source, "USR-RITIKA", actor, "Corrective Action");
     failedKey = tags.RED_TAG_STORAGE_KEY;

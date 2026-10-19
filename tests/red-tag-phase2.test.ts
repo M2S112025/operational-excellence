@@ -1,3 +1,5 @@
+import { configureRedTagMemberFixture } from "./helpers/red-tag-actors";
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -12,7 +14,7 @@ beforeEach(() => {
     getItem: (key: string) => values.get(key) ?? null,
     setItem: (key: string, value: string) => values.set(key, value),
     removeItem: (key: string) => values.delete(key),
-  } });
+  } }); authenticateDemoFixture();
   let sequence = 0;
   vi.stubGlobal("crypto", { randomUUID: () => `phase2-${++sequence}` });
 });
@@ -54,9 +56,10 @@ function context(tag: RedTag) {
 describe("Phase 2 creation, configured departments and review boundaries", () => {
   it.each(["auditor", "leader", "responsible", "superAdmin"] as const)("permits the authorized %s session and records canonical identity", async role => {
     const m = await modules(); m.identity.setDemoRole(role);
-    if (role === "auditor") { const user = m.admin.getAdminUser(m.identity.DEMO_USERS.auditor.id)!; user.roles = ["Auditor"]; user.permissions = ["red_tag.view"]; }
+    if (role === "auditor") { const user = m.admin.getAdminUser(m.identity.DEMO_USERS.auditor.id)!; user.roles = ["Auditor", "Zone Leader"]; user.zoneMemberships.push({zone:"Zone B",responsibility:"Member"}); }
+    if (role === "leader") m.admin.getAdminUser(m.identity.DEMO_USERS.leader.id)!.zoneMemberships.push({zone:"Zone A",responsibility:"Member"});
     const actor = m.identity.DEMO_USERS[role];
-    const tag = m.tags.createRedTagV2(input(role === "responsible" || role === "leader" ? "Zone B" : "Zone A"), { ...actor, name: "Forged" })!;
+    const tag = m.tags.createRedTagV2(input(role === "leader" || role === "superAdmin" ? "Zone A" : "Zone B"), { ...actor, name: "Forged" })!;
     expect(tag).toMatchObject({ status: "Open", createdById: actor.id, createdByName: m.admin.getAdminUser(actor.id)!.name });
     expect(tag.category).toBeUndefined(); expect(tag.actionId).toBeUndefined();
   });
@@ -79,7 +82,7 @@ describe("Phase 2 creation, configured departments and review boundaries", () =>
   });
 
   it("uses configured departments, omits physical category, and retains legacy fields on reload", async () => {
-    const m = await modules(); const actor = m.identity.DEMO_USERS.auditor;
+    const m = await modules(); const actor = m.identity.DEMO_USERS.responsible; await configureRedTagMemberFixture();
     expect(m.access.getRedTagDepartments("Egmore Plant")).toContain("Production");
     expect(m.tags.createRedTagV2({ ...input(), department: "" }, actor)).toBeUndefined();
     expect(m.tags.createRedTagV2({ ...input(), department: "Invented" }, actor)).toBeUndefined();
@@ -94,7 +97,7 @@ describe("Phase 2 creation, configured departments and review boundaries", () =>
     const { RED_TAG_SECTIONS } = await import("@/features/five-s/red-tag/types");
     expect(m.access.getRedTagDepartments("Egmore Plant")).toEqual([...RED_TAG_SECTIONS]);
     expect(m.access.getRedTagDepartments("Unknown Plant")).toEqual([]);
-    const actor = m.identity.DEMO_USERS.auditor;
+    const actor = m.identity.DEMO_USERS.responsible; await configureRedTagMemberFixture();
     const created = RED_TAG_SECTIONS.map(department => m.tags.createRedTagV2({ ...input(), department }, actor)!);
     expect(created.map(tag => tag.department)).toEqual([...RED_TAG_SECTIONS]);
     vi.resetModules();
@@ -161,7 +164,9 @@ describe("Phase 2 canonical links, due dates and persisted timeline", () => {
   it("rejects missing and foreign Action links, preserving the current links", async () => {
     const m = await reviewed(); m.identity.setDemoRole("responsible"); const tag = m.tags.getRedTag(m.id)!;
     expect(m.tags.linkRedTagAction(m.id, "MISSING", m.actor)).toBeUndefined();
+    m.identity.setDemoRole("auditor");
     const foreign = m.actions.createAction({ title: "Unrelated", description: "Other source", source: "Manual", sourceModule: "manual", sourceTitle: "Manual", plant: tag.plant, department: "Production", area: tag.zone, assignedTo: m.actor.name, status: "Assigned", priority: "Medium", dueDate: "2030-12-20" });
+    m.identity.setDemoRole("responsible");
     expect(m.tags.linkRedTagAction(m.id, foreign.id, m.actor)).toBeUndefined();
     expect(m.tags.getRedTag(m.id)?.actionId).toBeUndefined(); expect(values.get("QA-unrelated")).toBe("intact");
   });
@@ -196,7 +201,7 @@ describe("Phase 2 canonical links, due dates and persisted timeline", () => {
 
   it("advances from saved completion only and never completes all Actions when one finishes", async () => {
     const m = await reviewed("scrap"); const tag = m.tags.getRedTag(m.id)!;
-    expect(m.workflow.getRedTagTimelineStages(tag).map(stage => stage.state)).toEqual(["completed", "completed", "completed", "current", "pending"]);
+    expect(m.workflow.getRedTagTimelineStages(tag).map(stage => stage.state)).toEqual(["completed", "completed", "completed", "current"]);
     m.identity.setDemoRole("responsible"); const c = context(tag);
     const first = m.linked.createCanonicalLinkedAction(c, m.actor.id, m.actor, "Corrective Action");
     const second = m.linked.createCanonicalLinkedAction(c, "USR-SUBURAMIANI", m.actor, "Corrective Action");
@@ -263,7 +268,7 @@ describe("Phase 2 durable Action revisions and independent rework history", () =
     const { ActionSubmissionHistory } = await import("@/features/actions/action-submission-history");
     const html = renderToStaticMarkup(createElement(ActionSubmissionHistory, { action: m.actions.getActionById(action.id)! }));
     expect(html).toContain("Original work"); expect(html).toContain("Original feedback"); expect(html).toContain("EVIDENCE-1.png"); expect(html).toContain("<summary");
-    expect(html).toContain('aria-label="Before evidence"');
+    expect(html).toContain('aria-label="Initial evidence"');
     expect(html).toContain('aria-label="After evidence"');
     expect(html).toContain("Evidence unavailable");
     const withNewerEvidence = { ...m.actions.getActionById(action.id)!, issueEvidence: [evidence("ORIGINAL-ISSUE")], evidence: [evidence("NEWER-UNSUBMITTED")] };
@@ -368,10 +373,38 @@ describe("Red Tag decision editing before Action creation", () => {
     expect(updated.history.at(-1)).toMatchObject({ type: "decision_updated", actor: m.leader.name });
     expect(updated.history.at(-1)!.label).toContain("relocate");
     const historyLength = updated.history.length;
-    expect(m.tags.amendRedTagDecision(m.id, { decision: "repair", comments: "Repair it first" }, updated.decisionRecord!.decidedAt, m.leader)).toBeUndefined();
+    expect(m.tags.amendRedTagDecision(m.id, { decision: "repair", comments: "Repair it first" }, updated.decisionRecord!.decidedAt, m.leader)).toBe(updated);
     expect(m.tags.getRedTag(m.id)!.history).toHaveLength(historyLength);
     vi.resetModules();
     expect((await import("@/features/five-s/red-tag/store")).getRedTag(m.id)).toMatchObject({ status: updated.status, decisionRecord: updated.decisionRecord, history: updated.history });
+  });
+
+  it("accepts an authorized unchanged edit without storage writes or history changes", async () => {
+    const m = await reviewed("relocate");
+    const original = m.tags.getRedTag(m.id)!;
+    expect(m.tags.canAmendRedTagDecision(original, m.leader)).toBe(true);
+    const before = JSON.stringify([...values]);
+    const save = vi.spyOn(window.localStorage, "setItem");
+    expect(m.tags.amendRedTagDecision(m.id, { decision: "relocate", comments: " Reviewed " }, original.decisionRecord!.decidedAt, m.leader)).toBe(original);
+    expect(save).not.toHaveBeenCalled();
+    expect(JSON.stringify([...values])).toBe(before);
+    for (const actor of [m.actor, {...m.leader,id:"UNKNOWN"}]) {
+      expect(m.tags.amendRedTagDecision(m.id, { decision: "relocate", comments: "Reviewed" }, original.decisionRecord!.decidedAt, actor)).toBeUndefined();
+    }
+    expect(m.tags.amendRedTagDecision(m.id, { decision: "relocate", comments: "Reviewed" }, "stale", m.leader)).toBeUndefined();
+    expect(save).not.toHaveBeenCalled();
+  });
+
+  it("updates only the reasoning while preserving the decision and records the previous reasoning", async () => {
+    const m = await reviewed("relocate");
+    const original = m.tags.getRedTag(m.id)!;
+    const updated = m.tags.amendRedTagDecision(m.id, {decision:"relocate",comments:"Relocate to the approved storage area"}, original.decisionRecord!.decidedAt, m.leader)!;
+    expect(updated.decisionRecord).toMatchObject({type:"relocate",comments:"Relocate to the approved storage area",decidedByUserId:m.leader.id});
+    expect(updated.status).toBe("Decision Made");
+    expect(updated.history).toHaveLength(original.history.length + 1);
+    expect(updated.history.at(-1)!.label).toContain("comments: Reviewed");
+    vi.resetModules();
+    expect((await import("@/features/five-s/red-tag/store")).getRedTag(m.id)!.decisionRecord).toEqual(updated.decisionRecord);
   });
 
   it("rejects unknown and unauthorized actors and stale edits without mutation", async () => {
@@ -436,5 +469,125 @@ describe("Action asset references in Red Tag disposition", () => {
     m.identity.setDemoRole("leader"); expect(m.actions.closeReviewedAction(action.id, m.leader)).toBeDefined();
     m.tags.reconcileRedTagActions(m.actions.getActions());
     expect(m.tags.getRedTag(tag.id)).toMatchObject({ status: "Disposition In Progress", afterEvidence: [{ id: "BLOB-EVIDENCE", url: "", storageKey: "action-evidence-test" }] });
+  });
+});
+
+describe("Approved Gemba → Red Tag disposition workflow", () => {
+  const startInput = { responsiblePersonId: "USR-RUMESH", responsiblePersonName: "Rumesh", targetDate: "2030-12-20", executionNotes: "Carry out the approved physical disposition" };
+  const completion = { completionNotes: "Physical outcome inspected", responsibleConfirmed: true, evidence: [{ id: "physical-after", name: "after.png", url: "data:image/png;base64,after", uploadedBy: "Rumesh", uploadedAt: "2026-10-19T09:00:00Z" }] };
+
+  it.each(["relocate", "return", "repair", "sell_reuse", "scrap"] as const)("supports authorized direct %s with physical verification, one closure and reload", async decision => {
+    const m = await reviewed(decision);
+    expect(m.tags.setRedTagHandlingMode(m.id, "direct", m.leader)?.handlingMode).toBe("direct");
+    expect(m.tags.startRedTagDisposition(m.id, startInput, m.leader)?.status).toBe("Disposition In Progress");
+    expect(m.tags.completeRedTagDisposition(m.id, { ...completion, evidence: [] }, m.leader)).toBeUndefined();
+    expect(m.tags.completeRedTagDisposition(m.id, { ...completion, responsibleConfirmed: false }, m.leader)).toBeUndefined();
+    m.identity.setDemoRole("responsible");
+    expect(m.tags.completeRedTagDisposition(m.id, completion, m.actor)).toBeUndefined();
+    m.identity.setDemoRole("leader");
+    const closed = m.tags.completeRedTagDisposition(m.id, completion, { ...m.leader, name: "Forged" })!;
+    expect(closed).toMatchObject({ status: "Closed", decisionRecord: { type: decision }, dispositionDetails: { completedByName: "Rumesh", responsibleConfirmed: true, completionNotes: completion.completionNotes } });
+    expect(m.workflow.getRedTagActionIds(closed)).toEqual([]);
+    expect(m.workflow.getRedTagTimelineStages(closed).map(stage => stage.label)).toEqual(["Created", "Review & Decision", "Disposition", "Verification / Closure"]);
+    expect(m.workflow.getRedTagTimelineStages(closed).every(stage => stage.complete)).toBe(true);
+    expect(m.tags.completeRedTagDisposition(m.id, completion, m.leader)).toBeUndefined();
+    expect(closed.history.filter(event => event.type === "closed")).toHaveLength(1);
+    vi.resetModules(); expect((await import("@/features/five-s/red-tag/store")).getRedTag(m.id)).toEqual(m.tags.normalizeRedTag(closed));
+    expect(values.get("QA-unrelated")).toBe("intact");
+  });
+
+  it("combines review and decision into one progress step with saved reviewer metadata", async () => {
+    const m = await reviewed();
+    const pending = m.tags.getRedTag(m.id)!;
+    const pendingStages = m.workflow.getRedTagTimelineStages(pending);
+    expect(pendingStages.filter(stage => stage.label === "Review & Decision")).toHaveLength(1);
+    expect(pendingStages[1]).toMatchObject({label:"Review & Decision",state:"current",complete:false});
+    m.identity.setDemoRole("leader");
+    const decided = m.tags.recordRedTagDecision(m.id, {decision:"relocate",comments:"Move to storage"}, m.leader)!;
+    expect(m.workflow.getRedTagTimelineStages(decided)[1]).toMatchObject({label:"Review & Decision",state:"completed",actor:m.leader.name,at:decided.decisionRecord!.decidedAt});
+  });
+
+  it("prevents execution before evaluation, and linked handling cannot close with no Action", async () => {
+    const m = await reviewed(); m.identity.setDemoRole("leader");
+    expect(m.tags.setRedTagHandlingMode(m.id, "direct", m.leader)).toBeUndefined();
+    expect(m.tags.startRedTagDisposition(m.id, startInput, m.leader)).toBeUndefined();
+    expect(m.tags.completeRedTagDisposition(m.id, completion, m.leader)).toBeUndefined();
+    m.tags.recordRedTagDecision(m.id, { decision: "repair" }, m.leader);
+    m.tags.setRedTagHandlingMode(m.id, "linked_action", m.leader);
+    m.tags.startRedTagDisposition(m.id, startInput, m.leader);
+    expect(m.tags.completeRedTagDisposition(m.id, completion, m.leader)).toBeUndefined();
+    const stage = m.workflow.getRedTagTimelineStages(m.tags.getRedTag(m.id)!).find(item => item.label === "Execution");
+    expect(stage).toMatchObject({ complete: false, state: "current" });
+  });
+
+  it("uses all canonical Actions for progress; rework and missing links stay incomplete without rewriting history", async () => {
+    const m = await reviewed("scrap"); m.identity.setDemoRole("responsible");
+    const first = m.linked.createCanonicalLinkedAction(context(m.tags.getRedTag(m.id)!), m.actor.id, m.actor, "Corrective Action");
+    const second = m.linked.createCanonicalLinkedAction(context(m.tags.getRedTag(m.id)!), "USR-SUBURAMIANI", m.actor, "Corrective Action");
+    m.tags.linkRedTagAction(m.id, first.id, m.actor); m.tags.linkRedTagAction(m.id, second.id, m.actor);
+    const tag = m.tags.getRedTag(m.id)!; const original = structuredClone(tag);
+    const complete = { ...first, status: "Completed" as const, completedAt: "2026-10-19T10:00:00Z", completedByName: "Lakshman" };
+    const rework = { ...second, status: "Rework Required" as const };
+    expect(m.workflow.getRedTagTimelineStages(tag, [complete, rework])[3]).toMatchObject({ label: "Execution", state: "current", complete: false });
+    expect(m.workflow.getRedTagTimelineStages(tag, [complete])[3].complete).toBe(false);
+    const both = [complete, { ...second, status: "Completed" as const, completedAt: "2026-10-19T11:00:00Z", completedByName: "Rumesh" }];
+    expect(m.workflow.getRedTagTimelineStages(tag, both)[3]).toMatchObject({ complete: true, actor: "Rumesh", at: "2026-10-19T11:00:00Z" });
+    expect(m.workflow.getRedTagTimelineStages(tag, both)[4].state).toBe("current");
+    expect(tag).toEqual(original); expect(m.actions.getActionById(second.id)?.status).toBe("Assigned");
+  });
+
+  it("represents Further Evaluation as unresolved disposition and Keep without execution", async () => {
+    const m = await reviewed("further_evaluation");
+    expect(m.tags.startRedTagDisposition(m.id, startInput, m.leader)).toBeUndefined();
+    expect(m.workflow.getRedTagTimelineStages(m.tags.getRedTag(m.id)!)[2]).toMatchObject({ label: "Disposition", complete: false, state: "current" });
+    const keep = await reviewed(); keep.identity.setDemoRole("leader");
+    const closed = keep.tags.confirmRedTagKeep(keep.id, "Retain reference", keep.leader)!;
+    const stages = keep.workflow.getRedTagTimelineStages(closed);
+    expect(stages.map(stage => stage.label)).toEqual(["Created", "Review & Decision", "Keep Confirmation", "Verification / Closure"]);
+    expect(stages.every(stage => stage.complete)).toBe(true);
+    expect(stages[2]).toMatchObject({ actor: "Rumesh", at: closed.closedAt });
+  });
+
+  it("does not normalize historical physical completion to Closed while its canonical Action is in rework", async () => {
+    const m = await reviewed("repair");
+    m.tags.startRedTagDisposition(m.id, startInput, m.leader);
+    const tag = m.tags.getRedTag(m.id)!;
+    m.identity.setDemoRole("responsible");
+    const action = m.linked.createCanonicalLinkedAction(context(tag), m.actor.id, m.actor, "Corrective Action");
+    action.status = "Rework Required";
+    const historical = { ...tag, status: "Awaiting Verification" as const, actionId: action.id, actionIds: [action.id], handlingMode: "linked_action" as const, afterEvidence: completion.evidence,
+      dispositionDetails: { ...tag.dispositionDetails!, completedAt: "2026-10-19T09:00:00Z", completionNotes: completion.completionNotes, responsibleConfirmed: true, evidence: completion.evidence } };
+    expect(m.tags.normalizeRedTag(historical).status).toBe("Disposition In Progress");
+    action.status = "Completed";
+    expect(m.tags.normalizeRedTag(historical).status).toBe("Closed");
+    action.status = "Rework Required";
+    expect(m.tags.normalizeRedTag({ ...historical, status: "Closed" }).status).toBe("Closed");
+  });
+
+  it("does not invent actors, timestamps or completed stages for sparse historical records", async () => {
+    const m = await reviewed(); const tag = m.tags.getRedTag(m.id)!;
+    const sparse = { ...tag, status: "Closed" as const, createdAt: "", createdByName: "", history: [], review: undefined, closedAt: undefined };
+    const stages = m.workflow.getRedTagTimelineStages(sparse);
+    expect(stages.map(stage => stage.complete)).toEqual([false, false, false, true]);
+    expect(stages.every(stage => !stage.actor && !stage.at && stage.state !== "current")).toBe(true);
+    expect(stages.some(stage => stage.label === "Execution")).toBe(false);
+  });
+
+  it("requires the trusted scoped session for historical verification and closure", async () => {
+    const m = await reviewed("repair"); m.tags.startRedTagDisposition(m.id, startInput, m.leader);
+    const tag = m.tags.getRedTag(m.id)!;
+    values.set(m.tags.RED_TAG_STORAGE_KEY, JSON.stringify([{ ...tag, status: "Awaiting Verification", afterEvidence: completion.evidence, dispositionDetails: { ...tag.dispositionDetails!, executionNotes: undefined, completedAt: "2026-10-19T09:00:00Z" } }]));
+    vi.resetModules(); const tags = await import("@/features/five-s/red-tag/store"); const identity = await import("@/lib/current-user");
+    const before = values.get(tags.RED_TAG_STORAGE_KEY);
+    expect(tags.verifyRedTagDisposition(m.id, { passed: true, details: "Checked" }, { ...m.leader, id: "UNKNOWN" })).toBeUndefined();
+    identity.setDemoRole("responsible");
+    expect(tags.verifyRedTagDisposition(m.id, { passed: true, details: "Checked" }, m.leader)).toBeUndefined();
+    expect(tags.verifyRedTagDisposition(m.id, { passed: true, details: "Checked" }, m.actor)).toBeUndefined();
+    expect(values.get(tags.RED_TAG_STORAGE_KEY)).toBe(before);
+    identity.setDemoRole("leader");
+    expect(tags.verifyRedTagDisposition(m.id, { passed: true, details: "Checked" }, { ...m.leader, name: "Forged" })?.closure?.verifiedByName).toBe("Rumesh");
+    identity.setDemoRole("responsible"); expect(tags.closeRedTag(m.id, m.actor)).toBeUndefined();
+    identity.setDemoRole("leader"); expect(tags.closeRedTag(m.id, { ...m.leader, name: "Forged" })?.closure?.closedByName).toBe("Rumesh");
+    expect(tags.closeRedTag(m.id, m.leader)).toBeUndefined();
   });
 });

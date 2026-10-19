@@ -4,7 +4,7 @@ async function fixture(page:Page){
  await page.addInitScript(decisions=>{
   if(location.origin!=='http://127.0.0.1:4179')throw new Error('Isolated synthetic fixture only');if(localStorage.getItem('ops-decision-ui-seeded'))return;
   localStorage.setItem('ops-decision-ui-seeded','1');localStorage.setItem('5s-auth-session',JSON.stringify({authenticated:true,username:'admin',version:1}));localStorage.setItem('five-s-demo-role','auditor');localStorage.setItem('ops-red-tag-original-reset-v1','done');
-  localStorage.setItem('five-s-red-tags-v1',JSON.stringify(decisions.map(decision=>({id:'RT-UI-'+decision,tagNumber:'RT-UI-'+decision,plant:'Egmore Plant',zone:'Zone A',section:'Stores',department:'Stores',category:'Tools',itemName:'Synthetic '+decision,reason:'Unused',remarks:'Decision UI verification',imageUrl:'/demo-5s/not-good-example.png',createdById:'USR-LAKSHMAN',createdByName:'Lakshman',createdAt:'2026-10-18T09:00:00Z',status:'Open',history:[]}))));
+  localStorage.setItem('five-s-red-tags-v1',JSON.stringify(decisions.map(decision=>({id:'RT-UI-'+decision,tagNumber:'RT-UI-'+decision,plant:'Egmore Plant',zone:'Zone A',section:'Stores',department:'Stores',category:'Tools',itemName:'Synthetic '+decision,reason:'Unused',remarks:'Decision UI verification',imageUrl:'/demo-5s/not-good-example.png',createdById:'USR-SIVA-KUMAR',createdByName:'Siva Kumar',createdAt:'2026-10-18T09:00:00Z',status:'Open',history:[]}))));
  },RED_TAG_DECISIONS);
 }
 async function record(page:Page,decision:RedTagDecision){return page.evaluate(id=>JSON.parse(localStorage.getItem('five-s-red-tags-v1')!).find((t:{id:string})=>t.id===id),'RT-UI-'+decision);}

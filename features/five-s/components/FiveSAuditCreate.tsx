@@ -36,7 +36,7 @@ interface FiveSAuditCreateProps {
     startNow: boolean;
     scheduledDate?: string;
     scheduledTime?: string;
-  }) => void;
+  }) => void | Promise<void>;
 }
 
 function formatDate(value: string, locale: string): string {
@@ -141,14 +141,20 @@ export default function FiveSAuditCreate({ onBack, onStart }: FiveSAuditCreatePr
   const scheduleIsValid = mode === "now" || !validateFiveSAuditSchedule(scheduledDate, scheduledTime, createdAt);
   const isValid = Boolean(selectedZone && generatedAuditTitle && dueDate >= today && !ownZoneSelected && scheduleIsValid);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    try {
     event.preventDefault();
     const nextScheduleError = mode === "schedule" ? validateFiveSAuditSchedule(scheduledDate, scheduledTime, new Date()) : null;
     setScheduleError(nextScheduleError ?? "");
     if (nextScheduleError || !isValid || !selectedZone || starting || !canAuditZone({ primaryZone: currentZone }, selectedZone.name)) return;
 
     setStarting(true);
-    window.setTimeout(() => onStart({ title: generatedAuditTitle, plant: currentPlant, department: selectedZone.department, area: selectedZone.name, auditor: currentUser.name, dueDate, startNow: mode === "now", scheduledDate: mode === "schedule" ? scheduledDate : undefined, scheduledTime: mode === "schedule" ? scheduledTime : undefined }), 220);
+    await onStart({ title: generatedAuditTitle, plant: currentPlant, department: selectedZone.department, area: selectedZone.name, auditor: currentUser.name, dueDate, startNow: mode === "now", scheduledDate: mode === "schedule" ? scheduledDate : undefined, scheduledTime: mode === "schedule" ? scheduledTime : undefined });
+
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to save this record. Please retry.";
+      setScheduleError(message); setStarting(false);
+    }
   }
 
   return (

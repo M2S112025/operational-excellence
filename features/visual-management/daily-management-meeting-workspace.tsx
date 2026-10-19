@@ -1,4 +1,6 @@
 "use client";
+
+import { withBusinessRecordCreation } from "@/lib/records/module-records";
 import { ActionLink } from "@/components/ops/ops-return-link";
 import { OpsPersonSelect } from "@/components/ops/ops-person-select";
 import { canOperateVisualManagementBoard } from "./visual-management-access";
@@ -194,7 +196,7 @@ export function DailyManagementMeetingWorkspace({ meeting }: { meeting: VisualMa
     return result;
   }
 
-  function complete() {
+  async function complete() {
     const errors = assigned.map((kpi) => [kpi, validate(kpi)] as const);
     const invalid = errors.find(([, error]) => error);
     if (invalid) {
@@ -233,13 +235,14 @@ export function DailyManagementMeetingWorkspace({ meeting }: { meeting: VisualMa
         let createdActionId = "";
         try {
           const context = buildActionContext(board, meeting.id, kpi, draft, result.entry, result.deviation, users);
-          const action = createCanonicalLinkedAction(
+          const priority = result.deviation.status === "red" ? "High" : "Medium";
+          const action = await withBusinessRecordCreation(() => createCanonicalLinkedAction(
             context,
             draft.responsibleId,
             current,
             KPI_BUCKET_LABELS[kpi.bucket],
-            result.deviation.status === "red" ? "High" : "Medium",
-          );
+            priority,
+          ));
           createdActionId = action.id;
           if (!linkDeviationAction(result.deviation.id, action.id, getCurrentDemoUser())) {
             throw new Error("The Action could not be linked to this metric.");

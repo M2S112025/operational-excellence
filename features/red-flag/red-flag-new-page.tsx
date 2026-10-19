@@ -1,4 +1,6 @@
 "use client";
+
+import { withBusinessRecordCreation } from "@/lib/records/module-records";
 import { OpsPersonSelect } from "@/components/ops/ops-person-select";
 import { getCurrentDemoUser } from "@/lib/current-user";
 
@@ -60,7 +62,8 @@ export default function RedFlagNewPage() {
     evidence: createdFlag.evidence.map((item) => ({ id: item.id, name: item.name, type: "image", mimeType: item.mimeType, uploadedAt: item.uploadedAt, uploadedBy: item.uploadedBy, url: item.url, evidenceType: "finding" })),
   } : null;
 
-  function submit() {
+  async function submit() {
+    try {
     if (!mayRaise || busy) return;
     if (!title.trim()) { setError("Enter a short issue title."); return; }
     if (!severity) { setError("Select the severity."); return; }
@@ -68,7 +71,7 @@ export default function RedFlagNewPage() {
     if (immediateActionTaken && !containmentNote.trim()) { setAdvancedOpen(true); setError("Describe the immediate containment that was taken."); return; }
     setBusy(true);
     setError("");
-    const flag = createRedFlag({ title, description: description || title, plant, zone, location: location || zone, machineAsset, severity, immediateActionTaken, containmentNote, evidence }, currentUser);
+    const flag = await withBusinessRecordCreation(() => createRedFlag({ title, description: description || title, plant, zone, location: location || zone, machineAsset, severity, immediateActionTaken, containmentNote, evidence }, currentUser));
     setBusy(false);
     if (!flag) { setError("The Red Flag could not be saved. Check browser storage and try again."); return; }
     const sourceTopicId = searchParams.get("topicId");
@@ -76,6 +79,11 @@ export default function RedFlagNewPage() {
     if (!createActionWanted) { router.push(`/red-flag/${encodeURIComponent(flag.id)}`); return; }
     setCreatedFlag(flag);
     setActionDialogOpen(true);
+
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to save this record. Please retry.";
+      setError(message); setBusy(false);
+    }
   }
 
   if (!mayRaise) return <PageContainer><FiveSPageHeader eyebrow="OPS Workspace" title="Raise Red Flag" description="Capture an urgent operational issue." /><Card><CardContent className="grid min-h-48 place-items-center p-6 text-center"><div><ShieldAlert className="mx-auto size-7 text-muted-foreground" /><p className="mt-3 text-sm font-semibold">You do not have permission to raise a Red Flag.</p><Button className="mt-4" variant="outline" nativeButton={false} render={<Link href="/red-flag" />}>Back to Red Flag</Button></div></CardContent></Card></PageContainer>;

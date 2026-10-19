@@ -1,4 +1,7 @@
 "use client";
+
+import { newestCreatedFirst } from "@/lib/records/record-order";
+
 import { auditScorePercentage } from "@/lib/five-s/scoring-policy";
 import { OpsConfirmDialog } from "@/components/ops/ops-confirm-dialog";
 
@@ -100,7 +103,7 @@ const DATE_RANGE_OPTIONS: {
 }[] = [
   {
     value: "all",
-    label: "All time",
+    label: "All Dates",
   },
   {
     value: "today",
@@ -350,7 +353,7 @@ export default function FiveSAuditList({
           .trim()
           .toLowerCase();
 
-      return audits.filter(
+      return newestCreatedFirst(audits).filter(
         (audit) => {
           const matchesSearch =
             query === "" ||
@@ -767,7 +770,7 @@ export default function FiveSAuditList({
                       option.value ===
                       value
                   )?.label ??
-                  "All time"
+                  "All Dates"
                 );
               }}
             </SelectValue>

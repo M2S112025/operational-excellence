@@ -1,10 +1,16 @@
 "use client";
 
+import { normalizeAuditEvidence, normalizeAuditEvidenceRecords, persistAuditEvidence } from "./audit-evidence-storage";
+import { registerActionCreationSource } from "@/lib/actions/action-source-access";
+
+import { allocateModuleRecordId, registerRecordCreationStore, previewModuleRecordId } from "@/lib/records/module-records";
+
 import { getAuditScoringPolicy } from "@/features/settings/audit-scoring/store";
 import { calculateAuditSectionTotals, auditSectionsHaveConsistentScoring, auditUsesCustomScoring, getAuditScoringValues, questionComplianceResponse, scoreForComplianceResponse } from "@/lib/five-s/scoring-policy";
 import { isAuditQuestionComplete } from "@/features/settings/custom-audit-questions/checklist";
 import { useSyncExternalStore } from "react";
 import { getAdminUser } from "@/features/five-s/administration/store";
+import { getAuthenticatedDemoActor } from "@/lib/demo-session";
 import { getCurrentDemoUser, type DemoUser } from "@/lib/current-user";
 import { getActions } from "@/lib/actions/action-store";
 
@@ -112,6 +118,7 @@ function persistAudits(): void {
     return;
   }
 
+  audits = normalizeAuditEvidenceRecords(audits);
   safeSetStorage(STORAGE_KEY, audits);
 }
 
@@ -248,197 +255,10 @@ function getHighestAuditNumber(): number {
  * This is important because deleting an audit must NOT
  * cause its number to be reused.
  */
-function getSequenceKey(plant: string, area: string): string {
-  return `${getPlantCode(plant)}-${getAreaCode(area)}`;
-}
-
-function getStoredSequences(): Record<string, number> {
-  if (typeof window === "undefined") return {};
-
-  try {
-    const stored = window.localStorage.getItem(AUDIT_SEQUENCE_STORAGE_KEY);
-    const parsed: unknown = stored ? JSON.parse(stored) : {};
-    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
-      ? parsed as Record<string, number>
-      : {};
-  } catch {
-    return {};
-  }
-}
-
-function getHighestCombinationNumber(plant: string, area: string): number {
-  const prefix = `5S-${getPlantCode(plant)}-${getAreaCode(area)}-`;
-
-  return audits.reduce((highest, audit) => {
-    if (!audit.title.startsWith(prefix)) return highest;
-    const value = Number(audit.title.slice(prefix.length));
-    return Number.isFinite(value) ? Math.max(highest, value) : highest;
-  }, 0);
-}
-
-function getNextAuditNumber(plant: string, area: string): number {
-  const key = getSequenceKey(plant, area);
-  const stored = getStoredSequences()[key];
-  return Number.isFinite(stored) && stored > 0
-    ? stored
-    : getHighestCombinationNumber(plant, area) + 1;
-}
-
-function reserveNextAuditNumber(plant: string, area: string): number {
-  const nextNumber = getNextAuditNumber(plant, area);
-
-  if (typeof window !== "undefined") {
-    const sequences = getStoredSequences();
-    sequences[getSequenceKey(plant, area)] = nextNumber + 1;
-    safeSetStorage(AUDIT_SEQUENCE_STORAGE_KEY, sequences);
-  }
-
-  return nextNumber;
-}
-
-/**
- * Plant code.
- */
-function getPlantCode(
-  plant: string
-): string {
-  const codes: Record<
-    string,
-    string
-  > = {
-    "Egmore Plant": "EGM",
-    Chennai: "CHN",
-    Hosur: "HSR",
-    Bengaluru: "BLR",
-    Mysuru: "MYS",
-  };
-
-  if (codes[plant]) {
-    return codes[plant];
-  }
-
-  return plant
-    .replace(
-      /[^a-zA-Z0-9]/g,
-      ""
-    )
-    .slice(0, 3)
-    .toUpperCase();
-}
-
-/**
- * Area code.
- */
-function getAreaCode(
-  area: string
-): string {
-  const normalized =
-    area.trim();
-
-  if (!normalized) {
-    return "AREA";
-  }
-
-  const predefinedCodes: Record<
-    string,
-    string
-  > = {
-    "Zone A": "ZA",
-    "Zone B": "ZB",
-    "Zone C": "ZC",
-    "Zone D": "ZD",
-    "Assembly Line 1": "ASM1",
-    "Assembly Line 2": "ASM2",
-    "Assembly Line 3": "ASM3",
-    "Welding Bay": "WLD",
-    "CNC Section": "CNC",
-    "Paint Booth 1": "PB1",
-    "Paint Booth 2": "PB2",
-    "Paint Booth 3": "PB3",
-    Warehouse: "WH",
-  };
-
-  if (
-    predefinedCodes[
-      normalized
-    ]
-  ) {
-    return predefinedCodes[
-      normalized
-    ];
-  }
-
-  const numberMatch =
-    normalized.match(
-      /\d+/
-    );
-
-  const number =
-    numberMatch?.[0] ?? "";
-
-  const words =
-    normalized
-      .replace(/\d+/g, "")
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean);
-
-  let code = "";
-
-  if (
-    words.length === 1
-  ) {
-    code =
-      words[0]
-        .replace(
-          /[^a-zA-Z]/g,
-          ""
-        )
-        .slice(0, 3)
-        .toUpperCase();
-  } else {
-    code =
-      words
-        .map(
-          (word) =>
-            word[0]
-        )
-        .join("")
-        .slice(0, 3)
-        .toUpperCase();
-  }
-
-  return `${code}${number}`;
-}
-
-/**
- * Build human-readable audit title.
- *
- * Example:
- *
- * 5S-EGM-ZA-001
- */
-function buildAuditTitle(
-  auditNumber: number,
-  plant: string,
-  area: string
-): string {
-  const number =
-    String(auditNumber)
-      .padStart(3, "0");
-
-  const plantCode =
-    getPlantCode(plant);
-
-  const areaCode =
-    getAreaCode(area);
-
-  return `5S-${plantCode}-${areaCode}-${number}`;
-}
-
 export function getNextFiveSAuditTitle(plant: string, area: string): string {
   if (!plant || !area) return "";
-  return buildAuditTitle(getNextAuditNumber(plant, area), plant, area);
+  initializeStore();
+  return previewModuleRecordId("audit", audits.map(audit => audit.id));
 }
 
 /* =========================================================
@@ -520,42 +340,20 @@ export function createFiveSAudit(
     sections.forEach(section => Object.assign(section, calculateAuditSectionTotals([section])));
   }
 
-  /**
-   * Reserve a permanent running number.
-   *
-   * Example:
-   *
-   * 1 -> 001
-   * 2 -> 002
-   * 3 -> 003
-   */
-  const auditNumber =
-    reserveNextAuditNumber(input.plant, input.area);
-
-  /**
-   * Generate the readable audit title.
-   */
-  const generatedTitle =
-    buildAuditTitle(
-      auditNumber,
-      input.plant,
-      input.area
-    );
-
+  const generatedTitle = allocateModuleRecordId("audit", audits.map(audit => audit.id));
   const startNow = options.startNow ?? true;
-  let auditIdentity = Date.now();
-  while (audits.some(item => item.id === `5S-AUD-${auditIdentity}`)) auditIdentity += 1;
 
   const audit: FiveSAudit = {
     ...input,
     scoringPolicy,
     sections,
+    createdAt: now.toISOString(),
 
     /**
      * Keep an internal unique ID separate
      * from the human-readable audit title.
      */
-    id: `5S-AUD-${auditIdentity}`,
+    id: generatedTitle,
 
     /**
      * Automatically generated title.
@@ -584,12 +382,14 @@ export function createFiveSAudit(
       : undefined,
   };
 
+  const previousAudits = audits;
   audits = [
     audit,
     ...audits,
   ];
 
-  persistAudits();
+  const result = safeSetStorage(STORAGE_KEY, audits);
+  if (!result.success) { audits = previousAudits; throw new Error(result.message); }
 
   emitChange();
 
@@ -628,6 +428,7 @@ export function updateFiveSAudit(
         const nextAudit = {
           ...audit,
           ...updates,
+          createdAt: audit.createdAt,
           ...(updates.sections ? { sections: structuredClone(updates.sections) } : {}),
         };
 
@@ -998,4 +799,42 @@ export function clearFiveSAuditStorage(): void {
       error
     );
   }
+}
+
+registerRecordCreationStore(STORAGE_KEY, () => { initializedFromStorage = false; loadFromStorage(); });
+
+registerActionCreationSource("audit", (input, user) => {
+  const audit = input.sourceId ? getFiveSAuditById(input.sourceId) : undefined;
+  const question = audit?.sections.flatMap(section => section.questions).find(item => item.id === input.sourceObservationId);
+  return { record: audit, zone: audit?.area, permitted: Boolean(question && user.permissions.includes("actions.create") && user.permissions.includes("audits.view")), alreadyLinked: question?.actionId };
+});
+
+/** Durable canonical question link; a failed write leaves the Audit unchanged. */
+export function linkAuditQuestionAction(auditId: string, questionId: string, actionId: string, actor: Pick<DemoUser, "id">) {
+  const user = getAuthenticatedDemoActor(actor.id)?.user;
+  const audit = getFiveSAuditById(auditId);
+  const action = getActions().find(item=>item.id===actionId);
+  const question = audit?.sections.flatMap(section=>section.questions).find(item=>item.id===questionId);
+  if (!user || !audit || audit.status === "Completed" || !question || (question.actionId && question.actionId !== actionId) || !action
+    || !user.permissions.includes("actions.create") || !user.permissions.includes("audits.view") || action.createdByUserId !== user.id
+    || action.sourceModule !== "audit" || action.sourceId !== auditId || action.questionId !== questionId || action.sourceObservationId !== questionId
+    || action.plant !== audit.plant || action.area !== audit.area) return false;
+  const evidence = (action.issueEvidence ?? []).map(item=>normalizeAuditEvidence({id:item.id,name:item.name,type:item.type,size:0,dataUrl:item.url ?? "",storageKey:item.storageKey,uploadedAt:item.uploadedAt,uploadedBy:item.uploadedBy}));
+  const next = normalizeAuditEvidenceRecords(audits).map(item=>item.id!==auditId?item:{...item,sections:item.sections.map(section=>({...section,questions:section.questions.map(q=>q.id!==questionId?q:{...q,actionId,actionRequired:true,evidence})}))});
+  if (!safeSetStorage(STORAGE_KEY,next).success) return false;
+  audits=next;emitChange();return true;
+}
+
+/** Move legacy binaries only after IndexedDB confirms durability, then persist references. */
+export async function compactAuditEvidenceStorage() {
+  initializeStore();
+  for (const audit of audits) for (const section of audit.sections) for (const question of section.questions) {
+    for (const evidence of question.evidence ?? []) await persistAuditEvidence(evidence);
+  }
+  // Rebase after async asset writes so edits made while processing are retained.
+  const next=normalizeAuditEvidenceRecords(audits);
+  if (next.every((audit,index)=>audit===audits[index])) return;
+  const result=safeSetStorage(STORAGE_KEY,next);
+  if (!result.success) throw new Error(result.message);
+  audits=next;emitChange();
 }

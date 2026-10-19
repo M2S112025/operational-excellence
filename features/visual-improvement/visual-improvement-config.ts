@@ -1,3 +1,4 @@
+import { previewModuleRecordId } from "@/lib/records/module-records";
 import type { VisualImprovement, VisualImprovementCategory, VisualImprovementStatus } from "./types";
 
 export const VISUAL_IMPROVEMENT_CATEGORIES: readonly VisualImprovementCategory[] = [
@@ -31,11 +32,6 @@ export const VISUAL_IMPROVEMENT_STATUS_LABELS: Record<VisualImprovementStatus, s
   Returned: "Returned",
 };
 
-export function generateVisualImprovementId(records: readonly Pick<VisualImprovement, "id">[], year = new Date().getFullYear()) {
-  const prefix = `VI-${year}-`;
-  const next = records.reduce((largest, record) => {
-    if (!record.id.startsWith(prefix)) return largest;
-    return Math.max(largest, Number(record.id.slice(prefix.length)) || 0);
-  }, 0) + 1;
-  return `${prefix}${String(next).padStart(3, "0")}`;
+export function generateVisualImprovementId(records: readonly Pick<VisualImprovement, "id">[]) {
+  return previewModuleRecordId("visualImprovement", records.map(record => record.id));
 }

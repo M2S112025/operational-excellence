@@ -1,3 +1,4 @@
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -19,7 +20,7 @@ const signature = { userId: actor.id, userName: actor.name, signedAt: "2026-10-1
 async function setup(statuses: MyAction["status"][] = [], actorPatch: Partial<AdminUser> = {}) {
   vi.resetModules(); vi.useFakeTimers(); vi.setSystemTime(new Date("2026-10-16T12:00:00Z"));
   const values = new Map<string, string>(); const localStorage = { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => { values.set(key, value); }, removeItem: (key: string) => { values.delete(key); } };
-  vi.stubGlobal("window", { localStorage, alert: vi.fn() });
+  vi.stubGlobal("window", { localStorage, alert: vi.fn() }); authenticateDemoFixture();
   const users = await import("@/features/five-s/administration/store");
   localStorage.setItem("five-s-administration-users-v1", JSON.stringify(users.ADMIN_USER_SEEDS.map(user => user.id === actor.id ? { ...user, ...actorPatch } : user)));
   const store = await import("@/lib/five-s/audit-store"); const actions = await import("@/lib/actions/action-store"); actions.getActions();

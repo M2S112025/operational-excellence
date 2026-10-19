@@ -1,5 +1,9 @@
 "use client";
 
+import { registerActionCreationSource } from "@/lib/actions/action-source-access";
+
+import { allocateModuleRecordId, registerRecordCreationStore } from "@/lib/records/module-records";
+
 import { useSyncExternalStore } from "react";
 
 import type { MyAction, MyActionStatus } from "@/features/five-s/types/my-actions";
@@ -111,10 +115,8 @@ export function getRedFlagSlaLabel(flag: Pick<RedFlag, "status" | "slaDueAt">, n
   return isRedFlagOverdue(flag, now) ? `${hours}h past response target` : `${hours}h to response target`;
 }
 
-function nextId(now = new Date()) {
-  const prefix = `RF-${now.getFullYear()}-`;
-  const value = flags.reduce((max, flag) => flag.id.startsWith(prefix) ? Math.max(max, Number(flag.id.slice(prefix.length)) || 0) : max, 0) + 1;
-  return `${prefix}${String(value).padStart(3, "0")}`;
+function nextId() {
+  return allocateModuleRecordId("redFlag", flags.map(flag => flag.id));
 }
 
 function event(type: RedFlagActivityType, label: string, actor: RedFlagActor, remark?: string, actionId?: string): RedFlagActivity {
@@ -210,3 +212,10 @@ export function getRedFlagSummary(input = flags, now = new Date()) {
 }
 
 export function resetRedFlags() { persist(SEED_FLAGS); }
+
+registerRecordCreationStore(STORAGE_KEY, () => { loaded = false; load(); });
+
+registerActionCreationSource("redFlag", (input, user) => {
+  const flag = input.sourceId ? getRedFlag(input.sourceId) : undefined;
+  return { record: flag, zone: flag?.zone, permitted: user.permissions.includes("actions.create"), alreadyLinked: flag?.actionId };
+});

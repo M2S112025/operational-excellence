@@ -1,3 +1,4 @@
+import { configureRedTagMemberFixture } from "./helpers/red-tag-actors";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { resetImportedRedTagData, RED_TAG_RESET_KEY } from "@/lib/five-s/red-tag-reset";
 afterEach(() => { vi.unstubAllGlobals(); vi.resetModules(); });
@@ -38,8 +39,9 @@ describe("approved Red Tag reset", () => {
     const store = await import("@/features/five-s/red-tag/store");
     const { DEMO_USERS } = await import("@/lib/current-user");
     expect(store.getRedTags().map(tag => tag.id)).toEqual(["RT-EGM-ZA-001"]);
-    const tag = store.createRedTagV2({ plant: "Egmore Plant", zone: "Zone A", section: "Stores", department: "Production", category: "Tools", itemName: "Unused tool", reasonCategory: "Usage", reason: "Unused", remarks: "Review spare tool", imageUrl: "data:image/jpeg;base64,before", createdById: DEMO_USERS.auditor.id, createdByName: DEMO_USERS.auditor.name }, DEMO_USERS.auditor)!;
-    expect(tag).toMatchObject({ id: "RT-EGM-ZA-002", status: "Open", reasonCategory: "Usage" });
+    await configureRedTagMemberFixture();
+    const tag = store.createRedTagV2({ plant: "Egmore Plant", zone: "Zone A", section: "Stores", department: "Production", category: "Tools", itemName: "Unused tool", reasonCategory: "Usage", reason: "Unused", remarks: "Review spare tool", imageUrl: "data:image/jpeg;base64,before", createdById: DEMO_USERS.responsible.id, createdByName: DEMO_USERS.responsible.name }, DEMO_USERS.responsible)!;
+    expect(tag).toMatchObject({ id: "RT-000001", status: "Open", reasonCategory: "Usage" });
     expect(tag).not.toHaveProperty("workflowVersion");
     expect(values.has("ops-red-tags-5s-v2")).toBe(false);
     expect(JSON.parse(values.get("five-s-red-tags-v1")!)).toHaveLength(2);

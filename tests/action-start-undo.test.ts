@@ -1,15 +1,18 @@
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { MyActionStatus } from '@/features/five-s/types/my-actions';
 let values: Map<string, string>;
 beforeEach(() => {
   vi.resetModules(); values = new Map([['ops-red-tag-original-reset-v1', 'done'], ['unrelated', 'preserved']]);
-  vi.stubGlobal('window', { localStorage: { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => values.set(key, value), removeItem: (key: string) => values.delete(key) } });
+  vi.stubGlobal('window', { localStorage: { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => values.set(key, value), removeItem: (key: string) => values.delete(key) } }); authenticateDemoFixture();
 });
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 async function setup(status: MyActionStatus = 'Assigned') {
-  const identity = await import('@/lib/current-user'); identity.setDemoRole('responsible');
+  const identity = await import('@/lib/current-user'); identity.setDemoRole('auditor');
   const store = await import('@/lib/actions/action-store'); const actor = identity.DEMO_USERS.responsible;
-  const action = store.createAction({ title: 'Synthetic undo start', description: 'Preserve work', source: 'Manual', sourceModule: 'manual', sourceTitle: 'Manual', plant: actor.plant, area: actor.primaryZone, department: 'Production', assignedTo: actor.name, responsiblePersonId: actor.id, responsiblePersonName: actor.name, createdByUserId: 'USR-RUMESH', createdByName: 'Rumesh', status, priority: 'Medium', dueDate: '2030-12-20' });
+  const action = store.createAction({ title: 'Synthetic undo start', description: 'Preserve work', source: 'Manual', sourceModule: 'manual', sourceTitle: 'Manual', plant: actor.plant, area: actor.primaryZone, department: 'Production', assignedTo: actor.name, responsiblePersonId: actor.id, responsiblePersonName: actor.name, createdByUserId: 'USR-LAKSHMAN', createdByName: 'Lakshman', status: status === 'Rework Required' ? 'Assigned' : status, priority: 'Medium', dueDate: '2030-12-20' });
+  if (status === 'Rework Required') store.setActions(store.getActions().map(item => item.id === action.id ? { ...item, status } : item));
+  identity.setDemoRole('responsible');
   store.addActionEvidence(action.id, { id: "kept-evidence", name: "Evidence", type: "image", url: "data:image/png;base64,evidence", uploadedBy: actor.name, uploadedAt: "2026-10-18T10:00:00Z" }, actor);
   return { store, actor, identity, action: store.getActionById(action.id)! };
 }

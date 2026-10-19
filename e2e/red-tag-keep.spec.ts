@@ -5,7 +5,7 @@ for(const width of [320,1440])test(`Keep decision confirms and closes at ${width
   if(location.origin!=='http://127.0.0.1:4179')throw new Error('Synthetic loopback fixture only');
   if(localStorage.getItem('ops-keep-test-seeded'))return;
   localStorage.setItem('ops-keep-test-seeded','1');localStorage.setItem('5s-auth-session',JSON.stringify({authenticated:true,username:'admin',version:1}));localStorage.setItem('five-s-demo-role','auditor');localStorage.setItem('ops-red-tag-original-reset-v1','done');
-  localStorage.setItem('five-s-red-tags-v1',JSON.stringify([{id:'RT-EGM-ZA-KEEP',tagNumber:'RT-EGM-ZA-KEEP',plant:'Egmore Plant',zone:'Zone A',section:'Stores',department:'Stores',category:'Tools',itemName:'Synthetic calibrated reference',reason:'Unused',remarks:'Retain for calibration',imageUrl:'/demo-5s/not-good-example.png',createdById:'USR-LAKSHMAN',createdByName:'Lakshman',createdAt:'2026-10-18T09:00:00Z',status:'Open',history:[]}])) ;
+  localStorage.setItem('five-s-red-tags-v1',JSON.stringify([{id:'RT-EGM-ZA-KEEP',tagNumber:'RT-EGM-ZA-KEEP',plant:'Egmore Plant',zone:'Zone A',section:'Stores',department:'Stores',category:'Tools',itemName:'Synthetic calibrated reference',reason:'Unused',remarks:'Retain for calibration',imageUrl:'/demo-5s/not-good-example.png',createdById:'USR-SIVA-KUMAR',createdByName:'Siva Kumar',createdAt:'2026-10-18T09:00:00Z',status:'Open',history:[]}])) ;
  });
  await page.goto('/5s/red/RT-EGM-ZA-KEEP',{waitUntil:'networkidle'});
  await page.getByRole('button',{name:'Submit for Review',exact:true}).click();const before=await page.evaluate(()=>localStorage.getItem('five-s-red-tags-v1'));

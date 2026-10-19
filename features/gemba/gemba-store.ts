@@ -1,5 +1,9 @@
 "use client";
 
+import { registerActionCreationSource } from "@/lib/actions/action-source-access";
+
+import { allocateModuleRecordId, registerRecordCreationStore } from "@/lib/records/module-records";
+
 import { resetImportedRedTagData } from "@/lib/five-s/red-tag-reset";
 
 import { useSyncExternalStore } from "react";
@@ -258,11 +262,8 @@ export function getGembaState() { load(); return state; }
 export function getGembaWalk(id: string) { load(); return state.walks.find((walk) => walk.id === id); }
 export function getGembaObservations(walkId: string) { load(); return state.observations.filter((observation) => observation.gembaId === walkId); }
 
-function nextWalkId(now = new Date()) {
-  const year = now.getFullYear();
-  const prefix = `GEM-${year}-`;
-  const number = state.walks.reduce((max, walk) => walk.id.startsWith(prefix) ? Math.max(max, Number(walk.id.slice(prefix.length)) || 0) : max, 0) + 1;
-  return `${prefix}${String(number).padStart(3, "0")}`;
+function nextWalkId() {
+  return allocateModuleRecordId("gemba", state.walks.map(walk => walk.id));
 }
 
 function nextObservationId(walkId: string) {
@@ -548,3 +549,11 @@ export function getGembaSummary(input: GembaState, now = new Date()) {
     positiveObservations: input.observations.filter((item) => item.type === "Positive").length,
   };
 }
+
+registerRecordCreationStore(STORAGE_KEY, () => { loaded = false; load(); });
+
+registerActionCreationSource("gemba", (input, user, identity) => {
+  const current = getGembaState(), walk = current.walks.find(item => item.id === input.sourceId);
+  const observation = current.observations.find(item => item.id === input.sourceObservationId && item.gembaId === walk?.id);
+  return { record: walk, zone: walk?.zone, permitted: Boolean(walk && walk.status !== "Completed" && observation && observation.type !== "Positive" && canMutateGembaWalk(walk, identity)), alreadyLinked: observation?.actionId };
+});

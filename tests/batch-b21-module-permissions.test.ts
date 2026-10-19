@@ -1,3 +1,4 @@
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DEMO_USERS } from "@/lib/current-user";
 const admin = DEMO_USERS.auditor;
@@ -6,7 +7,7 @@ const member = DEMO_USERS.responsible;
 beforeEach(() => {
   vi.resetModules(); const values = new Map<string, string>();
   const localStorage = { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => { values.set(key, value); }, removeItem: (key: string) => { values.delete(key); } };
-  vi.stubGlobal("window", { localStorage }); vi.stubGlobal("localStorage", localStorage);
+  vi.stubGlobal("window", { localStorage }); authenticateDemoFixture(); vi.stubGlobal("localStorage", localStorage);
 });
 afterEach(() => vi.unstubAllGlobals());
 

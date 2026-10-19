@@ -1,4 +1,6 @@
 "use client";
+
+import { allocateModuleRecordId, registerRecordCreationStore } from "@/lib/records/module-records";
 import { getCurrentDemoUser } from "@/lib/current-user";
 import { canOperateVisualManagementBoard, type VisualManagementActor } from "./visual-management-access";
 
@@ -123,7 +125,7 @@ export function createMeetingSchedule(input: Omit<MeetingSchedule, "id" | "creat
 
   const error = validateMeetingSchedule(input);
   if (error || !getVisualManagementState().boards.some((board) => board.id === input.boardId && board.status === "Active")) return { success: false as const, error: error || "Board is unavailable." };
-  const schedule: MeetingSchedule = { ...input, id: `VMS-${globalThis.crypto?.randomUUID?.() ?? Date.now()}`, attendees: input.attendees.map((person) => ({ ...person, attendance: "Absent", expected: true })), createdAt: new Date().toISOString(), status: "Scheduled", overrides: [] };
+  const schedule: MeetingSchedule = { ...input, id: allocateModuleRecordId("visualManagement", snapshot().map(item => item.id)), attendees: input.attendees.map((person) => ({ ...person, attendance: "Absent", expected: true })), createdAt: new Date().toISOString(), status: "Scheduled", overrides: [] };
   return persist([...snapshot(), schedule]) ? { success: true as const, schedule } : { success: false as const, error: "Schedule could not be saved." };
 }
 
@@ -188,7 +190,7 @@ export function changeMeetingSchedule(id: string, occurrenceDate: string, scope:
     const requestedRecurrence = patch.recurrence ?? schedule.recurrence;
     const successorRecurrence = requestedRecurrence.end.type === "count" && schedule.recurrence.end.type === "count" && requestedRecurrence.end.count === schedule.recurrence.end.count
       ? { ...requestedRecurrence, end: remainingEnd } : requestedRecurrence;
-    const successor: MeetingSchedule = { ...schedule, ...patch, id: `VMS-${globalThis.crypto?.randomUUID?.() ?? Date.now()}`, date: patch.date ?? occurrenceDate, createdAt: new Date().toISOString(), recurrence: successorRecurrence, overrides: schedule.overrides.filter((item) => item.occurrenceDate >= occurrenceDate) };
+    const successor: MeetingSchedule = { ...schedule, ...patch, id: allocateModuleRecordId("visualManagement", snapshot().map(item => item.id)), date: patch.date ?? occurrenceDate, createdAt: new Date().toISOString(), recurrence: successorRecurrence, overrides: schedule.overrides.filter((item) => item.occurrenceDate >= occurrenceDate) };
     if (validateMeetingSchedule(successor)) return false;
     return persist([...current.map((item) => item.id === id ? truncated : item), successor]);
   }
@@ -198,3 +200,5 @@ export function changeMeetingSchedule(id: string, occurrenceDate: string, scope:
   return persist(current.map((item) => item.id === id ? updated : item));
 }
 export function setMeetingSchedulesForTests(next: MeetingSchedule[]) { schedules = next; loaded = true; listeners.forEach((listener) => listener()); }
+
+registerRecordCreationStore(KEY, () => { loaded = false; load(); });

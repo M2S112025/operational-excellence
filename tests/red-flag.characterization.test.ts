@@ -57,7 +57,7 @@ describe("OPS Red Flag domain", () => {
     const store = await import("@/features/red-flag/red-flag-store");
     const actor = { id: "USR-LAKSHMAN", name: "Lakshman" };
     const flag = store.createRedFlag({ title: "Test safety issue", description: "Test condition", plant: "Egmore Plant", zone: "Zone A", location: "Test Cell", severity: "High", immediateActionTaken: true, containmentNote: "Area isolated", evidence: [] }, actor)!;
-    expect(flag.id).toBe("RF-2026-015");
+    expect(flag.id).toBe("RF-000001");
     store.linkRedFlagAction(flag.id, "ACT-RF-010", actor);
     store.reconcileRedFlagActions(MY_ACTIONS);
     expect(store.getRedFlag(flag.id)?.status).toBe("Awaiting Closure");

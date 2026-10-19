@@ -1,3 +1,4 @@
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { MyAction } from "@/features/five-s/types/my-actions";
 
@@ -5,7 +6,7 @@ async function setup() {
   vi.resetModules();
   const values = new Map<string, string>();
   const localStorage = { getItem: (key: string) => values.get(key) ?? null, setItem: vi.fn((key: string, value: string) => { values.set(key, value); }), removeItem: (key: string) => { values.delete(key); } };
-  vi.stubGlobal("window", { localStorage });
+  vi.stubGlobal("window", { localStorage }); authenticateDemoFixture();
   const store = await import("@/lib/actions/action-store");
   store.getActions();
   return { store, localStorage };

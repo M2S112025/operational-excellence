@@ -1,4 +1,6 @@
 "use client";
+
+import { withBusinessRecordCreation } from "@/lib/records/module-records";
 import { OpsPersonSelect } from "@/components/ops/ops-person-select";
 import { getCurrentDemoUser } from "@/lib/current-user";
 
@@ -62,7 +64,7 @@ export default function ContinuousImprovementNewPage() {
 
   if (!allowed || !zone) return <PageContainer><FiveSPageHeader eyebrow="Continual Improvement" title="New Improvement" description="Your current role cannot create an improvement proposal." leading={<Button variant="ghost" size="icon" nativeButton={false} render={<Link href="/continuous-improvement" />}><ArrowLeft className="size-4" /></Button>} /><Card><CardContent className="grid min-h-52 place-items-center p-6 text-center"><div><p className="text-sm font-medium">Creation is not available for your current role or zone.</p><Button className="mt-4" variant="outline" nativeButton={false} render={<Link href="/continuous-improvement" />}>Back to Improvements</Button></div></CardContent></Card></PageContainer>;
 
-  function submit(saveAsDraft: boolean) {
+  async function submit(saveAsDraft: boolean) {
     setError("");
     if (!title.trim() || !problem.trim() || !proposal.trim() || !expectedBenefit.trim() || !estimatedTime || Number(estimatedTime) <= 0 || !ownerOptions.some((owner) => owner.id === ownerId)) {
       setError("Complete the title, owner, current state, proposed improvement, expected benefit, and estimated completion time.");
@@ -70,7 +72,7 @@ export default function ContinuousImprovementNewPage() {
     }
     setBusy(true);
     try {
-      const item = createImprovement({ title, plant: searchParams.get("plant") ?? currentPlant, zone: zoneName, issueDescription: problem, proposedImprovement: proposal, expectedBenefit, benefitType, proposedSaving: proposedSaving === "" ? undefined : Number(proposedSaving), estimatedTime: Number(estimatedTime), estimatedTimeUnit, ownerId, memberIds, beforeEvidence }, currentUser, saveAsDraft);
+      const item = await withBusinessRecordCreation(() => createImprovement({ title, plant: searchParams.get("plant") ?? currentPlant, zone: zoneName, issueDescription: problem, proposedImprovement: proposal, expectedBenefit, benefitType, proposedSaving: proposedSaving === "" ? undefined : Number(proposedSaving), estimatedTime: Number(estimatedTime), estimatedTimeUnit, ownerId, memberIds, beforeEvidence }, currentUser, saveAsDraft));
       if (item) {
         for (const record of relatedRecords) {
           try { connectImprovementOperationalRecord(item.id, record); }

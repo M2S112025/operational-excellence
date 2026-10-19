@@ -1,5 +1,10 @@
 "use client";
 
+import { newestCreatedFirst } from "@/lib/records/record-order";
+
+
+import { withBusinessRecordCreation } from "@/lib/records/module-records";
+
 import { useState } from "react";
 import { useCurrentUser } from "@/lib/current-user";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
@@ -129,7 +134,7 @@ function getCategoryDescription(
    ========================================================= */
 
 export default function FiveSAuditListPage({ initialAuditId }: { initialAuditId?: string } = {}) {
-  const audits = useFiveSAuditStore();
+  const audits = newestCreatedFirst(useFiveSAuditStore());
   const actor = useCurrentUser();
   const [pendingDelete, setPendingDelete] = useState<FiveSAudit | null>(null);
   const [deleteError, setDeleteError] = useState("");
@@ -153,7 +158,7 @@ export default function FiveSAuditListPage({ initialAuditId }: { initialAuditId?
      CREATE AUDIT
      ======================================================= */
 
-  function handleCreateAudit(input: {
+  async function handleCreateAudit(input: {
     title: string;
     plant: string;
     department: string;
@@ -167,7 +172,7 @@ export default function FiveSAuditListPage({ initialAuditId }: { initialAuditId?
     const sections = createAuditChecklistSnapshot(createEmptyFiveSSections());
 
     const audit =
-      createFiveSAudit({
+      await withBusinessRecordCreation(() => createFiveSAudit({
         title: input.title,
         plant: input.plant,
         department: input.department,
@@ -177,7 +182,7 @@ export default function FiveSAuditListPage({ initialAuditId }: { initialAuditId?
         scheduledDate: input.scheduledDate,
         scheduledTime: input.scheduledTime,
         sections,
-      }, { startNow: input.startNow });
+      }, { startNow: input.startNow }));
 
     setIsCreatingAudit(false);
     setSelectedAudit(audit);

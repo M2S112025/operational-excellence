@@ -1,3 +1,4 @@
+import { configureRedTagMemberFixture } from "./helpers/red-tag-actors";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { RED_TAG_DECISIONS, RED_TAG_DECISION_LABELS } from "@/features/five-s/red-tag/types";
@@ -20,6 +21,7 @@ async function redTagStore(initial: Record<string, string> = {}) {
   const localStorage = storage(initial);
   vi.stubGlobal("window", { localStorage, alert: vi.fn() });
   vi.stubGlobal("localStorage", localStorage);
+  await configureRedTagMemberFixture();
   let sequence = 0;
   vi.stubGlobal("crypto", { randomUUID: () => `v2-${++sequence}` });
   const store = await import("@/features/five-s/red-tag/store");
@@ -32,7 +34,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-const creator = DEMO_USERS.auditor;
+const creator = DEMO_USERS.responsible;
 const reviewer = DEMO_USERS.leader;
 const evidence = [{ id: "RTE-V2-1", name: "after.jpg", url: "data:image/jpeg;base64,after", mimeType: "image/jpeg", uploadedBy: reviewer.name, uploadedAt: "2026-09-22T06:00:00.000Z" }];
 

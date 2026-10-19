@@ -1,5 +1,7 @@
 "use client";
 
+import { allocateModuleRecordId, registerRecordCreationStore } from "@/lib/records/module-records";
+
 import { useSyncExternalStore } from "react";
 import { canManageVisualManagementConfiguration, type VisualManagementActor } from "./visual-management-access";
 import { safeSetStorage } from "@/lib/browser-storage";
@@ -137,8 +139,9 @@ export function saveVisualManagementBoard(input: VisualManagementBoardConfigurat
   if (Object.keys(errors).length) return { success: false as const, errors };
   const current = getVisualManagementConfiguration();
   const now = new Date().toISOString();
-  const id = input.id || `VM-${globalThis.crypto?.randomUUID?.().slice(0, 8) ?? Date.now()}`;
-  const board = { ...input, id, name: input.name.trim(), memberIds: Array.from(new Set([input.ownerId, ...input.memberIds])), createdAt: input.createdAt || now, updatedAt: now };
+  const existing = current.boards.find(board => board.id === input.id);
+  const id = existing?.id ?? allocateModuleRecordId("visualManagement", current.boards.map(item => item.id));
+  const board = { ...input, id, name: input.name.trim(), memberIds: Array.from(new Set([input.ownerId, ...input.memberIds])), createdAt: existing?.createdAt ?? now, updatedAt: now };
   const result = persist({ ...current, boards: current.boards.some((item) => item.id === id) ? current.boards.map((item) => item.id === id ? board : item) : [...current.boards, board] });
   return result.success ? { success: true as const, board } : { success: false as const, errors: { save: result.message } };
 }
@@ -224,3 +227,5 @@ export function moveVisualManagementKpiSection(id: string, direction: -1 | 1, ac
   const selected = ordered[index];
   return persist({ ...current, kpiSections: current.kpiSections.map((item) => item.id === selected.id ? { ...item, order: target.order, updatedAt: new Date().toISOString() } : item.id === target.id ? { ...item, order: selected.order, updatedAt: new Date().toISOString() } : item) }).success;
 }
+
+registerRecordCreationStore(STORAGE_KEY, () => { loaded = false; load(); });

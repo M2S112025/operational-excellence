@@ -7,6 +7,7 @@
  */
 
 import { getCurrentDemoUser, type DemoUser } from "@/lib/current-user";
+import { getImprovementById } from "@/features/five-s/continuous-improvement/store";
 import { canMutateGembaWalk } from "@/features/gemba/gemba-access";
 import { getGembaState, getGembaSaveError, linkGembaImprovement } from "@/features/gemba/gemba-store";
 import { createRelationship, getRelationshipSaveError } from "@/lib/relationships/relationship-store";
@@ -27,9 +28,11 @@ export function linkGembaObservationToImprovement(
   const walk = getGembaState().walks.find(item => item.id === walkId);
   if (!walk || walk.status === "Completed" || !canMutateGembaWalk(walk, actor)) throw new Error("You cannot link an improvement to this Gemba walk.");
   const existing = getGembaState().observations.find(item => item.id === observationId && item.gembaId === walkId);
-  if (existing?.improvementId !== improvementId && !linkGembaImprovement(walkId, observationId, improvementId, actor)) {
-    throw new Error(getGembaSaveError() || "The improvement was created, but the Gemba source link could not be saved. Check walk edit access and browser storage, then retry linking.");
-  }
+  const improvement = getImprovementById(improvementId);
+  if (!existing || existing.type !== "Opportunity" || !improvement || improvement.plant !== walk.plant || improvement.zone !== walk.zone || (existing.improvementId && existing.improvementId !== improvementId)) throw new Error("This improvement cannot be linked to this observation.");
   const relationship = createRelationship({ module: "gemba", recordId: walkId, childId: observationId }, { module: "continuousImprovement", recordId: improvementId }, "improvement", { title: title || "Gemba observation" });
-  if (!relationship) throw new Error(getRelationshipSaveError() || "The improvement was created, but its relationship could not be saved. Check browser storage and retry linking.");
+  if (existing.improvementId !== improvementId && !linkGembaImprovement(walkId, observationId, improvementId, actor)) {
+    throw new Error("The improvement was created, but the Gemba source link could not be saved. Check walk edit access and browser storage, then retry linking. " + getGembaSaveError());
+  }
+  if (!relationship) throw new Error("The improvement was created, but its relationship could not be saved. Check browser storage and retry linking. " + getRelationshipSaveError());
 }

@@ -58,8 +58,8 @@ describe("system-wide workspace and Gemba observation detail", () => {
 
   it("uses a responsive operational detail surface with inspectable evidence and conditional follow-up", () => {
     const detail = source("features/gemba/gemba-components.tsx");
-    expect(detail).toContain("sm:max-w-[860px]");
-    expect(detail).toContain("aspect-[16/10]");
+    expect(detail).toContain("sm:max-w-[900px]");
+    expect(detail).toContain("aspect-[16/9]");
     for (const label of ["Observation", "Evidence ·", "Follow-up", 'DetailValue label="Action"', "Why no Action", "Horizontal Deployment", "LinkedRecord"]) expect(detail).toContain(label);
     expect(detail).toContain("observation.evidence.length > 0");
     expect(detail).toContain('observation.type !== "Positive"');

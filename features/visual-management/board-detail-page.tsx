@@ -1,4 +1,8 @@
 "use client";
+import { CanonicalLinkedRecords } from "@/components/ops/ops-linked-records";
+
+import { compareNewestMeetings } from "@/lib/records/record-order";
+
 import { useUrlState } from "@/lib/navigation/use-url-state";
 import { ActionLink } from "@/components/ops/ops-return-link";
 
@@ -30,11 +34,12 @@ export default function BoardDetailPage({ boardId }: { boardId: string }) {
   const [scheduleOpen, setScheduleOpen] = useState(false);
   const candidate = state.boards.find((item) => item.id === boardId);
   const board = candidate && canViewVisualManagementBoard(candidate, currentUser, adminUser?.roles) ? candidate : undefined;
-  const meetings = useMemo(() => state.meetings.filter((item) => item.boardId === boardId).sort((a, b) => b.startedAt.localeCompare(a.startedAt)), [boardId, state.meetings]);
+  const meetings = useMemo(() => state.meetings.filter((item) => item.boardId === boardId).sort(compareNewestMeetings), [boardId, state.meetings]);
   if (!board) return <Missing />;
   const actionIds = new Set(meetings.flatMap((meeting) => meeting.actionIds));
   const actions = allActions.filter((action) => actionIds.has(action.id) || (action.sourceModule === "visualManagement" && action.sourceLocation?.includes(board.zone ?? board.plant)));
   return <PageContainer className="max-w-none"><FiveSPageHeader eyebrow={`${board.tier} · ${board.plant}${board.zone ? ` / ${board.zone}` : ""}`} title={board.name} description={`${board.meetingFrequency} · Owner: ${board.owner.name} · ${board.members.length} expected members`} leading={<Button variant="ghost" size="icon-sm" nativeButton={false} render={<Link href="/visual-management/boards" />} aria-label="Back to boards"><ArrowLeft className="size-4" /></Button>} actions={<div className="flex flex-wrap gap-2"><Button onClick={() => setStartOpen(true)}><CirclePlay className="size-4" />Start Meeting</Button><Button variant="outline" nativeButton={false} render={<Link href={`/visual-management/boards/${encodeURIComponent(board.id)}/print`} />}><Printer className="size-4" />Print Board</Button>{canManageVisualManagementSchedule(board, currentUser, adminUser?.roles) ? <Button variant="outline" onClick={() => setScheduleOpen(true)}><CalendarPlus className="size-4" />Schedule Meeting</Button> : null}</div>} /><VisualManagementNav />
+    <CanonicalLinkedRecords currentRecord={{module:"visualManagement",recordId:board.id}} />
     <Tabs value={["board","actions","meetings"].includes(url.params.get("tab") ?? "") ? url.params.get("tab")! : "board"} onValueChange={tab => url.update({tab})}><TabsList variant="line" className="max-w-full overflow-x-auto"><TabsTrigger value="board"><ClipboardCheck />Board</TabsTrigger><TabsTrigger value="actions"><ListTodo />Actions <Badge size="sm" variant="secondary">{actions.length}</Badge></TabsTrigger><TabsTrigger value="meetings"><History />Meetings <Badge size="sm" variant="secondary">{meetings.length}</Badge></TabsTrigger></TabsList>
       <TabsContent value="board" className="mt-4"><ConfiguredKpiBoard board={board} /></TabsContent>
       <TabsContent value="actions" className="mt-4"><Card className="gap-0"><CardContent className="divide-y p-0">{actions.map((action) => <ActionLink href={`/actions/${action.id}`} key={action.id} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/30"><span className="min-w-0 flex-1"><span className="block text-sm font-medium">{action.title}</span><span className="mt-1 block text-xs text-muted-foreground">{action.responsiblePersonName ?? action.assignedTo} · Due {action.dueDate}</span></span><Badge variant={action.status === "Completed" ? "success" : action.status === "Overdue" ? "danger" : "warning"}>{action.status}</Badge><ArrowRight className="size-4 text-muted-foreground" /></ActionLink>)}{!actions.length && <Empty text="Actions created during meetings will appear here." />}</CardContent></Card></TabsContent>

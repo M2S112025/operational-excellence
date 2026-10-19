@@ -42,7 +42,11 @@ describe("Visual Management Settings", () => {
     const added = config.saveVisualManagementBoard({ id: "VM-TEST-T1", name: "Zone B Productivity", tierId: "tier-1", plantId: "PLANT-EGM", zoneId: "ZONE-B", ownerId: "USR-LAKSHMAN", memberIds: ["USR-LAKSHMAN", "USR-SIVA-KUMAR"], meetingFrequency: "Daily", meetingTime: "11:00", kpiSectionIds: ["safety", productivity.id], status: "Active", createdAt: "", updatedAt: "" }, context, { id: "USR-LAKSHMAN" });
     expect(added.success).toBe(true);
     const runtime = await import("@/features/visual-management/visual-management-store");
-    const meeting = runtime.startVisualManagementMeeting("VM-TEST-T1", { id: "USR-LAKSHMAN", name: "Lakshman" })!;
+    const boardId = added.success ? added.board.id : "";
+    expect(boardId).toBe("VM-000001");
+    const meeting = runtime.startVisualManagementMeeting(boardId, { id: "USR-LAKSHMAN", name: "Lakshman" })!;
+    expect(meeting.id).toBe("VM-000002");
+    expect(meeting.createdAt).toBeTruthy();
     expect(meeting).toMatchObject({ boardName: "Zone B Productivity", lead: { id: "USR-LAKSHMAN" } });
     expect(meeting.kpiEntries.map((item) => item.section)).toEqual(["Safety", "Productivity"]);
     const saved = added.success ? added.board : undefined;
@@ -51,7 +55,7 @@ describe("Visual Management Settings", () => {
     expect(historical.boardName).toBe("Zone B Productivity");
     expect(historical.lead.id).toBe("USR-LAKSHMAN");
     expect(historical.kpiEntries.map((item) => item.section)).toEqual(["Safety", "Productivity"]);
-    expect(runtime.getVisualManagementBoard("VM-TEST-T1")).toMatchObject({ name: "Renamed Future Board", owner: { id: "USR-RUMESH" } });
+    expect(runtime.getVisualManagementBoard(boardId)).toMatchObject({ name: "Renamed Future Board", owner: { id: "USR-RUMESH" } });
     expect(values.has("ops-visual-management-configuration-v1")).toBe(true);
   });
 

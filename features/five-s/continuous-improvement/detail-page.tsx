@@ -1,4 +1,6 @@
 "use client";
+
+import { CanonicalLinkedRecords } from "@/components/ops/ops-linked-records";
 import { useUrlState } from "@/lib/navigation/use-url-state";
 import { ActionLink } from "@/components/ops/ops-return-link";
 
@@ -67,6 +69,7 @@ export default function ContinuousImprovementDetailPage({ improvementId, initial
   return <PageContainer className="max-w-none">
     <FiveSPageHeader eyebrow="Continual Improvement" title={item.title} description={`${item.id} · ${item.plant} · ${item.zone}`} leading={<Button variant="ghost" size="icon" nativeButton={false} render={<Link href="/continuous-improvement" />} aria-label="Back"><ArrowLeft className="size-4" /></Button>} actions={headerActions} />
     <div className="flex flex-wrap items-center gap-2"><ImprovementStatusBadge status={item.status} /><Badge variant="secondary">{item.benefitType}</Badge><span className="text-xs text-muted-foreground">Owner: {item.ownerName}</span><span className="text-xs text-muted-foreground">Updated {formatImprovementDate(item.updatedAt, true)}</span></div>
+    <CanonicalLinkedRecords currentRecord={{module:"continuousImprovement",recordId:item.id}} />
     {item.status === "completed" && <section aria-label="Completed improvement summary" className="grid overflow-hidden rounded-xl border bg-card sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_200px_200px_220px]"><div className="p-4"><p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-700 dark:text-emerald-400">Completed Improvement</p><p className="mt-2 text-sm font-medium">{item.actualBenefit || item.expectedBenefit}</p><p className="mt-1 text-xs text-muted-foreground">Reviewed by {item.completionReviewedByName ?? item.completedByName ?? item.zoneLeaderName}</p></div><div className="border-t p-4 sm:border-l xl:border-t-0"><p className="text-xs text-muted-foreground">Actual Completion</p><p className="mt-1 text-sm font-semibold">{item.completedAt ? formatImprovementDate(item.completedAt, true) : "Not recorded"}</p></div><div className="border-t p-4 sm:border-l xl:border-t-0"><p className="text-xs text-muted-foreground">Proposed Saving</p><p className="mt-1 text-xl font-semibold">{formatImprovementMoney(item.proposedSaving)}</p></div><div className="border-t p-4 sm:border-l xl:border-t-0"><p className="text-xs text-muted-foreground">Actual Saving</p><p className="mt-1 text-xl font-semibold text-emerald-700 dark:text-emerald-400">{formatImprovementMoney(item.actualSaving)}</p></div></section>}
     {notice && <div role="status" className={cn("rounded-lg border px-4 py-3 text-sm", notice.toLowerCase().includes("not") || notice.toLowerCase().includes("required") || notice.toLowerCase().includes("unable") ? "border-destructive/20 bg-destructive/[0.06] text-destructive" : "border-emerald-500/20 bg-emerald-500/[0.07] text-emerald-700 dark:text-emerald-400")}>{notice}</div>}
     <ImprovementTabs tabs={tabs} active={activeTab} onChange={(id) => setActiveTab(id as DetailTab)} />

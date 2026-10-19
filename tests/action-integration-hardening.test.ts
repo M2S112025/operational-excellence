@@ -1,9 +1,10 @@
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const storage = new Map<string, string>();
 
 function installStorage() {
-  vi.stubGlobal("window", { localStorage: { getItem: (key: string) => storage.get(key) ?? null, setItem: (key: string, value: string) => storage.set(key, value), removeItem: (key: string) => storage.delete(key) } });
+  vi.stubGlobal("window", { localStorage: { getItem: (key: string) => storage.get(key) ?? null, setItem: (key: string, value: string) => storage.set(key, value), removeItem: (key: string) => storage.delete(key) } }); authenticateDemoFixture();
 }
 
 beforeEach(() => {
@@ -52,6 +53,7 @@ describe("Action integration hardening", () => {
     }));
     const actions = await import("@/lib/actions/action-store");
     actions.setActions([]);
+    await import("@/features/gemba/gemba-store");
     const created = actions.createAction({ ...actionInput(1), title: "Stop hydraulic oil leakage and inspect hose", source: "Gemba", sourceModule: "gemba", sourceId: "GEM-2026-901", sourceTitle: "GEM-2026-901", sourceObservationId: "GEM-2026-901-OBS-01", sourceObservation: "Oil leakage observed near hydraulic press" });
     const persisted = JSON.parse(storage.get("standalone-5s-actions")!)[0];
     expect(persisted.issueEvidence ?? []).toEqual([]);

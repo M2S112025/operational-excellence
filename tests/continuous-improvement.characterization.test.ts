@@ -64,7 +64,7 @@ describe("Continuous Improvement MVP", () => {
     const api = await store();
     api.setImprovements([]);
     const draft = api.createImprovement(proposal, DEMO_USERS.responsible, true)!;
-    expect(draft).toMatchObject({ id: expect.stringMatching(/^CI-\d{4}-001$/), status: "draft", proposedById: DEMO_USERS.responsible.id });
+    expect(draft).toMatchObject({ id: expect.stringMatching(/^CI-\d{6}$/), status: "draft", proposedById: DEMO_USERS.responsible.id });
     api.submitImprovement(draft.id, DEMO_USERS.responsible);
     expect(api.getImprovementById(draft.id)?.status).toBe("submitted");
     api.startImprovementReview(draft.id, DEMO_USERS.leader);
