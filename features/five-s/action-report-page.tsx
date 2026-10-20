@@ -1,4 +1,5 @@
 "use client";
+import { getActionTypeLabel } from "@/lib/actions/action-config";
 /* eslint-disable @next/next/no-img-element -- report evidence and demo profile images can be data/local URLs. */
 
 import {
@@ -154,6 +155,7 @@ function ReportMetadata({ action, completedAt }: { action: MyAction; completedAt
     ["Completed Person", action.completedByName ?? action.responsiblePersonName ?? action.assignedTo ?? "—", ""],
     ["Completion", shortPerformance(action.dueDate, action.closedAt ?? completedAt), "text-emerald-700 dark:text-emerald-400"],
     ["Actual Cost Saving", formatCurrency(action.costSaving), "text-emerald-700 dark:text-emerald-400"],
+    ["Action Type", getActionTypeLabel(action.actionType), ""],
     ["Action Category", action.actionCategory ?? action.correctiveActionCategory ?? "—", ""],
     ["Source Context", action.sourceObservation ?? action.originalFinding ?? "—", ""],
   ];
@@ -198,7 +200,7 @@ function ApprovalPanel({ title, name, role, date, photo }: { title: string; name
 function ReviewHistory({ history, reviewedAt, reviewedBy }: { history: MyActionActivity[]; reviewedAt?: string; reviewedBy?: string }) {
   const events = [...history];
   const hasReview = !events.some((event) => event.type === "reviewed" || event.type === "verified") && events.some((event) => event.type === "closed") && reviewedAt;
-  return <article className="p-4"><p className="text-[11px] font-extrabold uppercase tracking-[0.06em] text-blue-700 dark:text-blue-400">Review History</p><ol className="mt-3 grid gap-x-4 gap-y-2 sm:grid-cols-2">{events.flatMap((event) => { const rows = [<HistoryRow key={event.id} label={`${ACTIVITY_LABELS[event.type]} by ${event.actorName}`} date={event.createdAt} remark={event.remark} />]; if (event.type === "closed" && hasReview) rows.unshift(<HistoryRow key={`${event.id}-reviewed`} label={`Reviewed by ${reviewedBy ?? event.actorName}`} date={reviewedAt} />); return rows; })}</ol></article>;
+  return <article className="p-4"><p className="text-[11px] font-extrabold uppercase tracking-[0.06em] text-blue-700 dark:text-blue-400">Review History</p><ol className="mt-3 grid gap-x-4 gap-y-2 sm:grid-cols-2">{events.flatMap((event) => { const rows = [<HistoryRow key={event.id} label={`${ACTIVITY_LABELS[event.type]} by ${event.actorName}`} date={event.createdAt} remark={event.actionType ? `${getActionTypeLabel(event.actionType)}${event.remark ? ` · ${event.remark}` : ""}` : event.remark} />]; if (event.type === "closed" && hasReview) rows.unshift(<HistoryRow key={`${event.id}-reviewed`} label={`Reviewed by ${reviewedBy ?? event.actorName}`} date={reviewedAt} />); return rows; })}</ol></article>;
 }
 
 function HistoryRow({ label, date, remark }: { label: string; date?: string; remark?: string }) { return <li className="review-history-row relative min-w-0 border-l border-slate-300 pl-3 dark:border-slate-600"><span className="absolute -left-[3px] top-1 size-[5px] rounded-full bg-blue-600" /><p className="min-w-0 text-[10px] font-semibold leading-4">{label}</p><p className="text-[9px] text-slate-500">{formatDateTime(date)}</p>{remark && <p className="mt-1 text-[9px] italic leading-4 text-slate-600 dark:text-slate-300">Remark: {remark}</p>}</li> }

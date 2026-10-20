@@ -47,7 +47,7 @@ async function addSelfAction(page:Page,another=false,leader=false,info?:TestInfo
  const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('standalone-5s-actions')!));return stored[0].id as string;
 }
 async function submitWork(page:Page,id:string,revision:number){
- await page.goto('/actions/'+encodeURIComponent(id),{waitUntil:'networkidle'});await page.getByRole('button',{name:'Start Work',exact:true}).click();await expect.poll(async()=>(await action(page,id)).status).toBe('In Progress');
+ await page.goto('/actions/'+encodeURIComponent(id),{waitUntil:'networkidle'});await page.getByRole('button',{name:'Start Action',exact:true}).click();await page.getByRole('dialog').getByRole('radio',{name:'Corrective Action',exact:true}).check();await page.getByRole('dialog').getByRole('button',{name:'Confirm & Start',exact:true}).click();await expect.poll(async()=>(await action(page,id)).status).toBe('In Progress');
  await page.getByPlaceholder('Describe the corrective work completed...').fill('Completed work revision '+revision);
  await page.getByRole('combobox',{name:'Corrective Action Category',exact:true}).click();await page.getByRole('option').first().click();
  await page.getByRole('button',{name:'Next: Evidence',exact:true}).click();

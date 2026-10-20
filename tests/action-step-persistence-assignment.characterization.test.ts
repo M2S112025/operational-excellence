@@ -26,23 +26,24 @@ afterEach(() => vi.unstubAllGlobals());
 describe("canonical Action step persistence", () => {
   it("preserves Overview, evidence, assignment, and source metadata through reload and lifecycle transitions", async () => {
     const { store, localStorage } = await actionStore();
-    const owner = { id: "USR-RITIKA", name: "Ritika" };
+    const owner = { id: "USR-SIVA-KUMAR", name: "Siva Kumar" };
     const reviewer = { id: "USR-LAKSHMAN", name: "Lakshman" };
     const { GEMBA_SEED_STATE } = await import("@/features/gemba/gemba-store");
-    const walk = GEMBA_SEED_STATE.walks.find(item => item.zone === "Zone A")!;
+    const walk = GEMBA_SEED_STATE.walks.find(item => item.zone === "Zone B")!;
     localStorage.setItem("ops-gemba-v1", JSON.stringify({ walks: [{ ...walk, id: "GEM-001", status: "In Progress", observationIds: ["OBS-001"] }], observations: [{ ...GEMBA_SEED_STATE.observations[0], id: "OBS-001", gembaId: "GEM-001", type: "Issue", actionId: undefined }] }));
     const action = store.createAction({
       title: "Repair fixture", description: "Replace damaged fixture", source: "Gemba", sourceTitle: "GEM-001",
       sourceModule: "gemba", sourceId: "GEM-001", sourceObservationId: "OBS-001", sourceObservation: "Fixture is damaged",
-      sourceLocation: "Egmore Plant · Zone A · Cell 1", originalFinding: "Fixture is damaged", plant: "Egmore Plant",
-      department: "Production", area: "Zone A", assignedTo: owner.name, responsiblePersonId: owner.id,
+      sourceLocation: "Egmore Plant · Zone B · Cell 1", originalFinding: "Fixture is damaged", plant: "Egmore Plant",
+      department: "Production", area: "Zone B", assignedTo: owner.name, responsiblePersonId: owner.id,
       responsiblePersonName: owner.name, assignedByUserId: reviewer.id, assignedByName: reviewer.name,
-      zoneLeaderId: reviewer.id, zoneLeaderName: reviewer.name, createdByUserId: reviewer.id, createdByName: reviewer.name,
+      zoneLeaderId: "USR-RUMESH", zoneLeaderName: "Rumesh", createdByUserId: reviewer.id, createdByName: reviewer.name,
       auditor: reviewer.name, status: "Assigned", priority: "Medium", dueDate: "2026-10-10", actionCategory: "Repair",
       issueEvidence: [],
     });
 
-    store.startAssignedAction(action.id, owner);
+    (await import("@/lib/current-user")).setDemoRole("responsible");
+    expect(store.startAssignedAction(action.id, owner, "corrective")?.status).toBe("In Progress");
     store.updateAction(action.id, {
       actionTakenDescription: "Replace damaged fixture", resolutionObservation: "Replace damaged fixture",
       correctiveActionCategory: "Design / Equipment Modification", costSaving: 5000, currency: "INR",

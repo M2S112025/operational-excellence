@@ -1,3 +1,4 @@
+import { authenticateDemoFixture } from "./helpers/demo-session";
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { webcrypto } from 'node:crypto';
 import type { MyAction } from '@/features/five-s/types/my-actions';
@@ -11,7 +12,7 @@ beforeEach(() => {
   vi.resetModules(); vi.clearAllMocks(); assets.blobs.clear();
   values = new Map([['ops-red-tag-original-reset-v1', 'done'], ['unrelated-module', 'unchanged']]);
   vi.stubGlobal('crypto', webcrypto);
-  vi.stubGlobal('window', { localStorage: { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => values.set(key, value), removeItem: (key: string) => values.delete(key) } });
+  vi.stubGlobal('window', { localStorage: { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => values.set(key, value), removeItem: (key: string) => values.delete(key) } }); authenticateDemoFixture();
 });
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 const url = 'data:image/jpeg;base64,' + Buffer.from('legacy-image').toString('base64');
@@ -65,7 +66,7 @@ describe('Action evidence quota recovery', () => {
     const storage = await import('@/lib/gemba/gemba-photo-storage');
     vi.mocked(storage.saveGembaPhoto).mockImplementationOnce(async (key, blob) => { entered(); await held; assets.blobs.set(key, blob); });
     const migrating = current.compactActionEvidenceStorage(); await ready;
-    current.startAssignedAction('ACT-QUOTA', actor);
+    current.startAssignedAction('ACT-QUOTA', actor, "corrective");
     current.updateAction('ACT-QUOTA', { resolutionObservation: 'Newer unsaved workflow persisted' }, actor);
     release(); await migrating;
     expect(current.getActionById('ACT-QUOTA')).toMatchObject({ status: 'In Progress', resolutionObservation: 'Newer unsaved workflow persisted', evidence: [expect.objectContaining({ storageKey: expect.any(String) })] });

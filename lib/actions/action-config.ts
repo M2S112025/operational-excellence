@@ -4,6 +4,7 @@ import { ClipboardList, Eye, Flag, Footprints, PenLine, Tag, TrendingUp } from "
 import type {
   ActionSourceModule,
   MyAction,
+  MyActionType,
   MyActionPriority,
   MyActionStatus,
 } from "@/features/five-s/types/my-actions";
@@ -158,3 +159,7 @@ export function sortActionsByUrgency(actions: MyAction[], now = new Date()) {
 export function formatShortDate(value: string) {
   return formatOpsDate(value);
 }
+
+export const ACTION_TYPE_LABELS: Record<MyActionType, string> = { immediate: "Immediate Action", corrective: "Corrective Action" };
+export function isActionType(value: unknown): value is MyActionType { return value === "immediate" || value === "corrective"; }
+export function getActionTypeLabel(value?: MyActionType) { return isActionType(value) ? ACTION_TYPE_LABELS[value] : "Not recorded"; }

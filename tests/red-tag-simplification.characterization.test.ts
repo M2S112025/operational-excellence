@@ -64,10 +64,11 @@ describe("Change Log 2 Red Tag simplification", () => {
     expect(redTagSource).toContain("sourceEvidenceCount: getRedTagIdentificationEvidence(tag).length");
   });
 
-  it("offers approved direct handling alongside canonical linked Actions", () => {
+  it("uses canonical linked Actions with self-assignment instead of direct handling", () => {
     const redTagSource = source("features/five-s/red-tag/red-tag-module.tsx");
-    expect(redTagSource).toContain("Handle directly");
-    expect(redTagSource).toContain('chooseHandling("direct")');
+    expect(redTagSource).not.toContain("Handle directly");
+    expect(redTagSource).not.toContain('chooseHandling("direct")');
+    expect(source("features/actions/create-linked-action-dialog.tsx")).toContain("Assign to me");
     expect(redTagSource).toContain("Create Linked Action");
     expect(redTagSource).toContain('source: "Red Tag", sourceModule: "redTag", sourceId: tag.id');
     expect(redTagSource).toContain("incompleteLinkedAction");

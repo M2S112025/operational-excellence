@@ -38,11 +38,11 @@ for (const width of [320, 768, 1440]) test(`Stacked Action accordions, summary a
   await container.screenshot({ path: `test-results/action-overview-unified-${width}.png` });
   await overview.click(); await expect(overview).toHaveAttribute('aria-expanded', 'false');
   await overview.press('Enter'); await expect(overview).toHaveAttribute('aria-expanded', 'true');
-  const lockedFields = page.locator('fieldset');
+  const lockedFields = page.locator('#action-section-overview-content fieldset');
   await expect(lockedFields).toHaveAttribute('disabled', '');
   await expect(page.getByPlaceholder('Describe the corrective work completed...')).toBeDisabled();
   await expect(lockedFields).toHaveCSS('filter', 'blur(4px)');
-  const start = page.getByRole('button', { name: 'Start Work', exact: true });
+  const start = page.getByRole('button', { name: 'Start Action', exact: true });
   const fieldsBounds = (await lockedFields.boundingBox())!;
   const startBounds = (await start.boundingBox())!;
   expect(Math.abs(startBounds.x + startBounds.width / 2 - fieldsBounds.x - fieldsBounds.width / 2)).toBeLessThanOrEqual(1);
@@ -50,6 +50,9 @@ for (const width of [320, 768, 1440]) test(`Stacked Action accordions, summary a
   await start.click({ trial: true });
   await container.screenshot({ path: `test-results/action-resolution-blurred-${width}.png` });
   await start.click();
+    await page.getByRole('dialog').getByRole('radio', { name: 'Corrective Action', exact: true }).check();
+    await page.getByRole('dialog').getByRole('button', { name: 'Confirm & Start', exact: true }).click();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
   await expect(lockedFields).toHaveCSS('filter', 'none');
   const notes = page.getByPlaceholder('Describe the corrective work completed...');
   await expect(notes).toBeEnabled(); await notes.fill('Draft retained while browsing and uploading');
